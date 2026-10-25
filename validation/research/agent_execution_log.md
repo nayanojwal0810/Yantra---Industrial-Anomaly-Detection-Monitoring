@@ -91,3 +91,58 @@ This log documents all technical actions, environment verifications, network req
    - Our compute feasibility calculation relies on downsampling from 1-minute to 15-minute intervals. 15-minute intervals are the standard logging rate for commercial building automation systems (BAS) and preserve the thermal response curves of mechanical faults while reducing memory overhead by 93.3%.
 3. **No Final Model Training Executed:**
    - In accordance with prompt rules, no final models were trained and no production application code was developed. All evaluations reflect empirical structural audits and peer-reviewed literature baselines.
+
+---
+
+## 5. Gate 01 Execution: Feasibility, Novelty Reassessment, and Repository Cleanup
+
+### 5.1 Selective Remote Range-Extraction of LBNL FCU Dataset
+- **Objective:** Directly inspect raw CSV rows from `https://fdddata.lbl.gov/data/Simulated_LBNL_FDD_Data_Sets_FCU/LBNL_FDD_Data_Sets_FCU.zip` (506.1 MB) without downloading the entire 506 MB archive over unmetered bandwidth.
+- **Actions Run:**
+  1. Executed `scratch/test_lbnl_range.py`: Sent HTTP request with `Range: bytes=0-1024` to verify HTTP 206 Partial Content support (confirmed: status 206, server returned 1025 bytes).
+  2. Executed `scratch/parse_zip_cd.py`: Sent HTTP Range request for the final 65,536 bytes of the 530,692,075-byte archive.
+  3. Parsed the End of Central Directory (EOCD) record at offset 530,692,053 and identified Central Directory starting offset at 530,626,539 (65,514 bytes).
+  4. Parsed all 50 directory entries (1 directory + 49 CSVs) and dumped byte offsets, compressed sizes, and uncompressed sizes to `scratch/fcu_zip_entries.json`.
+  5. Selected 5 representative files for deep audit:
+     - `FCU_FaultFree.csv` (Baseline)
+     - `FCU_VLVLeak_Cooling_20.csv` (Minor valve leak)
+     - `FCU_VLVLeak_Cooling_50.csv` (Moderate valve leak)
+     - `FCU_VLVLeak_Cooling_80.csv` (Severe valve leak)
+     - `FCU_Fouling_Cooling_Airside_Minor.csv` (Subtle fouling degradation)
+  6. Executed `scratch/selective_extract.py`: Read local file headers and raw deflated streams for these 5 files via targeted HTTP Range requests. Decompressed streams via Python `zlib.decompressobj(-15)`. Total network transfer: ~52.6 MB across all 5 files, yielding ~421.5 MB uncompressed CSV data.
+
+### 5.2 Empirical In-Depth Sensor and Statistical Audit
+- **Script Executed:** `scratch/audit_fcu_data.py`.
+- **Findings:**
+  - Exact row count: 525,600 rows per file at 1-minute sampling interval (total 2,628,000 rows audited across 5 files).
+  - Exact column count: 29 columns per file.
+  - Quality metrics: Exactly 0 missing values, 0 nulls, 0 NaNs, and 0 infinite values across all 76,212,000 audited cell values.
+  - Constant sensor channels identified across all runs:
+    - `FAN_CTRL` = 1.0 (constant speed fan)
+    - `FCU_CLG_EWT` = 45.0°F (chilled water supply temperature)
+    - `FCU_HTG_EWT` = 120.0°F (hot water supply temperature)
+  - Meteorological synchronization: `FCU_OAT` and `FCU_OA_HUMD` are identical between baseline and fault runs (max delta: 0.0000), confirming physical counterfactual synchronization.
+
+### 5.3 Quantitative Downsampling Verification
+- **Script Executed:** `scratch/test_downsampling.py`.
+- **Evaluated Intervals:** 1-minute raw vs. 5-minute mean vs. 15-minute mean.
+- **Findings:**
+  - 15-minute downsampling reduces annual rows from 525,600 to 35,040 rows per file (93.3% reduction; 1.72M rows across all 49 files; ~124 MB total Parquet storage).
+  - In-memory footprint at 15-minute sampling: ~8.02 MB RAM per run.
+  - Signal retention: Preserves physical fault delta to 5 decimal places:
+    - Mean cooling water flow delta for 50% leak: raw 1-min $\Delta = +1.02496$ GPM vs. 15-min downsampled $\Delta = +1.02496$ GPM.
+    - Mean discharge air temperature delta: raw 1-min $\Delta = -7.01199^\circ\text{F}$ vs. 15-min downsampled $\Delta = -7.01199^\circ\text{F}$.
+  - Seasonal defect discovery: During winter (Jan–Feb), the cooling valve actuator is commanded to 0.0 for 96.2% of hours; a 20% valve leak passes 1.14 GPM of uncommanded chilled water continuously, lowering discharge temperature by -2.17°F while standard rule-based BMS alarms remain silent.
+
+### 5.4 Literature and Novelty Reassessment
+- Reassessed recent peer-reviewed literature:
+  - Zhong, Calautit, & Wu (2023, *Energy* 282, 128180) established that seasonal data shifts cause significant performance degradation when testing on unseen seasons.
+  - Babakhani et al. (2026 SSRN preprint 7438633) benchmarked downsampling and measurement noise across LBNL DataFDD.
+- Conclusion: Academic novelty around raw diagnostic classification on LBNL DataFDD is saturated.
+- Re-scoped project as an industrial MLOps engineering benchmark and telemetry service (Problem Definition 1: Semi-Supervised Anomaly Scoring with Physics-Residual Attribution).
+
+### 5.5 Repository Cleanup and Workspace Restructuring
+- Removed 22 tracked legacy project files (`.github/workflows/`, `configs/`, `data/`, `docs/`, `models/`, `reports/`, `src/`, `tests/`) on branch `validation/problem-feasibility-review`.
+- Documented all deleted and retained paths in `validation/review/branch_cleanup.md`.
+- Updated root `README.md` to describe the validation workspace with direct links to candidate evaluation and gate reports.
+- Created `validation/review/feasibility_gate_results.md` summarizing gate criteria, empirical data, downsampling results, and proposed problem definitions.
