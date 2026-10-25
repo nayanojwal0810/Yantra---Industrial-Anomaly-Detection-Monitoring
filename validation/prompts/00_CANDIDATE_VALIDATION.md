@@ -139,3 +139,24 @@ The work is not complete unless:
 5. File list.
 6. Exact commands, checks and download actions performed, including failures.
 7. Suggested next action for the decision-maker; do not proceed without their review.
+
+
+## GitHub workspace and delivery requirements — mandatory
+
+The validation work must be committed and pushed to the existing GitHub repository so the project owner can review it directly. The project owner intends to send only your short completion response, not upload report files manually.
+
+- Repository: `nayanojwal0810/Yantra---Industrial-Anomaly-Detection-Monitoring`
+- Required branch: `validation/problem-feasibility-review`
+- Required remote: `https://github.com/nayanojwal0810/Yantra---Industrial-Anomaly-Detection-Monitoring.git`
+- Required workspace path prefix for every new/changed file: `validation/`
+- Prompt path: `validation/prompts/00_CANDIDATE_VALIDATION.md`
+
+Before doing research, run and record `git remote -v`, `git status --short --branch`, and `git branch --show-current`. Verify that the remote points to the repository above and that the current branch is `validation/problem-feasibility-review`.
+
+If the current Antigravity folder is not a Git checkout of this repository, do not assume it is connected just because it contains a prompt file. Safely clone the specified repository into a separate folder or use the existing correct checkout, then check out the required branch. Do not copy, overwrite, or merge any unrelated local work. Never print credentials or tokens.
+
+Commit the completed research deliverables and execution log to `validation/problem-feasibility-review`, then push that branch to origin. Do not push to `main`, create or merge a pull request, or change the repository's default branch. Do not rewrite Git history. Do not force-push. If authentication or branch protection prevents a push, do not try to bypass it; keep the work locally, report the exact error, and clearly state that the deliverables have not reached GitHub.
+
+Before committing, verify with `git diff --check` and `git status --short`. Inspect the staged diff and confirm all changes are confined to `validation/`; unstage or revert any accidental changes outside that path without disturbing pre-existing user changes. Do not commit datasets, credentials, environment files, large binaries, caches, or generated model files.
+
+After pushing, verify the remote branch contains the commit and required files. Include the pushed commit SHA and direct GitHub links for every deliverable in your final response. Keep the final response concise: report the branch, commit SHA, changed file paths, whether the push was verified, key result, blockers, and what needs review. The owner will review the files from GitHub, so do not ask them to paste or upload the same reports.
