@@ -1,0 +1,1566 @@
+{
+  "FCU_FaultFree.csv": {
+    "raw_1min": {
+      "rows": 525600,
+      "load_time_sec": 2.714,
+      "memory_mb": 120.3
+    },
+    "resampled_5min": {
+      "rows": 105120,
+      "resample_time_sec": 0.476,
+      "memory_mb": 27.27,
+      "row_reduction_pct": 80.0,
+      "channel_distributions": {
+        "FCU_CLG_GPM": {
+          "raw": {
+            "mean": 0.12621,
+            "std": 0.34541,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.96,
+            "max": 3.27,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.12621,
+            "std": 0.34525,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.96,
+            "max": 3.27,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CVLV": {
+          "raw": {
+            "mean": 0.04037,
+            "std": 0.08134,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.22,
+            "max": 0.5,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.04037,
+            "std": 0.08128,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.22,
+            "max": 0.5,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DAT": {
+          "raw": {
+            "mean": 62.45397,
+            "std": 8.50732,
+            "p05": 47.07,
+            "p50": 63.12,
+            "p95": 76.63,
+            "max": 115.22,
+            "min": 34.88
+          },
+          "resampled": {
+            "mean": 62.45397,
+            "std": 8.50172,
+            "p05": 47.08,
+            "p50": 63.12,
+            "p95": 76.6281,
+            "max": 90.794,
+            "min": 34.88
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.788,
+          "peak_attenuation_pct": 21.2
+        },
+        "RM_TEMP": {
+          "raw": {
+            "mean": 70.70475,
+            "std": 5.55777,
+            "p05": 59.38,
+            "p50": 71.95,
+            "p95": 79.13,
+            "max": 85.89,
+            "min": 52.61
+          },
+          "resampled": {
+            "mean": 70.70475,
+            "std": 5.55725,
+            "p05": 59.384,
+            "p50": 71.95,
+            "p95": 79.128,
+            "max": 85.888,
+            "min": 52.778
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_SPD": {
+          "raw": {
+            "mean": 3.39604,
+            "std": 4.66057,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 13.08,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 3.39604,
+            "std": 4.63038,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 13.08,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CTRL": {
+          "raw": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "resampled": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DA_CFM": {
+          "raw": {
+            "mean": 138.63705,
+            "std": 190.25005,
+            "p05": -0.03,
+            "p50": 0.02,
+            "p95": 397.95,
+            "max": 534.26,
+            "min": -0.07
+          },
+          "resampled": {
+            "mean": 138.63705,
+            "std": 189.01878,
+            "p05": -0.008,
+            "p50": 0.014,
+            "p95": 397.94,
+            "max": 534.204,
+            "min": -0.028
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9999,
+          "peak_attenuation_pct": 0.01
+        },
+        "FCU_MAT": {
+          "raw": {
+            "mean": 63.10606,
+            "std": 12.0106,
+            "p05": 39.59,
+            "p50": 66.29,
+            "p95": 78.47,
+            "max": 89.83,
+            "min": 23.53
+          },
+          "resampled": {
+            "mean": 63.10606,
+            "std": 11.99034,
+            "p05": 39.6118,
+            "p50": 66.076,
+            "p95": 78.4681,
+            "max": 89.798,
+            "min": 23.596
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9996,
+          "peak_attenuation_pct": 0.04
+        }
+      }
+    },
+    "resampled_15min": {
+      "rows": 35040,
+      "resample_time_sec": 0.461,
+      "memory_mb": 9.09,
+      "row_reduction_pct": 93.33,
+      "channel_distributions": {
+        "FCU_CLG_GPM": {
+          "raw": {
+            "mean": 0.12621,
+            "std": 0.34541,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.96,
+            "max": 3.27,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.12621,
+            "std": 0.34486,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.9547,
+            "max": 3.27,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CVLV": {
+          "raw": {
+            "mean": 0.04037,
+            "std": 0.08134,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.22,
+            "max": 0.5,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.04037,
+            "std": 0.0812,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.21667,
+            "max": 0.5,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DAT": {
+          "raw": {
+            "mean": 62.45397,
+            "std": 8.50732,
+            "p05": 47.07,
+            "p50": 63.12,
+            "p95": 76.63,
+            "max": 115.22,
+            "min": 34.88
+          },
+          "resampled": {
+            "mean": 62.45397,
+            "std": 8.48722,
+            "p05": 47.09237,
+            "p50": 63.116,
+            "p95": 76.62883,
+            "max": 85.86,
+            "min": 34.88133
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.7452,
+          "peak_attenuation_pct": 25.48
+        },
+        "RM_TEMP": {
+          "raw": {
+            "mean": 70.70475,
+            "std": 5.55777,
+            "p05": 59.38,
+            "p50": 71.95,
+            "p95": 79.13,
+            "max": 85.89,
+            "min": 52.61
+          },
+          "resampled": {
+            "mean": 70.70475,
+            "std": 5.55452,
+            "p05": 59.37,
+            "p50": 71.946,
+            "p95": 79.12537,
+            "max": 85.83533,
+            "min": 53.062
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 0.9994,
+          "peak_attenuation_pct": 0.06
+        },
+        "FCU_SPD": {
+          "raw": {
+            "mean": 3.39604,
+            "std": 4.66057,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 13.08,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 3.39604,
+            "std": 4.60558,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 13.08,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CTRL": {
+          "raw": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "resampled": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DA_CFM": {
+          "raw": {
+            "mean": 138.63705,
+            "std": 190.25005,
+            "p05": -0.03,
+            "p50": 0.02,
+            "p95": 397.95,
+            "max": 534.26,
+            "min": -0.07
+          },
+          "resampled": {
+            "mean": 138.63705,
+            "std": 188.00649,
+            "p05": -0.00133,
+            "p50": 0.01067,
+            "p95": 397.93533,
+            "max": 534.19133,
+            "min": -0.01267
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9999,
+          "peak_attenuation_pct": 0.01
+        },
+        "FCU_MAT": {
+          "raw": {
+            "mean": 63.10606,
+            "std": 12.0106,
+            "p05": 39.59,
+            "p50": 66.29,
+            "p95": 78.47,
+            "max": 89.83,
+            "min": 23.53
+          },
+          "resampled": {
+            "mean": 63.10606,
+            "std": 11.96986,
+            "p05": 39.6153,
+            "p50": 65.89433,
+            "p95": 78.46167,
+            "max": 89.71467,
+            "min": 23.70867
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 0.9987,
+          "peak_attenuation_pct": 0.13
+        }
+      }
+    }
+  },
+  "FCU_VLVLeak_Cooling_20.csv": {
+    "raw_1min": {
+      "rows": 525600,
+      "load_time_sec": 2.982,
+      "memory_mb": 120.3
+    },
+    "resampled_5min": {
+      "rows": 105120,
+      "resample_time_sec": 0.481,
+      "memory_mb": 27.27,
+      "row_reduction_pct": 80.0,
+      "channel_distributions": {
+        "FCU_CLG_GPM": {
+          "raw": {
+            "mean": 1.15117,
+            "std": 0.09025,
+            "p05": 1.14,
+            "p50": 1.14,
+            "p95": 1.14,
+            "max": 3.19,
+            "min": 1.14
+          },
+          "resampled": {
+            "mean": 1.15117,
+            "std": 0.09022,
+            "p05": 1.14,
+            "p50": 1.14,
+            "p95": 1.14,
+            "max": 3.19,
+            "min": 1.14
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CVLV": {
+          "raw": {
+            "mean": 0.00839,
+            "std": 0.04769,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.49,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.00839,
+            "std": 0.04766,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.49,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DAT": {
+          "raw": {
+            "mean": 55.44198,
+            "std": 8.52037,
+            "p05": 45.0,
+            "p50": 55.27,
+            "p95": 69.76,
+            "max": 118.94,
+            "min": 45.0
+          },
+          "resampled": {
+            "mean": 55.44198,
+            "std": 8.49898,
+            "p05": 45.0,
+            "p50": 55.254,
+            "p95": 69.78,
+            "max": 115.456,
+            "min": 45.0
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 0.9707,
+          "peak_attenuation_pct": 2.93
+        },
+        "RM_TEMP": {
+          "raw": {
+            "mean": 69.65809,
+            "std": 5.81655,
+            "p05": 58.48,
+            "p50": 70.34,
+            "p95": 78.94,
+            "max": 85.74,
+            "min": 50.95
+          },
+          "resampled": {
+            "mean": 69.65809,
+            "std": 5.81387,
+            "p05": 58.4839,
+            "p50": 70.346,
+            "p95": 78.9361,
+            "max": 85.722,
+            "min": 50.98
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 0.9998,
+          "peak_attenuation_pct": 0.02
+        },
+        "FCU_SPD": {
+          "raw": {
+            "mean": 3.09603,
+            "std": 4.61225,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 18.08,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 3.09603,
+            "std": 4.35046,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 18.08,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CTRL": {
+          "raw": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "resampled": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DA_CFM": {
+          "raw": {
+            "mean": 126.40603,
+            "std": 188.30177,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 397.93,
+            "max": 738.6,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 126.40603,
+            "std": 177.63043,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 397.93,
+            "max": 738.6,
+            "min": 0.0
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_MAT": {
+          "raw": {
+            "mean": 62.59261,
+            "std": 11.8188,
+            "p05": 39.8,
+            "p50": 64.78,
+            "p95": 78.38,
+            "max": 89.9,
+            "min": 23.44
+          },
+          "resampled": {
+            "mean": 62.59261,
+            "std": 11.80149,
+            "p05": 39.85,
+            "p50": 64.794,
+            "p95": 78.36,
+            "max": 89.88,
+            "min": 23.5
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9998,
+          "peak_attenuation_pct": 0.02
+        }
+      }
+    },
+    "resampled_15min": {
+      "rows": 35040,
+      "resample_time_sec": 0.441,
+      "memory_mb": 9.09,
+      "row_reduction_pct": 93.33,
+      "channel_distributions": {
+        "FCU_CLG_GPM": {
+          "raw": {
+            "mean": 1.15117,
+            "std": 0.09025,
+            "p05": 1.14,
+            "p50": 1.14,
+            "p95": 1.14,
+            "max": 3.19,
+            "min": 1.14
+          },
+          "resampled": {
+            "mean": 1.15117,
+            "std": 0.09006,
+            "p05": 1.14,
+            "p50": 1.14,
+            "p95": 1.14,
+            "max": 3.18867,
+            "min": 1.14
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9996,
+          "peak_attenuation_pct": 0.04
+        },
+        "FCU_CVLV": {
+          "raw": {
+            "mean": 0.00839,
+            "std": 0.04769,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.49,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.00839,
+            "std": 0.04761,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.49,
+            "min": 0.0
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DAT": {
+          "raw": {
+            "mean": 55.44198,
+            "std": 8.52037,
+            "p05": 45.0,
+            "p50": 55.27,
+            "p95": 69.76,
+            "max": 118.94,
+            "min": 45.0
+          },
+          "resampled": {
+            "mean": 55.44198,
+            "std": 8.46758,
+            "p05": 45.0,
+            "p50": 55.27233,
+            "p95": 69.75947,
+            "max": 94.48667,
+            "min": 45.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.7944,
+          "peak_attenuation_pct": 20.56
+        },
+        "RM_TEMP": {
+          "raw": {
+            "mean": 69.65809,
+            "std": 5.81655,
+            "p05": 58.48,
+            "p50": 70.34,
+            "p95": 78.94,
+            "max": 85.74,
+            "min": 50.95
+          },
+          "resampled": {
+            "mean": 69.65809,
+            "std": 5.81051,
+            "p05": 58.47527,
+            "p50": 70.338,
+            "p95": 78.9328,
+            "max": 85.68333,
+            "min": 51.33533
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 0.9993,
+          "peak_attenuation_pct": 0.07
+        },
+        "FCU_SPD": {
+          "raw": {
+            "mean": 3.09603,
+            "std": 4.61225,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 18.08,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 3.09603,
+            "std": 4.33322,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 18.08,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CTRL": {
+          "raw": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "resampled": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DA_CFM": {
+          "raw": {
+            "mean": 126.40603,
+            "std": 188.30177,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 397.93,
+            "max": 738.6,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 126.40603,
+            "std": 176.92808,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 397.93,
+            "max": 738.6,
+            "min": 0.0
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_MAT": {
+          "raw": {
+            "mean": 62.59261,
+            "std": 11.8188,
+            "p05": 39.8,
+            "p50": 64.78,
+            "p95": 78.38,
+            "max": 89.9,
+            "min": 23.44
+          },
+          "resampled": {
+            "mean": 62.59261,
+            "std": 11.79783,
+            "p05": 39.8683,
+            "p50": 64.794,
+            "p95": 78.36103,
+            "max": 89.83667,
+            "min": 23.61267
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9993,
+          "peak_attenuation_pct": 0.07
+        }
+      }
+    }
+  },
+  "FCU_Fouling_Cooling_Airside_Minor.csv": {
+    "raw_1min": {
+      "rows": 525600,
+      "load_time_sec": 2.514,
+      "memory_mb": 120.3
+    },
+    "resampled_5min": {
+      "rows": 105120,
+      "resample_time_sec": 0.458,
+      "memory_mb": 27.27,
+      "row_reduction_pct": 80.0,
+      "channel_distributions": {
+        "FCU_CLG_GPM": {
+          "raw": {
+            "mean": 0.12829,
+            "std": 0.34946,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.98,
+            "max": 3.3,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.12829,
+            "std": 0.3493,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.976,
+            "max": 3.3,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CVLV": {
+          "raw": {
+            "mean": 0.04106,
+            "std": 0.08191,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.22,
+            "max": 0.5,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.04106,
+            "std": 0.08185,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.22,
+            "max": 0.5,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DAT": {
+          "raw": {
+            "mean": 62.35482,
+            "std": 8.5303,
+            "p05": 47.09,
+            "p50": 62.93,
+            "p95": 76.66,
+            "max": 113.0,
+            "min": 34.86
+          },
+          "resampled": {
+            "mean": 62.35482,
+            "std": 8.5249,
+            "p05": 47.0979,
+            "p50": 62.936,
+            "p95": 76.66,
+            "max": 90.19,
+            "min": 34.86
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 0.7981,
+          "peak_attenuation_pct": 20.19
+        },
+        "RM_TEMP": {
+          "raw": {
+            "mean": 70.73394,
+            "std": 5.54107,
+            "p05": 59.43,
+            "p50": 71.95,
+            "p95": 79.13,
+            "max": 85.9,
+            "min": 52.64
+          },
+          "resampled": {
+            "mean": 70.73394,
+            "std": 5.54056,
+            "p05": 59.4379,
+            "p50": 71.95,
+            "p95": 79.1261,
+            "max": 85.89,
+            "min": 52.806
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9999,
+          "peak_attenuation_pct": 0.01
+        },
+        "FCU_SPD": {
+          "raw": {
+            "mean": 3.38171,
+            "std": 4.65505,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 13.08,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 3.38171,
+            "std": 4.62687,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 13.08,
+            "min": 0.0
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CTRL": {
+          "raw": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "resampled": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DA_CFM": {
+          "raw": {
+            "mean": 133.19362,
+            "std": 183.34524,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 383.94,
+            "max": 515.38,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 133.19362,
+            "std": 182.23618,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 383.94,
+            "max": 515.38,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_MAT": {
+          "raw": {
+            "mean": 63.11791,
+            "std": 12.02013,
+            "p05": 39.57,
+            "p50": 66.4,
+            "p95": 78.47,
+            "max": 89.83,
+            "min": 23.54
+          },
+          "resampled": {
+            "mean": 63.11791,
+            "std": 11.99968,
+            "p05": 39.5959,
+            "p50": 66.257,
+            "p95": 78.4681,
+            "max": 89.798,
+            "min": 23.604
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9996,
+          "peak_attenuation_pct": 0.04
+        }
+      }
+    },
+    "resampled_15min": {
+      "rows": 35040,
+      "resample_time_sec": 0.449,
+      "memory_mb": 9.09,
+      "row_reduction_pct": 93.33,
+      "channel_distributions": {
+        "FCU_CLG_GPM": {
+          "raw": {
+            "mean": 0.12829,
+            "std": 0.34946,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.98,
+            "max": 3.3,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.12829,
+            "std": 0.34891,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.97467,
+            "max": 3.296,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9988,
+          "peak_attenuation_pct": 0.12
+        },
+        "FCU_CVLV": {
+          "raw": {
+            "mean": 0.04106,
+            "std": 0.08191,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.22,
+            "max": 0.5,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.04106,
+            "std": 0.08177,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.21933,
+            "max": 0.5,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DAT": {
+          "raw": {
+            "mean": 62.35482,
+            "std": 8.5303,
+            "p05": 47.09,
+            "p50": 62.93,
+            "p95": 76.66,
+            "max": 113.0,
+            "min": 34.86
+          },
+          "resampled": {
+            "mean": 62.35482,
+            "std": 8.50996,
+            "p05": 47.10687,
+            "p50": 62.93767,
+            "p95": 76.64607,
+            "max": 85.86267,
+            "min": 34.86
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.7598,
+          "peak_attenuation_pct": 24.02
+        },
+        "RM_TEMP": {
+          "raw": {
+            "mean": 70.73394,
+            "std": 5.54107,
+            "p05": 59.43,
+            "p50": 71.95,
+            "p95": 79.13,
+            "max": 85.9,
+            "min": 52.64
+          },
+          "resampled": {
+            "mean": 70.73394,
+            "std": 5.53785,
+            "p05": 59.43053,
+            "p50": 71.94933,
+            "p95": 79.12533,
+            "max": 85.836,
+            "min": 53.066
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9993,
+          "peak_attenuation_pct": 0.07
+        },
+        "FCU_SPD": {
+          "raw": {
+            "mean": 3.38171,
+            "std": 4.65505,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 13.08,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 3.38171,
+            "std": 4.60012,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 13.08,
+            "min": 0.0
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CTRL": {
+          "raw": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "resampled": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DA_CFM": {
+          "raw": {
+            "mean": 133.19362,
+            "std": 183.34524,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 383.94,
+            "max": 515.38,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 133.19362,
+            "std": 181.18325,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 383.94,
+            "max": 515.38,
+            "min": 0.0
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_MAT": {
+          "raw": {
+            "mean": 63.11791,
+            "std": 12.02013,
+            "p05": 39.57,
+            "p50": 66.4,
+            "p95": 78.47,
+            "max": 89.83,
+            "min": 23.54
+          },
+          "resampled": {
+            "mean": 63.11791,
+            "std": 11.97668,
+            "p05": 39.60723,
+            "p50": 66.008,
+            "p95": 78.46673,
+            "max": 89.71467,
+            "min": 23.71667
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9987,
+          "peak_attenuation_pct": 0.13
+        }
+      }
+    }
+  },
+  "FCU_FilterRestriction_10%.csv": {
+    "raw_1min": {
+      "rows": 525600,
+      "load_time_sec": 2.545,
+      "memory_mb": 120.3
+    },
+    "resampled_5min": {
+      "rows": 105120,
+      "resample_time_sec": 0.498,
+      "memory_mb": 27.27,
+      "row_reduction_pct": 80.0,
+      "channel_distributions": {
+        "FCU_CLG_GPM": {
+          "raw": {
+            "mean": 0.13099,
+            "std": 0.35561,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 1.0,
+            "max": 3.34,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.13099,
+            "std": 0.35545,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.996,
+            "max": 3.34,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CVLV": {
+          "raw": {
+            "mean": 0.04175,
+            "std": 0.08269,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.22,
+            "max": 0.51,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.04175,
+            "std": 0.08263,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.22,
+            "max": 0.51,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DAT": {
+          "raw": {
+            "mean": 62.26496,
+            "std": 8.54961,
+            "p05": 47.1,
+            "p50": 62.76,
+            "p95": 76.71,
+            "max": 113.39,
+            "min": 35.69
+          },
+          "resampled": {
+            "mean": 62.26496,
+            "std": 8.54449,
+            "p05": 47.106,
+            "p50": 62.76,
+            "p95": 76.6942,
+            "max": 91.026,
+            "min": 35.728
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.8028,
+          "peak_attenuation_pct": 19.72
+        },
+        "RM_TEMP": {
+          "raw": {
+            "mean": 70.77068,
+            "std": 5.51686,
+            "p05": 59.51,
+            "p50": 71.95,
+            "p95": 79.13,
+            "max": 85.9,
+            "min": 52.66
+          },
+          "resampled": {
+            "mean": 70.77068,
+            "std": 5.51636,
+            "p05": 59.514,
+            "p50": 71.95,
+            "p95": 79.128,
+            "max": 85.89,
+            "min": 52.856
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9999,
+          "peak_attenuation_pct": 0.01
+        },
+        "FCU_SPD": {
+          "raw": {
+            "mean": 3.36666,
+            "std": 4.65008,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 13.08,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 3.36666,
+            "std": 4.62183,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 13.08,
+            "min": 0.0
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CTRL": {
+          "raw": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "resampled": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DA_CFM": {
+          "raw": {
+            "mean": 126.88601,
+            "std": 175.25611,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 367.4,
+            "max": 493.17,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 126.88601,
+            "std": 174.19229,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 367.4,
+            "max": 493.17,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_MAT": {
+          "raw": {
+            "mean": 63.13311,
+            "std": 12.03301,
+            "p05": 39.59,
+            "p50": 66.55,
+            "p95": 78.47,
+            "max": 89.83,
+            "min": 23.57
+          },
+          "resampled": {
+            "mean": 63.13311,
+            "std": 12.0115,
+            "p05": 39.606,
+            "p50": 66.404,
+            "p95": 78.47,
+            "max": 89.798,
+            "min": 23.632
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9996,
+          "peak_attenuation_pct": 0.04
+        }
+      }
+    },
+    "resampled_15min": {
+      "rows": 35040,
+      "resample_time_sec": 0.411,
+      "memory_mb": 9.09,
+      "row_reduction_pct": 93.33,
+      "channel_distributions": {
+        "FCU_CLG_GPM": {
+          "raw": {
+            "mean": 0.13099,
+            "std": 0.35561,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 1.0,
+            "max": 3.34,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.13099,
+            "std": 0.35505,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.9954,
+            "max": 3.34,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CVLV": {
+          "raw": {
+            "mean": 0.04175,
+            "std": 0.08269,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.22,
+            "max": 0.51,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 0.04175,
+            "std": 0.08255,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.22,
+            "max": 0.51,
+            "min": 0.0
+          },
+          "delta_mean": -0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DAT": {
+          "raw": {
+            "mean": 62.26496,
+            "std": 8.54961,
+            "p05": 47.1,
+            "p50": 62.76,
+            "p95": 76.71,
+            "max": 113.39,
+            "min": 35.69
+          },
+          "resampled": {
+            "mean": 62.26496,
+            "std": 8.52885,
+            "p05": 47.0979,
+            "p50": 62.76567,
+            "p95": 76.674,
+            "max": 85.86333,
+            "min": 35.76467
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.7572,
+          "peak_attenuation_pct": 24.28
+        },
+        "RM_TEMP": {
+          "raw": {
+            "mean": 70.77068,
+            "std": 5.51686,
+            "p05": 59.51,
+            "p50": 71.95,
+            "p95": 79.13,
+            "max": 85.9,
+            "min": 52.66
+          },
+          "resampled": {
+            "mean": 70.77068,
+            "std": 5.51364,
+            "p05": 59.49997,
+            "p50": 71.95,
+            "p95": 79.12547,
+            "max": 85.836,
+            "min": 53.07467
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9993,
+          "peak_attenuation_pct": 0.07
+        },
+        "FCU_SPD": {
+          "raw": {
+            "mean": 3.36666,
+            "std": 4.65008,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 13.08,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 3.36666,
+            "std": 4.59442,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 9.75,
+            "max": 13.08,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_CTRL": {
+          "raw": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "resampled": {
+            "mean": 1.64247,
+            "std": 0.47927,
+            "p05": 1.0,
+            "p50": 2.0,
+            "p95": 2.0,
+            "max": 2.0,
+            "min": 1.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_DA_CFM": {
+          "raw": {
+            "mean": 126.88601,
+            "std": 175.25611,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 367.4,
+            "max": 493.17,
+            "min": 0.0
+          },
+          "resampled": {
+            "mean": 126.88601,
+            "std": 173.15961,
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 367.4,
+            "max": 493.17,
+            "min": 0.0
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 1.0,
+          "peak_attenuation_pct": 0.0
+        },
+        "FCU_MAT": {
+          "raw": {
+            "mean": 63.13311,
+            "std": 12.03301,
+            "p05": 39.59,
+            "p50": 66.55,
+            "p95": 78.47,
+            "max": 89.83,
+            "min": 23.57
+          },
+          "resampled": {
+            "mean": 63.13311,
+            "std": 11.98592,
+            "p05": 39.61813,
+            "p50": 66.22633,
+            "p95": 78.46673,
+            "max": 89.71467,
+            "min": 23.744
+          },
+          "delta_mean": 0.0,
+          "peak_retention_ratio": 0.9987,
+          "peak_attenuation_pct": 0.13
+        }
+      }
+    }
+  }
+}

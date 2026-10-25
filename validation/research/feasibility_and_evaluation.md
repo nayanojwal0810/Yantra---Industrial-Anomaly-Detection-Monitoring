@@ -55,32 +55,36 @@ In industrial time-series, **rows are not independent samples**. Randomly splitt
   3. **Distinct Scenario Files:** 49 separate annual simulation runs.
 
 ---
-
 ### 2.2 Leakage-Safe Evaluation Split Strategy
 
-#### Recommended Protocol: Semi-Supervised Normal-Baseline Anomaly Scoring (Problem Definition 1)
+#### Corrected Protocol: Contiguous Split with Window Embargo
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│ Training Split: 100% Normal Operation Baseline                        │
-│ Source: FCU_FaultFree.csv (1 full calendar year, 35,040 rows at 15m)   │
-│ Zero fault data exposed during training or threshold selection         │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │
-               Evaluated on 48 Unseen Fault Scenarios
-                                    ▼
+│ Full Fault-Free Normal Baseline (FCU_FaultFree.csv, 1 Year)            │
+├─────────────────────────┬──────────────────────┬───────────────────────┤
+│ Normal Training Block   │ Normal Calibration   │ Untouched Normal Test │
+│ First 60% of Year       │ Next 15% of Year     │ Remaining 25% of Year │
+│ (5,256 1-Hour Windows)  │ (1,314 1-Hour Windows│ (2,190 1-Hour Windows)│
+│ Jan 1 to Aug 7          │ Aug 8 to Oct 1       │ Oct 2 to Dec 31       │
+│ Model parameter fitting │ Threshold derivation │ False Alarm Rate (FAR)│
+│ strictly normal only    │ (99.5th percentile)  │ strictly untouched    │
+└─────────────────────────┴──────────────────────┴───────────────────────┘
+  [Embargo: 60-min buffer between splits to prevent window overlap leakage]
+
+                                     │
+          Evaluated Across Matching Counterfactual Test Period (Oct 2 to Dec 31)
+                                     ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│ Evaluation Split 1: Seasonal Stress Regimes                            │
-│ - Winter (Heating-dominated, cooling valve commanded shut >96% hours)  │
-│ - Summer (Cooling-dominated, mechanical chiller active)                │
-│ - Shoulder Seasons (Spring / Fall transitional weather)                │
-├────────────────────────────────────────────────────────────────────────┤
-│ Evaluation Split 2: Severity Discrimination                            │
-│ - Minor Nascent Faults (20% cooling valve leak, minor coil fouling)   │
-│ - Moderate / Severe Faults (50% and 80% valve leaks, severe fouling)   │
+│ Scenario Test Evaluation (2,190 Windows per Fault Scenario):           │
+│ - FCU_VLVLeak_Cooling_20.csv (20% Cooling Valve Leakage)               │
+│ - FCU_Fouling_Cooling_Airside_Minor.csv (Minor Airside Coil Fouling)   │
+│ - FCU_FilterRestriction_10%.csv (10% Airflow / Filter Restriction)     │
+│ - FCU_SensorBias_RMTemp_+2C.csv (Room Temperature Sensor Bias +2°C)    │
+│ - FCU_OADMPRLeak_20.csv (Outdoor Air Damper Leakage 20%)               │
 └────────────────────────────────────────────────────────────────────────┘
 ```
-- **Validation Objective:** Demonstrates whether a model trained strictly on normal operation can flag incipient mechanical degradation across varying weather regimes without excessive false alarms during normal seasonal transitions.
-- **Calibrated Real-World Boundary:** Demonstrates robustness against seasonal shifts *within this simulated FCU system and Des Moines weather year*. It does **not** prove generalizability to unmodeled field buildings, other climate zones, or multi-year physical sensor drift.
+- **Validation Objective:** Tests whether a model fitted strictly on normal training data and calibrated on held-out normal calibration data can flag distinct mechanical degradations while controlling false alarms on untouched normal test data.
+- **Calibrated Real-World Boundary:** Evaluated as a controlled paired-simulation test under identical Des Moines, IA TMY3 weather and timestamps. It does **not** prove generalizability to unmodeled field buildings, other climate zones, or multi-year physical sensor drift.
 
 ---
 
@@ -98,19 +102,26 @@ In industrial time-series, **rows are not independent samples**. Randomly splitt
 ---
 
 ### 2.4 Metrics Aligned with Industrial Decision-Making
-Accuracy is misleading on continuous time-series data. The evaluation protocol reports:
+The evaluation protocol reports:
 
-1. **False Alarm Rate (FAR) per 1,000 Normal Operating Hours:**
-   $$\text{FAR} = \frac{\text{False Positives}}{\text{Total Normal Operating Hours}} \times 1,000$$
-   *Operational constraint:* Facility operators ignore systems with $>5$ false alarms per week (~0.03 FAR).
-2. **Time-to-Detect (TTD):**
-   - The elapsed operating time (in minutes or hours) from fault inception to the first sustained alarm (defined as $>3$ consecutive 15-minute alarm windows).
-3. **Area Under the Precision-Recall Curve (AUPRC):**
-   - Evaluates performance across decision thresholds under severe imbalance.
-4. **Diagnostic Residual Attribution Accuracy:**
-   - Percentage of detected fault windows where the top-contributing residual channel corresponds to the true physical fault location (e.g. chilled water flow for cooling valve leaks).
+1. **False Alarm Rate (FAR) on Untouched Normal Test Windows:**
+   $$\text{FAR} = \frac{\text{False Positive Windows}}{\text{Total Untouched Normal Test Windows}} \times 100\%$$
+   Also expressed as alarms per 1,000 operational hours ($\text{FAR} \times 10$).
+   - Measured FAR in Gate 02 Pilot:
+     - Physical Rules: 1.05%–1.37% (10.5–13.7 alarms / 1,000h)
+     - Classical ML (Isolation Forest): 3.06%–3.20% (30.6–32.0 alarms / 1,000h)
+     - Temporal DL Probe (1D-CNN AE): 0.09%–0.55% (0.9–5.5 alarms / 1,000h)
+2. **Scenario Detection Rate (%):**
+   - Percentage of 1-hour test windows flagged as anomalous during the active fault regime.
+3. **Macro-Average Detection Rate (%):**
+   - Unweighted average detection rate across all evaluated fault scenario mechanisms.
+4. **Sensor-Level Anomaly Attribution:**
+   - Channel-wise reconstruction error ranking or rule trigger mapping identifying which sensor channel or physical relationship deviates most strongly from baseline expectation.
+
+*(Note: Time-to-Detect has been removed because the simulated scenario files represent full-year continuous faults without verified physical onset timestamps).*
 
 ---
+
 
 ## 3. Product and System Engineering Feasibility
 

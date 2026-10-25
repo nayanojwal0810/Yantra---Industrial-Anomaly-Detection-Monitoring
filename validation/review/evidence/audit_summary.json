@@ -1,0 +1,454 @@
+{
+  "FCU_FaultFree.csv": {
+    "filename": "FCU_FaultFree.csv",
+    "rows": 525600,
+    "columns": 30,
+    "column_names": [
+      "Datetime",
+      "FCU_CTRL",
+      "FAN_CTRL",
+      "RM_TEMP",
+      "RMCLGSPT",
+      "RMHTGSPT",
+      "FCU_MAT",
+      "FCU_DAT",
+      "FCU_RAT",
+      "FCU_CVLV",
+      "FCU_CVLV_DM",
+      "FCU_CLG_GPM",
+      "FCU_CLG_EWT",
+      "FCU_CLG_RWT",
+      "FCU_HVLV",
+      "FCU_HVLV_DM",
+      "FCU_HTG_GPM",
+      "FCU_HTG_EWT",
+      "FCU_HTG_RWT",
+      "FCU_DA_CFM",
+      "FCU_OA_CFM",
+      "FCU_DMPR",
+      "FCU_DMPR_DM",
+      "FCU_SPD",
+      "FCU_OAT",
+      "FCU_WAT",
+      "FCU_MA_HUMD",
+      "FCU_OA_HUMD",
+      "FCU_DA_HUMD",
+      "FCU_RA_HUMD"
+    ],
+    "time_range": {
+      "start": "2018-01-01T00:00:00",
+      "end": "2018-12-31T23:59:00"
+    },
+    "sampling_intervals_sec": [
+      60.0
+    ],
+    "null_count": 0,
+    "inf_count": 0,
+    "constant_columns": {
+      "FAN_CTRL": 1.0,
+      "FCU_CLG_EWT": 45.0,
+      "FCU_HTG_EWT": 120.0
+    },
+    "synchronization_with_baseline": {},
+    "channel_stats": {
+      "FCU_DAT": {
+        "mean": 62.45397,
+        "std": 8.50733,
+        "min": 34.88,
+        "max": 115.22
+      },
+      "FCU_RAT": {
+        "mean": 70.70475,
+        "std": 5.55778,
+        "min": 52.61,
+        "max": 85.89
+      },
+      "FCU_CTRL": {
+        "mean": 1.64247,
+        "std": 0.47927,
+        "min": 1.0,
+        "max": 2.0
+      }
+    }
+  },
+  "FCU_FilterRestriction_10%.csv": {
+    "filename": "FCU_FilterRestriction_10%.csv",
+    "rows": 525600,
+    "columns": 30,
+    "column_names": [
+      "Datetime",
+      "FCU_CTRL",
+      "FAN_CTRL",
+      "RM_TEMP",
+      "RMCLGSPT",
+      "RMHTGSPT",
+      "FCU_MAT",
+      "FCU_DAT",
+      "FCU_RAT",
+      "FCU_CVLV",
+      "FCU_CVLV_DM",
+      "FCU_CLG_GPM",
+      "FCU_CLG_EWT",
+      "FCU_CLG_RWT",
+      "FCU_HVLV",
+      "FCU_HVLV_DM",
+      "FCU_HTG_GPM",
+      "FCU_HTG_EWT",
+      "FCU_HTG_RWT",
+      "FCU_DA_CFM",
+      "FCU_OA_CFM",
+      "FCU_DMPR",
+      "FCU_DMPR_DM",
+      "FCU_SPD",
+      "FCU_OAT",
+      "FCU_WAT",
+      "FCU_MA_HUMD",
+      "FCU_OA_HUMD",
+      "FCU_DA_HUMD",
+      "FCU_RA_HUMD"
+    ],
+    "time_range": {
+      "start": "2018-01-01T00:00:00",
+      "end": "2018-12-31T23:59:00"
+    },
+    "sampling_intervals_sec": [
+      60.0
+    ],
+    "null_count": 0,
+    "inf_count": 0,
+    "constant_columns": {
+      "FAN_CTRL": 1.0,
+      "FCU_CLG_EWT": 45.0,
+      "FCU_HTG_EWT": 120.0
+    },
+    "synchronization_with_baseline": {
+      "timestamps_identical": true,
+      "FCU_OAT_max_delta": 0.0,
+      "FCU_OA_HUMD_max_delta": 0.0
+    },
+    "channel_stats": {
+      "FCU_DAT": {
+        "mean": 62.26496,
+        "std": 8.54962,
+        "min": 35.69,
+        "max": 113.39
+      },
+      "FCU_RAT": {
+        "mean": 70.77068,
+        "std": 5.51686,
+        "min": 52.66,
+        "max": 85.9
+      },
+      "FCU_CTRL": {
+        "mean": 1.64247,
+        "std": 0.47927,
+        "min": 1.0,
+        "max": 2.0
+      }
+    }
+  },
+  "FCU_Fouling_Cooling_Airside_Minor.csv": {
+    "filename": "FCU_Fouling_Cooling_Airside_Minor.csv",
+    "rows": 525600,
+    "columns": 30,
+    "column_names": [
+      "Datetime",
+      "FCU_CTRL",
+      "FAN_CTRL",
+      "RM_TEMP",
+      "RMCLGSPT",
+      "RMHTGSPT",
+      "FCU_MAT",
+      "FCU_DAT",
+      "FCU_RAT",
+      "FCU_CVLV",
+      "FCU_CVLV_DM",
+      "FCU_CLG_GPM",
+      "FCU_CLG_EWT",
+      "FCU_CLG_RWT",
+      "FCU_HVLV",
+      "FCU_HVLV_DM",
+      "FCU_HTG_GPM",
+      "FCU_HTG_EWT",
+      "FCU_HTG_RWT",
+      "FCU_DA_CFM",
+      "FCU_OA_CFM",
+      "FCU_DMPR",
+      "FCU_DMPR_DM",
+      "FCU_SPD",
+      "FCU_OAT",
+      "FCU_WAT",
+      "FCU_MA_HUMD",
+      "FCU_OA_HUMD",
+      "FCU_DA_HUMD",
+      "FCU_RA_HUMD"
+    ],
+    "time_range": {
+      "start": "2018-01-01T00:00:00",
+      "end": "2018-12-31T23:59:00"
+    },
+    "sampling_intervals_sec": [
+      60.0
+    ],
+    "null_count": 0,
+    "inf_count": 0,
+    "constant_columns": {
+      "FAN_CTRL": 1.0,
+      "FCU_CLG_EWT": 45.0,
+      "FCU_HTG_EWT": 120.0
+    },
+    "synchronization_with_baseline": {
+      "timestamps_identical": true,
+      "FCU_OAT_max_delta": 0.0,
+      "FCU_OA_HUMD_max_delta": 0.0
+    },
+    "channel_stats": {
+      "FCU_DAT": {
+        "mean": 62.35482,
+        "std": 8.53031,
+        "min": 34.86,
+        "max": 113.0
+      },
+      "FCU_RAT": {
+        "mean": 70.73394,
+        "std": 5.54108,
+        "min": 52.64,
+        "max": 85.9
+      },
+      "FCU_CTRL": {
+        "mean": 1.64247,
+        "std": 0.47927,
+        "min": 1.0,
+        "max": 2.0
+      }
+    }
+  },
+  "FCU_OADMPRLeak_20.csv": {
+    "filename": "FCU_OADMPRLeak_20.csv",
+    "rows": 525600,
+    "columns": 30,
+    "column_names": [
+      "Datetime",
+      "FCU_CTRL",
+      "FAN_CTRL",
+      "RM_TEMP",
+      "RMCLGSPT",
+      "RMHTGSPT",
+      "FCU_MAT",
+      "FCU_DAT",
+      "FCU_RAT",
+      "FCU_CVLV",
+      "FCU_CVLV_DM",
+      "FCU_CLG_GPM",
+      "FCU_CLG_EWT",
+      "FCU_CLG_RWT",
+      "FCU_HVLV",
+      "FCU_HVLV_DM",
+      "FCU_HTG_GPM",
+      "FCU_HTG_EWT",
+      "FCU_HTG_RWT",
+      "FCU_DA_CFM",
+      "FCU_OA_CFM",
+      "FCU_DMPR",
+      "FCU_DMPR_DM",
+      "FCU_SPD",
+      "FCU_OAT",
+      "FCU_WAT",
+      "FCU_MA_HUMD",
+      "FCU_OA_HUMD",
+      "FCU_DA_HUMD",
+      "FCU_RA_HUMD"
+    ],
+    "time_range": {
+      "start": "2018-01-01T00:00:00",
+      "end": "2018-12-31T23:59:00"
+    },
+    "sampling_intervals_sec": [
+      60.0
+    ],
+    "null_count": 0,
+    "inf_count": 0,
+    "constant_columns": {
+      "FAN_CTRL": 1.0,
+      "FCU_CLG_EWT": 45.0,
+      "FCU_HTG_EWT": 120.0
+    },
+    "synchronization_with_baseline": {
+      "timestamps_identical": true,
+      "FCU_OAT_max_delta": 0.0,
+      "FCU_OA_HUMD_max_delta": 0.0
+    },
+    "channel_stats": {
+      "FCU_DAT": {
+        "mean": 62.42385,
+        "std": 8.49023,
+        "min": 34.7,
+        "max": 116.32
+      },
+      "FCU_RAT": {
+        "mean": 70.60671,
+        "std": 5.62854,
+        "min": 52.59,
+        "max": 85.89
+      },
+      "FCU_CTRL": {
+        "mean": 1.64247,
+        "std": 0.47927,
+        "min": 1.0,
+        "max": 2.0
+      }
+    }
+  },
+  "FCU_SensorBias_RMTemp_+2C.csv": {
+    "filename": "FCU_SensorBias_RMTemp_+2C.csv",
+    "rows": 525600,
+    "columns": 30,
+    "column_names": [
+      "Datetime",
+      "FCU_CTRL",
+      "FAN_CTRL",
+      "RM_TEMP",
+      "RMCLGSPT",
+      "RMHTGSPT",
+      "FCU_MAT",
+      "FCU_DAT",
+      "FCU_RAT",
+      "FCU_CVLV",
+      "FCU_CVLV_DM",
+      "FCU_CLG_GPM",
+      "FCU_CLG_EWT",
+      "FCU_CLG_RWT",
+      "FCU_HVLV",
+      "FCU_HVLV_DM",
+      "FCU_HTG_GPM",
+      "FCU_HTG_EWT",
+      "FCU_HTG_RWT",
+      "FCU_DA_CFM",
+      "FCU_OA_CFM",
+      "FCU_DMPR",
+      "FCU_DMPR_DM",
+      "FCU_SPD",
+      "FCU_OAT",
+      "FCU_WAT",
+      "FCU_MA_HUMD",
+      "FCU_OA_HUMD",
+      "FCU_DA_HUMD",
+      "FCU_RA_HUMD"
+    ],
+    "time_range": {
+      "start": "2018-01-01T00:00:00",
+      "end": "2018-12-31T23:59:00"
+    },
+    "sampling_intervals_sec": [
+      60.0
+    ],
+    "null_count": 0,
+    "inf_count": 0,
+    "constant_columns": {
+      "FAN_CTRL": 1.0,
+      "FCU_CLG_EWT": 45.0,
+      "FCU_HTG_EWT": 120.0
+    },
+    "synchronization_with_baseline": {
+      "timestamps_identical": true,
+      "FCU_OAT_max_delta": 0.0,
+      "FCU_OA_HUMD_max_delta": 0.0
+    },
+    "channel_stats": {
+      "FCU_DAT": {
+        "mean": 59.70594,
+        "std": 8.56394,
+        "min": 32.65,
+        "max": 111.57
+      },
+      "FCU_RAT": {
+        "mean": 67.98514,
+        "std": 5.52103,
+        "min": 48.55,
+        "max": 82.83
+      },
+      "FCU_CTRL": {
+        "mean": 1.64247,
+        "std": 0.47927,
+        "min": 1.0,
+        "max": 2.0
+      }
+    }
+  },
+  "FCU_VLVLeak_Cooling_20.csv": {
+    "filename": "FCU_VLVLeak_Cooling_20.csv",
+    "rows": 525600,
+    "columns": 30,
+    "column_names": [
+      "Datetime",
+      "FCU_CTRL",
+      "FAN_CTRL",
+      "RM_TEMP",
+      "RMCLGSPT",
+      "RMHTGSPT",
+      "FCU_MAT",
+      "FCU_DAT",
+      "FCU_RAT",
+      "FCU_CVLV",
+      "FCU_CVLV_DM",
+      "FCU_CLG_GPM",
+      "FCU_CLG_EWT",
+      "FCU_CLG_RWT",
+      "FCU_HVLV",
+      "FCU_HVLV_DM",
+      "FCU_HTG_GPM",
+      "FCU_HTG_EWT",
+      "FCU_HTG_RWT",
+      "FCU_DA_CFM",
+      "FCU_OA_CFM",
+      "FCU_DMPR",
+      "FCU_DMPR_DM",
+      "FCU_SPD",
+      "FCU_OAT",
+      "FCU_WAT",
+      "FCU_MA_HUMD",
+      "FCU_OA_HUMD",
+      "FCU_DA_HUMD",
+      "FCU_RA_HUMD"
+    ],
+    "time_range": {
+      "start": "2018-01-01T00:00:00",
+      "end": "2018-12-31T23:59:00"
+    },
+    "sampling_intervals_sec": [
+      60.0
+    ],
+    "null_count": 0,
+    "inf_count": 0,
+    "constant_columns": {
+      "FAN_CTRL": 1.0,
+      "FCU_CLG_EWT": 45.0,
+      "FCU_HTG_EWT": 120.0
+    },
+    "synchronization_with_baseline": {
+      "timestamps_identical": true,
+      "FCU_OAT_max_delta": 0.0,
+      "FCU_OA_HUMD_max_delta": 0.0
+    },
+    "channel_stats": {
+      "FCU_DAT": {
+        "mean": 55.44198,
+        "std": 8.52038,
+        "min": 45.0,
+        "max": 118.94
+      },
+      "FCU_RAT": {
+        "mean": 69.65809,
+        "std": 5.81656,
+        "min": 50.95,
+        "max": 85.74
+      },
+      "FCU_CTRL": {
+        "mean": 1.64247,
+        "std": 0.47927,
+        "min": 1.0,
+        "max": 2.0
+      }
+    }
+  }
+}

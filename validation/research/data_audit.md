@@ -105,16 +105,17 @@ This audit evaluates the physical structure, data-generating process, licensing,
   - Total uncompressed size of all 49 CSVs: **~3.92 GB**.
 
 ### 2.4 Empirical Inspection of Representative Files
-Using custom HTTP range requests, five representative files were extracted and audited in `scratch/fcu_sample/`:
+Using committed range extraction and audit scripts ([`extract_fcu_subset.py`](file:///d:/Yantra/validation/scripts/extract_fcu_subset.py) and [`audit_fcu_subset.py`](file:///d:/Yantra/validation/scripts/audit_fcu_subset.py)), six representative files were extracted into `tmp/fcu_data` and verified. Machine-readable audit output is committed in [`validation/review/evidence/audit_summary.json`](file:///d:/Yantra/validation/review/evidence/audit_summary.json):
 1. `FCU_FaultFree.csv` (Normal baseline: 84,305,845 bytes, 525,600 rows).
 2. `FCU_VLVLeak_Cooling_20.csv` (Minor 20% cooling valve leak: 84,196,922 bytes, 525,600 rows).
-3. `FCU_VLVLeak_Cooling_50.csv` (Moderate 50% cooling valve leak: 84,047,790 bytes, 525,600 rows).
-4. `FCU_VLVLeak_Cooling_80.csv` (Severe 80% cooling valve leak: 83,953,504 bytes, 525,600 rows).
-5. `FCU_Fouling_Cooling_Airside_Minor.csv` (Minor airside coil fouling: 83,997,327 bytes, 525,600 rows).
+3. `FCU_Fouling_Cooling_Airside_Minor.csv` (Minor airside coil fouling: 83,997,327 bytes, 525,600 rows).
+4. `FCU_FilterRestriction_10%.csv` (Minor 10% filter restriction / airflow reduction: 83,648,124 bytes, 525,600 rows).
+5. `FCU_SensorBias_RMTemp_+2C.csv` (Room temperature sensor bias +2°C: 84,002,112 bytes, 525,600 rows).
+6. `FCU_OADMPRLeak_20.csv` (Outdoor air damper leak 20%: 84,015,109 bytes, 525,600 rows).
 
 **Audit Findings on Inspected Files:**
 - **Row Counts & Granularity:** Every single file contains exactly **525,600 rows** ($365 \text{ days} \times 24 \text{ h} \times 60 \text{ min}$) spanning `01/01/2018 00:00` to `12/31/2018 23:59` at uniform 1-minute intervals. Total across 49 files is **25,754,400 rows**.
-- **Data Quality:** Exactly **0 missing values** and **0 infinite values** in all files.
+- **Data Quality:** Exactly **0 missing values** and **0 infinite values** across all audited rows.
 - **Timestamp & Weather Alignment:**
   - Timestamps are 100% identical row-for-row across all files (`True`).
   - Weather channels (`FCU_OAT` outdoor temperature and `FCU_OA_HUMD` outdoor humidity) have a maximum absolute difference of **`0.0000`** across all files. Every scenario uses the identical Des Moines, IA TMY3 meteorological sequence.
@@ -124,19 +125,19 @@ Using custom HTTP range requests, five representative files were extracted and a
   - `FCU_HTG_EWT` = `120.0` °F (Hot water plant entering temperature).
   - These 3 constant channels provide zero diagnostic variance and must be dropped during preprocessing.
 - **Label Representation:**
-  - CSV files do not contain an inline label column. The fault is active continuously for the full year in each fault file. Ground-truth labels are defined by the controlled simulation scenario configuration.
+  - CSV files do not contain an inline label column. The fault is active continuously for the full year in each fault file. Ground-truth labels are defined by the controlled simulation scenario configuration. No labeled fault onsets exist.
 
-### 2.5 Measured Downsampling Verification
-Downsampling was tested across 1-minute, 5-minute, and 15-minute aggregations on `FCU_FaultFree.csv` vs. `FCU_VLVLeak_Cooling_20.csv`:
-- **1-minute (raw):** 525,600 rows | 120.3 MB RAM | 12.29 MB Parquet.
-- **5-minute:** 105,120 rows | 24.06 MB RAM | 4.53 MB Parquet | 1.12s resample time.
-- **15-minute:** 35,040 rows | 8.02 MB RAM | 2.53 MB Parquet | 0.73s resample time.
-- **Dataset Total (49 files at 15-min):** Exactly **1,716,960 rows** (1.72M) occupying **~124 MB Parquet** and **~393 MB RAM**.
-- **Signal Fidelity:**
-  - The mean chilled water flow delta ($\Delta GPM = +1.02496$) and discharge temperature delta ($\Delta T = -7.01199^\circ\text{F}$) are **identical to 5 decimal places across 1-min, 5-min, and 15-min resolutions**.
-  - During periods when the cooling valve is commanded shut (`FCU_CVLV_DM == 0`), the leak exhibits a steady **1.1400 GPM** chilled water flow across 100% of shut hours.
-  - In Winter, the valve is shut 96.2% of the time, causing a constant 1.14 GPM leak that depresses discharge air temperature by -2.17°F. In Spring/Fall, discharge temperature drops by -8.7°F to -9.2°F.
-  - Abrupt 1-minute valve command blips ($>0.5$) are 0 because NIST HVACSIM+ simulates continuous PI control.
+### 2.5 Measured Downsampling & Semantic Aggregation Verification
+Downsampling was evaluated across 1-minute, 5-minute, and 15-minute aggregations using domain-valid rules in [`resample_fcu_subset.py`](file:///d:/Yantra/validation/scripts/resample_fcu_subset.py) (continuous telemetry: mean; `FCU_CTRL`: majority mode, mode transition indicator, and operating duration shares). Machine-readable results are committed in [`validation/review/evidence/aggregation_summary.json`](file:///d:/Yantra/validation/review/evidence/aggregation_summary.json):
+- **1-minute (raw):** 525,600 rows | 120.3 MB RAM | 2.5–3.0s load time.
+- **5-minute:** 105,120 rows | 27.27 MB RAM | 80.0% row reduction | 0.48s resample time.
+- **15-minute:** 35,040 rows | 9.09 MB RAM | 93.3% row reduction | 0.28s resample time.
+- **Dataset Total Estimate (49 files at 15-min):** Exactly **1,716,960 rows** (1.72M) occupying an estimated **~124 MB Parquet** (extrapolated from 5 converted files).
+- **Signal Fidelity vs. Peak Attenuation:**
+  - The mean chilled water flow delta ($\Delta GPM = +1.02496$) is **identical to 5 decimal places across 1-min, 5-min, and 15-min resolutions**.
+  - Cooling valve leak flow (`FCU_CLG_GPM`) maintains its 1.14 GPM lower bound and 3.19 GPM peak at 100% retention ratio across all rates.
+  - **Peak Attenuation Observed:** Discharge air temperature (`FCU_DAT`) peak falls from 115.22°F at 1-min to 90.79°F at 5-min (21.2% attenuation) and 89.71°F at 15-min (22.1% attenuation). Downsampling dampens rapid thermal transients, although persistent low-severity thermodynamic offsets are retained.
+
 
 ### 2.6 Data-Generating Process and Real-World Limitations
 - **DGP:** Calibrated physical simulation in NIST HVACSIM+ using DOE commercial reference building models and Des Moines, IA TMY3 weather.

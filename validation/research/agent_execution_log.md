@@ -143,6 +143,44 @@ This log documents all technical actions, environment verifications, network req
 
 ### 5.5 Repository Cleanup and Workspace Restructuring
 - Removed 22 tracked legacy project files (`.github/workflows/`, `configs/`, `data/`, `docs/`, `models/`, `reports/`, `src/`, `tests/`) on branch `validation/problem-feasibility-review`.
-- Documented all deleted and retained paths in `validation/review/branch_cleanup.md`.
 - Updated root `README.md` to describe the validation workspace with direct links to candidate evaluation and gate reports.
 - Created `validation/review/feasibility_gate_results.md` summarizing gate criteria, empirical data, downsampling results, and proposed problem definitions.
+
+---
+
+## 6. Gate 02 Execution: Modeling Value and Reproducibility Gate
+
+### 6.1 Reusable Repository Scripts Suite
+Refactored all prior scratch exploration into committed, reproducible CLI scripts under `validation/scripts/`:
+- `extract_fcu_subset.py`: Range-based extraction of ZIP central directory and individual CSV members from official LBNL ZIP. Supports `--seed-dir` to reuse cached members and verify sizes/checksums.
+- `audit_fcu_subset.py`: Performs structural audit across CSVs, checking dimensions, nulls, infinities, constant channels, and weather synchronization against baseline.
+- `resample_fcu_subset.py`: Implements semantically valid downsampling with fast vectorized one-hot operating mode shares, majority mode `argmax`, mode transition flags, and peak attenuation tracking.
+- `run_pilot_experiment.py`: Executes the 3-model feasibility pilot across 1-min, 5-min, and 15-min rates under a contiguous 60% Train / 15% Calibration / 25% Untouched Test split with a 60-minute embargo.
+
+### 6.2 Data Extraction and Audit Execution
+- Extracted/seeded 6 representative scenarios into gitignored `tmp/fcu_data/`:
+  - `FCU_FaultFree.csv`
+  - `FCU_VLVLeak_Cooling_20.csv`
+  - `FCU_Fouling_Cooling_Airside_Minor.csv`
+  - `FCU_FilterRestriction_10%.csv`
+  - `FCU_SensorBias_RMTemp_+2C.csv`
+  - `FCU_OADMPRLeak_20.csv`
+- Executed `audit_fcu_subset.py` and committed machine-readable evidence to `validation/review/evidence/audit_summary.json`. Verified exact 525,600 rows $\times$ 30 columns per scenario, 0 nulls, 0 infs, 3 constant channels (`FAN_CTRL`, `FCU_CLG_EWT`, `FCU_HTG_EWT`), and 0.0000 weather delta across scenarios.
+
+### 6.3 Semantic Aggregation Execution
+- Executed `resample_fcu_subset.py` and committed machine-readable evidence to `validation/review/evidence/aggregation_summary.json`.
+- Identified peak signal attenuation:
+  - `FCU_DAT` (Discharge Air Temp): Peak falls from 115.22°F at 1-min to 90.79°F at 5-min (21.2% attenuation) and 89.71°F at 15-min (22.1% attenuation).
+  - `FCU_CLG_GPM` (Cooling Water Flow in 20% leak): Maintains 1.14 GPM baseline flow and 3.19 GPM peak at 100% retention ratio across all sampling rates.
+
+### 6.4 Modeling-Value Feasibility Pilot Execution
+- Executed `run_pilot_experiment.py` across 1-min, 5-min, and 15-min rates. Committed machine-readable evidence to `validation/review/evidence/pilot_evaluation_summary.json`.
+- Results Summary:
+  - **Physical Rules:** False alarm rate of 1.05%–1.37% on untouched test windows. Detection rate: 100.0% on cooling valve leak, 35.6% on coil fouling, 35.3% on filter restriction. Macro-average: 34.5%–35.3%. Compute latency: ~0.07s.
+  - **Classical ML (Isolation Forest):** False alarm rate of 3.06%–3.20%. Detection rate across all fault scenarios: 2.3%–5.8% (macro-average: 3.0%–3.5%), failing to distinguish low-severity faults from normal seasonal operational spread.
+  - **Temporal DL Probe (1D-CNN Autoencoder):** False alarm rate of 0.09%–0.55%. Detection rate: 97.4%–100.0% on cooling valve leak, but 0.09%–0.64% on coil fouling, filter restriction, sensor bias, and damper leak. Macro-average: 19.6%–20.4%.
+- Conclusion: Temporal DL succeeds only on the cooling valve leak, which is already solved trivially by a simple physical threshold rule at 100%. Across subtle multi-variable faults, physical rules outperform DL (34.5% vs 20.4%).
+
+### 6.5 Deliverables Created & Updated
+- Created `validation/review/modeling_value_gate_results.md` documenting the gate analysis, pilot results, and recommendation.
+- Updated `validation/research/candidate_comparison.md`, `data_audit.md`, and `feasibility_and_evaluation.md`.

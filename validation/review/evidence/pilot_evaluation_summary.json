@@ -1,0 +1,218 @@
+{
+  "15min": {
+    "sampling_rate": "15min",
+    "window_steps": 4,
+    "window_duration_mins": 60,
+    "windows_count": {
+      "train": 5256,
+      "calibration": 1314,
+      "untouched_test": 2190
+    },
+    "false_alarm_rate_on_untouched_test": {
+      "physical_rules_pct": 1.37,
+      "classical_ml_pct": 3.059,
+      "temporal_dl_probe_pct": 0.548
+    },
+    "macro_average_detection_pct": {
+      "physical_rules": 34.45,
+      "classical_ml": 2.98,
+      "temporal_dl_probe": 20.4
+    },
+    "compute_time_sec": {
+      "physical_rules": 0.087,
+      "classical_ml": 0.252,
+      "temporal_dl_probe": 6.301
+    },
+    "scenario_results": {
+      "FCU_VLVLeak_Cooling_20.csv": {
+        "fault_name": "Valve Leak (Cooling 20%)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 100.0,
+          "classical_ml_pct": 3.79,
+          "temporal_dl_probe_pct": 100.0
+        }
+      },
+      "FCU_Fouling_Cooling_Airside_Minor.csv": {
+        "fault_name": "Coil Fouling (Airside Minor)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 35.57,
+          "classical_ml_pct": 2.88,
+          "temporal_dl_probe_pct": 0.55
+        }
+      },
+      "FCU_FilterRestriction_10%.csv": {
+        "fault_name": "Filter Restriction (Airflow 10%)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 35.3,
+          "classical_ml_pct": 3.06,
+          "temporal_dl_probe_pct": 0.64
+        }
+      },
+      "FCU_SensorBias_RMTemp_+2C.csv": {
+        "fault_name": "Sensor Bias (Room Temp +2C)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 1.0,
+          "classical_ml_pct": 2.33,
+          "temporal_dl_probe_pct": 0.18
+        }
+      },
+      "FCU_OADMPRLeak_20.csv": {
+        "fault_name": "Damper Leak (Outdoor Air 20%)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 0.37,
+          "classical_ml_pct": 2.83,
+          "temporal_dl_probe_pct": 0.64
+        }
+      }
+    }
+  },
+  "5min": {
+    "sampling_rate": "5min",
+    "window_steps": 12,
+    "window_duration_mins": 60,
+    "windows_count": {
+      "train": 5256,
+      "calibration": 1314,
+      "untouched_test": 2190
+    },
+    "false_alarm_rate_on_untouched_test": {
+      "physical_rules_pct": 1.233,
+      "classical_ml_pct": 3.196,
+      "temporal_dl_probe_pct": 0.091
+    },
+    "macro_average_detection_pct": {
+      "physical_rules": 34.5,
+      "classical_ml": 3.48,
+      "temporal_dl_probe": 19.59
+    },
+    "compute_time_sec": {
+      "physical_rules": 0.076,
+      "classical_ml": 0.257,
+      "temporal_dl_probe": 2.454
+    },
+    "scenario_results": {
+      "FCU_VLVLeak_Cooling_20.csv": {
+        "fault_name": "Valve Leak (Cooling 20%)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 100.0,
+          "classical_ml_pct": 4.89,
+          "temporal_dl_probe_pct": 97.4
+        }
+      },
+      "FCU_Fouling_Cooling_Airside_Minor.csv": {
+        "fault_name": "Coil Fouling (Airside Minor)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 35.75,
+          "classical_ml_pct": 3.15,
+          "temporal_dl_probe_pct": 0.09
+        }
+      },
+      "FCU_FilterRestriction_10%.csv": {
+        "fault_name": "Filter Restriction (Airflow 10%)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 35.43,
+          "classical_ml_pct": 3.42,
+          "temporal_dl_probe_pct": 0.09
+        }
+      },
+      "FCU_SensorBias_RMTemp_+2C.csv": {
+        "fault_name": "Sensor Bias (Room Temp +2C)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 0.96,
+          "classical_ml_pct": 2.65,
+          "temporal_dl_probe_pct": 0.09
+        }
+      },
+      "FCU_OADMPRLeak_20.csv": {
+        "fault_name": "Damper Leak (Outdoor Air 20%)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 0.37,
+          "classical_ml_pct": 3.29,
+          "temporal_dl_probe_pct": 0.27
+        }
+      }
+    }
+  },
+  "1min": {
+    "sampling_rate": "1min",
+    "window_steps": 60,
+    "window_duration_mins": 60,
+    "windows_count": {
+      "train": 5256,
+      "calibration": 1314,
+      "untouched_test": 2190
+    },
+    "false_alarm_rate_on_untouched_test": {
+      "physical_rules_pct": 1.05,
+      "classical_ml_pct": 3.105,
+      "temporal_dl_probe_pct": 0.183
+    },
+    "macro_average_detection_pct": {
+      "physical_rules": 35.32,
+      "classical_ml": 3.44,
+      "temporal_dl_probe": 20.18
+    },
+    "compute_time_sec": {
+      "physical_rules": 0.066,
+      "classical_ml": 0.287,
+      "temporal_dl_probe": 3.243
+    },
+    "scenario_results": {
+      "FCU_VLVLeak_Cooling_20.csv": {
+        "fault_name": "Valve Leak (Cooling 20%)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 100.0,
+          "classical_ml_pct": 5.8,
+          "temporal_dl_probe_pct": 100.0
+        }
+      },
+      "FCU_Fouling_Cooling_Airside_Minor.csv": {
+        "fault_name": "Coil Fouling (Airside Minor)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 37.99,
+          "classical_ml_pct": 2.88,
+          "temporal_dl_probe_pct": 0.18
+        }
+      },
+      "FCU_FilterRestriction_10%.csv": {
+        "fault_name": "Filter Restriction (Airflow 10%)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 37.63,
+          "classical_ml_pct": 3.11,
+          "temporal_dl_probe_pct": 0.18
+        }
+      },
+      "FCU_SensorBias_RMTemp_+2C.csv": {
+        "fault_name": "Sensor Bias (Room Temp +2C)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 0.59,
+          "classical_ml_pct": 2.19,
+          "temporal_dl_probe_pct": 0.14
+        }
+      },
+      "FCU_OADMPRLeak_20.csv": {
+        "fault_name": "Damper Leak (Outdoor Air 20%)",
+        "test_windows": 2190,
+        "detection_rates": {
+          "physical_rules_pct": 0.41,
+          "classical_ml_pct": 3.2,
+          "temporal_dl_probe_pct": 0.41
+        }
+      }
+    }
+  }
+}

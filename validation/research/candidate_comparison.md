@@ -91,21 +91,28 @@ graph TD
 
 ## 5. Provisional Recommendation and Explicit Technical Gates
 
-### Recommendation: Conditionally Approve Candidate B as an Industrial Telemetry & MLOps Engineering Benchmark
-Candidate B is provisional upon the technical decision-maker's approval of the calibrated problem definition.
+### Recommendation: Keep Candidate B as an Engineering Benchmark Only, or Reject for DL Goals
+Empirical results from the Gate 02 feasibility pilot ([modeling_value_gate_results.md](file:///d:/Yantra/validation/review/modeling_value_gate_results.md)) show that:
+1. Simple physical rules achieve 34.5% macro-average detection (100% on valve leak) with 0.08s compute and 1.2% false alarm rate.
+2. Classical ML (Isolation Forest) fails to separate low-severity faults from normal annual weather swings (3.0%–3.5% detection).
+3. Temporal DL (1D-CNN Autoencoder) succeeds only on the cooling valve leak (100%), but collapses on other low-severity faults (0.1%–0.6%), trailing physical rules overall (20.4% vs 34.5% macro-average).
+
+**Therefore:**
+- If the project requires deep learning to provide measurable, non-trivial advantage over domain rules: **REJECT FCU.**
+- If the project is repositioned as a hybrid industrial telemetry & MLOps engineering benchmark (streaming ingest, physics-rule + residual monitors, telemetry-loss robustness): **KEEP FCU strictly as an Engineering Benchmark.**
 
 ### Mandatory Pre-Implementation Gates:
-1. **Gate 1: Adopt Defensible Problem Definition (Definition 1 Sign-Off)**
-   - Reframe the task as **Semi-Supervised Anomaly Scoring with Physics-Residual Diagnostic Attribution** (trained 100% on normal baseline data, evaluated across the 48 fault scenarios). Do not conflate unsupervised anomaly detection with supervised fault diagnosis.
-2. **Gate 2: Downsampling Specification Approval**
-   - Adopt 15-minute uniform downsampling as the standard data pipeline specification (reduces storage to 124 MB Parquet while preserving continuous thermodynamic leak residuals).
-3. **Gate 3: Baseline Priority Agreement**
-   - Physics-based heuristics (thermodynamic delta limits) and classical ML (One-Class SVM, Isolation Forest, LightGBM) will serve as primary comparative baselines against sequential deep learning (1D-CNN / Bi-LSTM autoencoders).
-4. **Gate 4: Honest Project Positioning**
-   - Present the project as a rigorous, end-to-end industrial software engineering and MLOps system (FastAPI service, Pandera validation contracts, Pytest test suite, local MLflow tracking), not as a claim of novel ML academic discovery.
+1. **Gate 1: Modeling Role Realism**
+   - Accept that DL does not outperform domain physics rules on this dataset; position DL as an experimental probe rather than the primary operational engine.
+2. **Gate 2: Downsampling Specification**
+   - 15-minute uniform semantic aggregation verified (reduces storage by 93.3% to estimated ~124 MB Parquet with zero loss of cooling leak detectability).
+3. **Gate 3: Honest Project Positioning**
+   - Present the project as an industrial MLOps engineering benchmark (FastAPI service, Pandera contracts, Pytest, hybrid telemetry), not an ML algorithmic discovery.
 
 ---
 
 ## 6. Single Most Useful Next Action for Technical Decision-Maker (ChatGPT)
 
-**Review the three viable problem definitions in `validation/review/feasibility_gate_results.md` (Section 5) and confirm whether to proceed with Problem Definition 1 (Semi-Supervised Anomaly Scoring with Physics-Residual Attribution) using the 15-minute downsampling specification.**
+**Review `validation/review/modeling_value_gate_results.md` and decide between:**
+1. **Keeping FCU as an Engineering Benchmark Only** (re-scoped to an MLOps and hybrid monitoring system without claiming DL superiority); or
+2. **Rejecting FCU** to seek an industrial dataset where deep learning is fundamentally necessary.
