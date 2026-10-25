@@ -21,7 +21,7 @@ Repository: nayanojwal0810/Yantra---Industrial-Anomaly-Detection-Monitoring
 Required branch: validation/problem-feasibility-review
 Remote: https://github.com/nayanojwal0810/Yantra---Industrial-Anomaly-Detection-Monitoring.git
 
-Verify the remote, current branch, status, and recent commit before edits. Work only in validation/. Preserve all existing user work. Never change main, force-push, rewrite history, or include any files outside validation/. At the end, commit and push the validation updates to the required branch and verify the remote SHA and links.
+Verify the remote, current branch, status, and recent commit before edits. Keep research outputs under validation/. The user has explicitly authorized a narrowly scoped cleanup of obsolete inherited project folders on this branch only; follow the cleanup section below. Preserve pre-existing local changes and untracked user files. Never change main, force-push, or rewrite history. At the end, commit and push the validation updates and approved cleanup to the required branch, then verify the remote SHA and links.
 
 ## Important review corrections
 
@@ -149,7 +149,22 @@ Do not create the full end-to-end execution plan yet. It will be prepared only a
 - The recommended task does not conflate detection with diagnosis.
 - No invented metrics or unmeasured runtime claims remain.
 - Downsampling is recommended only if the observed evidence supports it; otherwise keep higher resolution or reject the assumption.
-- All edits remain within validation/.
+- All research edits remain within validation/. The only approved exceptions are the branch-only cleanup of named legacy paths and root README replacement detailed below.
 - Changes pass git diff --check.
 - All required changes are committed and pushed to validation/problem-feasibility-review, and the remote state is verified.
 - Final response includes direct GitHub links and the actual pushed commit SHA, and is concise.
+
+
+## Branch-only cleanup of legacy workspace — explicitly authorized by the user
+
+This is a temporary validation branch, not the future final project repository. Remove unrelated inherited project scaffolding from this branch so it no longer presents stale project files. This cleanup must not affect `main` or any other branch.
+
+1. Verify the current branch is exactly `validation/problem-feasibility-review`, the remote is correct, and `git status --short` contains no pre-existing user changes that could be disturbed. Do not delete or overwrite untracked or modified files.
+2. Use `git ls-files` to inventory paths. Do not inspect the contents of inherited legacy project files for reuse.
+3. On this branch only, remove these legacy directories if they still exist and are tracked: `.github/`, `configs/`, `data/`, `docs/`, `models/`, `reports/`, `src/`, and `tests/`. The old tracked materials in these folders are not part of the current validation work. If `.github/` contains a real workflow rather than only placeholder documentation, list it and stop before deleting that workflow; do not assume based on folder name.
+4. Keep all `validation/` content and keep `.gitignore`. Replace the stale root `README.md` with a short, factual validation-workspace README linking to the candidate comparison and this prompt. Do not claim a completed model or application exists.
+5. Add `validation/review/branch_cleanup.md` with the exact tracked paths removed, what was retained, and the reason. Do not summarize or reuse the legacy content.
+6. Review the complete staged diff. Research additions must be under `validation/`; outside that directory, only the approved deletions and root README replacement are allowed. Run `git diff --check`. Confirm no untracked/user files were deleted and `main` is untouched.
+7. Commit and push to `origin/validation/problem-feasibility-review`; never push to `main`, force-push, rewrite history, or open/merge a PR. Verify remote branch SHA and direct links after pushing.
+
+If a pre-existing modification, an untracked file, or a real workflow creates uncertainty, preserve it and report the blocker rather than deleting it.
