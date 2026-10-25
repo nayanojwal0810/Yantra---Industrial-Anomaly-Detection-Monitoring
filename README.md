@@ -8,9 +8,9 @@ This branch (`validation/problem-feasibility-review`) is an isolated, temporary 
 ## Current Validation Status
 
 - **Status:** Candidate validation in progress. Conditional candidate under gate review: LBNL / OpenEI Simulated Fan Coil Unit (FCU) Fault Detection & Diagnostics.
-- **Active Task Gate:** [FCU Feasibility and Novelty Gate (`validation/prompts/01_FCU_FEASIBILITY_AND_NOVELTY_GATE.md`)](validation/prompts/01_FCU_FEASIBILITY_AND_NOVELTY_GATE.md)
+- **Active Task Gate:** [Modeling Value and Reproducibility Gate (`validation/prompts/02_MODELING_VALUE_AND_REPRODUCIBILITY_GATE.md`)](validation/prompts/02_MODELING_VALUE_AND_REPRODUCIBILITY_GATE.md)
 - **Executive Comparison & Matrix:** [Candidate Comparison Report (`validation/research/candidate_comparison.md`)](validation/research/candidate_comparison.md)
-- **Decision-Maker Review:** [Decision-Maker Review Ledger (`validation/review/decision_maker_review.md`)](validation/review/decision_maker_review.md)
+- **Decision-Maker Review:** [FCU Feasibility Gate Review (`validation/review/decision_maker_review_02.md`)](validation/review/decision_maker_review_02.md)
 - **Branch Cleanup Record:** [Legacy Cleanup Manifest (`validation/review/branch_cleanup.md`)](validation/review/branch_cleanup.md)
 
 ## Workspace Organization
