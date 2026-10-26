@@ -1,49 +1,36 @@
-# Yantra — Candidate Problem & Dataset Validation
+# Yantra — Fresh ML/DL Project Selection
 
-This branch (`validation/problem-feasibility-review`) is an isolated, temporary validation workspace. It is used to audit candidate industrial anomaly detection problems and datasets before any project selection, model architecture, or application code is approved.
+This is an isolated validation workspace on branch `validation/problem-feasibility-review`. The purpose is to find a strong, defensible ML/DL resume project before building any application or committing to an architecture.
 
-> [!NOTE]
-> This repository does not currently contain a trained model or production application. All ongoing work is strictly focused on data audits, literature verification, and evaluation feasibility.
+## Current decision
 
-## Current Validation Status
+- **Previous FCU/HVAC idea:** Rejected as the main project after a preliminary modeling-value pilot. Its evidence is retained as historical validation; do not continue implementing that project.
+- **Current stage:** Fresh problem and dataset discovery across multiple domains.
+- **Modeling direction:** Deep learning and classical ML are the core. Google Colab GPU is an intended resource; candidates must not be prematurely limited to tiny CPU-only models. Model complexity must be justified by the task and remain achievable and explainable.
+- **Project goals:** Real problem, concrete differentiation, reliable evaluation, defensible model choices, and supporting software engineering/basic MLOps.
+- **Not in scope:** NLP, LLM, RAG, or GenAI-centered project ideas.
 
-- **Status:** Candidate validation in progress. Modeling-value and reproducibility gate completed.
-- **Active Task Gate:** [Broad Candidate Discovery (`validation/prompts/03_BROAD_CANDIDATE_DISCOVERY.md`)](validation/prompts/03_BROAD_CANDIDATE_DISCOVERY.md)
-- **Gate 02 Results:** [Modeling Value Gate Results (`validation/review/modeling_value_gate_results.md`)](validation/review/modeling_value_gate_results.md)
-- **Executive Comparison & Matrix:** [Candidate Comparison Report (`validation/research/candidate_comparison.md`)](validation/research/candidate_comparison.md)
-- **Decision-Maker Review:** [Decision-Maker Review 02 (`validation/review/decision_maker_review_02.md`)](validation/review/decision_maker_review_02.md)
-- **Branch Cleanup Record:** [Legacy Cleanup Manifest (`validation/review/branch_cleanup.md`)](validation/review/branch_cleanup.md)
+## Active instructions
 
-## Workspace Organization
+- [Fresh DL-First Project Discovery Gate (Colab GPU-Aware)](validation/prompts/03_BROAD_CANDIDATE_DISCOVERY.md)
+- [Fresh Project Selection Brief](validation/review/fresh_project_selection_brief.md)
 
-```
-validation/
-├── prompts/              # Task specifications and gate definitions
-│   ├── 00_CANDIDATE_VALIDATION.md
-│   ├── 01_FCU_FEASIBILITY_AND_NOVELTY_GATE.md
-│   ├── 02_MODELING_VALUE_AND_REPRODUCIBILITY_GATE.md
-│   └── 03_BROAD_CANDIDATE_DISCOVERY.md
-│   └── 02_MODELING_VALUE_AND_REPRODUCIBILITY_GATE.md
-├── research/             # Empirical audits, literature reviews, and logs
-│   ├── candidate_comparison.md
-│   ├── data_audit.md
-│   ├── related_work.md
-│   ├── feasibility_and_evaluation.md
-│   ├── sources.md
-│   └── agent_execution_log.md
-├── review/               # Technical decision reviews, gate results, and evidence
-│   ├── decision_maker_review.md
-│   ├── decision_maker_review_02.md
-│   ├── feasibility_gate_results.md
-│   ├── modeling_value_gate_results.md
-│   ├── branch_cleanup.md
-│   └── evidence/         # Committed machine-readable audit and pilot metrics
-│       ├── audit_summary.json
-│       ├── aggregation_summary.json
-│       └── pilot_evaluation_summary.json
-└── scripts/              # Reproducible extraction, audit, downsampling, and pilot scripts
-    ├── extract_fcu_subset.py
-    ├── audit_fcu_subset.py
-    ├── resample_fcu_subset.py
-    └── run_pilot_experiment.py
-```
+## Prior decision and evidence
+
+- [Decision-Maker Review 03 — FCU rejection](validation/review/decision_maker_review_03.md)
+- [Modeling Value Gate Results](validation/review/modeling_value_gate_results.md)
+- [Candidate Comparison Report](validation/research/candidate_comparison.md)
+- [Data Audit](validation/research/data_audit.md)
+- [Related Work](validation/research/related_work.md)
+- [Repository Cleanup Record](validation/review/branch_cleanup.md)
+
+## Workspace organization
+
+- `validation/prompts/` — task specifications and decision gates.
+- `validation/research/` — source-backed discovery, dataset audits, prior-art review and execution log.
+- `validation/review/` — decision briefs, gate results and machine-readable evidence.
+- `validation/scripts/` — reusable scripts from the earlier FCU validation only.
+
+## Repository safety
+
+All new discovery work stays on `validation/problem-feasibility-review`. The `main` branch must remain unchanged. Do not commit raw datasets, secrets, caches, model weights or large binaries. Candidate ranking is not final project approval; the technical decision-maker reviews the evidence before the next gate.
