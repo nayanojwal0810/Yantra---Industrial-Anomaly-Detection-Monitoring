@@ -8,7 +8,7 @@ This branch (`validation/problem-feasibility-review`) is an isolated, temporary 
 ## Current Validation Status
 
 - **Status:** Candidate validation in progress. Modeling-value and reproducibility gate completed.
-- **Active Task Gate:** [Modeling Value and Reproducibility Gate (`validation/prompts/02_MODELING_VALUE_AND_REPRODUCIBILITY_GATE.md`)](validation/prompts/02_MODELING_VALUE_AND_REPRODUCIBILITY_GATE.md)
+- **Active Task Gate:** [Broad Candidate Discovery (`validation/prompts/03_BROAD_CANDIDATE_DISCOVERY.md`)](validation/prompts/03_BROAD_CANDIDATE_DISCOVERY.md)
 - **Gate 02 Results:** [Modeling Value Gate Results (`validation/review/modeling_value_gate_results.md`)](validation/review/modeling_value_gate_results.md)
 - **Executive Comparison & Matrix:** [Candidate Comparison Report (`validation/research/candidate_comparison.md`)](validation/research/candidate_comparison.md)
 - **Decision-Maker Review:** [Decision-Maker Review 02 (`validation/review/decision_maker_review_02.md`)](validation/review/decision_maker_review_02.md)
@@ -21,6 +21,8 @@ validation/
 ├── prompts/              # Task specifications and gate definitions
 │   ├── 00_CANDIDATE_VALIDATION.md
 │   ├── 01_FCU_FEASIBILITY_AND_NOVELTY_GATE.md
+│   ├── 02_MODELING_VALUE_AND_REPRODUCIBILITY_GATE.md
+│   └── 03_BROAD_CANDIDATE_DISCOVERY.md
 │   └── 02_MODELING_VALUE_AND_REPRODUCIBILITY_GATE.md
 ├── research/             # Empirical audits, literature reviews, and logs
 │   ├── candidate_comparison.md
