@@ -4,8 +4,10 @@ This is an isolated validation workspace on branch `validation/problem-feasibili
 
 ## Current decision
 
+The workflow has three separate gates: candidate discovery and shortlist selection; proper validation after the user selects the candidate; and an end-to-end execution plan only after the candidate passes validation. No implementation is started at the discovery gate.
+
 - **Previous FCU/HVAC idea:** Rejected as the main project after a preliminary modeling-value pilot. Its evidence is retained as historical validation; do not continue implementing that project.
-- **Current stage:** Fresh problem and dataset discovery across multiple domains.
+- **Current stage:** Fresh problem and dataset discovery across multiple domains. This stage ends with a ranked shortlist and recommended winner; the user selects which candidate advances.
 - **Modeling direction:** Deep learning and classical ML are the core. Google Colab GPU is an intended resource; candidates must not be prematurely limited to tiny CPU-only models. Model complexity must be justified by the task and remain achievable and explainable.
 - **Project goals:** Real problem, concrete differentiation, reliable evaluation, defensible model choices, and supporting software engineering/basic MLOps.
 - **Not in scope:** NLP, LLM, RAG, or GenAI-centered project ideas.
