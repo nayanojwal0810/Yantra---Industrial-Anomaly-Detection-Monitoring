@@ -15,6 +15,23 @@ Now conduct a fresh, broad, evidence-based discovery process to identify the bes
 
 This is discovery and validation only. Do not start final model training, application implementation, or the end-to-end project plan.
 
+## Portfolio fit: the non-negotiable selection principles
+
+This project is for a resume and technical interview. The best candidate is not the one with the most exotic model; it is the one that solves a meaningful problem, has a defensible ML/DL core, can be completed efficiently, and can be explained end to end by the project owner.
+
+Optimize for all of the following:
+
+1. **ML/DL remains the core.** The main technical contribution must involve a clear prediction, representation, temporal/spatial modeling, or decision problem where a neural model has a plausible role. Do not let APIs, dashboards, cloud infrastructure, data pipelines, or MLOps become the main contribution.
+2. **Prefer lightweight, interpretable architecture choices.** Start from compact models (for example, a small CNN/TCN/GRU, compact vision backbone, or modest tabular model where appropriate). Do not assume transformers, large pretrained models, large GPUs, complex ensembles, multi-agent systems, or expensive training are necessary. Avoid architecture complexity unless a specific data property and experiment justify it.
+3. **Efficient completion is a first-class criterion.** The first useful version should fit in a small public-data subset, modest local CPU or modest free compute, and a bounded number of experiments. Identify the minimum viable model and what can be postponed. Penalize candidates requiring extensive manual annotation, multi-gigabyte downloads, elaborate simulation, distributed training, or lengthy data preparation.
+4. **Differentiation must be concrete and testable.** Find a specific operational decision, failure mode, constraint, or evaluation setting—not just “use DL on dataset X.” State what existing baselines and prior work already do, what remains plausibly useful, and how an experiment could disprove the proposed differentiation. Do not invent novelty.
+5. **Interview defensibility is essential.** Prefer tasks where the owner can explain the data-generating process, labels, leakage risks, model choice, loss/objective, metrics, trade-offs, failure cases, deployment limits, and ethical/legal constraints without relying on black-box claims. Explicitly list likely interviewer questions and what evidence would support the answers.
+6. **Software engineering and MLOps should be basic but high quality.** Aim for reproducible data/model pipelines, clear configuration, testing, experiment tracking, a small inference interface, containerization when useful, CI checks, and documented monitoring limits. Do not build an over-engineered platform or imply that MLOps alone creates model novelty.
+7. **Choose the smallest model that credibly tests the hypothesis.** For each candidate, specify a compact first-pass baseline, one realistic classical ML comparator, and one lightweight DL family. Explain why each is relevant. Keep architecture choice provisional until data and labels are validated.
+8. **Make trade-offs visible.** Score expected implementation effort, ease of explanation/defense, likely demo quality, and DL value separately in the decision matrix. A candidate with excellent benchmark scores but a complicated, weakly differentiated, hard-to-defend setup should rank below a simpler and more defensible candidate.
+
+Do not select the most fashionable topic, largest dataset, or highest-complexity architecture by default. Prefer “distinctive because the problem framing and evidence are strong,” not “distinctive because it uses a complicated model.”
+
 ## Project constraints
 
 - Main modeling emphasis: deep learning, with meaningful classical ML and simple baselines.
