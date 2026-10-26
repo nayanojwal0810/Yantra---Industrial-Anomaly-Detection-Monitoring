@@ -30,6 +30,16 @@ Avoid two opposite mistakes:
 
 Use Colab GPU realistically. Estimate memory, input pipeline, training duration and number of experiments from authoritative evidence, small measurements or clearly marked assumptions. Keep a practical fallback, but do not downgrade the project automatically to CPU-only because local GPU resources are limited.
 
+## Mandatory decision sequence
+
+The work must happen in three separate gates:
+
+1. **Discover and shortlist:** Screen and compare multiple candidates, then recommend a shortlist winner with evidence. The user makes the selection decision.
+2. **Validate the selected winner:** Only after explicit selection, audit the data, labels, license, independent evaluation units, prior art, leakage risks, compute feasibility, baselines and DL-value hypothesis. Run bounded experiments against predefined pass/fail criteria. Reject or return to discovery if the candidate fails.
+3. **Prepare the end-to-end execution plan:** Only after the winner passes validation and the user approves the project definition, create the detailed plan for model development, testing, software engineering and basic MLOps.
+
+Do not implement during discovery. Do not prepare the end-to-end plan during shortlist selection or before validation passes. A shortlist winner is only the candidate that advances; it is not automatically the approved project.
+
 ## Selection process
 
 This is a fresh selection. The prior HVAC/FCU candidate is rejected for this project, and its work is retained only as an audit trail. Do not anchor the new search to the previous shortlist or treat old leads as preferred candidates. Search broadly across multiple domains and modalities, with no NLP or GenAI. Bring the evidence for the best two or three candidates back for a decision; do not start implementation or approve a final architecture yet.
