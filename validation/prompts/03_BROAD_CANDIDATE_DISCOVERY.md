@@ -73,6 +73,35 @@ Do not run expensive training during discovery. Lightweight metadata inspection 
 - For images, audio and other modalities, check for duplicate/source leakage, subject/site/device leakage, near-duplicate samples, and data-origin artifacts where relevant.
 - Record the data license separately from the source code license and pretrained weight license.
 
+## Mandatory three-stage decision process
+
+These stages must remain separate. Do not skip ahead or merge them into one large task.
+
+### Stage 1 — Candidate discovery, shortlist and winner recommendation
+This current prompt covers Stage 1 only.
+- Discover and screen at least 12 candidate problem/data pairs across five or more domains.
+- Use evidence to narrow the list to two or three strong finalists.
+- Compare the finalists and recommend one **shortlist winner** with a clear rationale, alternatives, risks and unresolved assumptions.
+- The recommendation is not final approval. The user/technical decision-maker reviews the shortlist and explicitly selects which candidate advances.
+- Stage 1 can include preliminary source, license and metadata checks sufficient to screen candidates, but it must not pretend these replace the full validation gate.
+- Do not begin extensive data profiling, model experiments, architecture selection, final training, application implementation or the end-to-end execution plan. Only small inspections needed for trustworthy discovery are allowed.
+
+### Stage 2 — Proper validation of the selected winner (separate future task)
+Start this stage only after the user/technical decision-maker explicitly selects a candidate.
+- Re-verify official data access and terms, labels, independent evaluation units, data quality, sample/compute requirements, prior art, realistic baselines, leakage-safe splits and a defensible ML/DL hypothesis.
+- Inspect a representative data subset and run small, pre-registered feasibility experiments where needed. Compare strong-enough classical ML and DL candidates on fair splits; use Colab GPU when justified and available.
+- Define objective pass/fail conditions before experiments. Record failures, uncertainties and results; do not tune only for good-looking results.
+- Conclude with an explicit decision: pass, conditional pass with named limitations, or reject/return to discovery.
+- Do not write the full implementation plan until the selected winner passes this validation gate.
+
+### Stage 3 — End-to-end execution plan (separate future task)
+Begin only after Stage 2 passes and the user/technical decision-maker approves the validated project definition.
+- Prepare the full staged plan: data acquisition and governance, EDA, preprocessing, baseline experiments, ML/DL model development, ablations, evaluation, reproducibility, software architecture, testing, basic MLOps, demo/deployment, monitoring limits, documentation, milestones and acceptance criteria.
+- Choose the final model family and a realistic Colab training plan from validation evidence, not from assumptions made during discovery.
+- Do not start implementation until the user approves the execution plan.
+
+Current task must stop after Stage 1 is documented, committed and verified.
+
 ## Required process
 
 ### Stage 1 — Broad screen
@@ -187,4 +216,4 @@ The gate is complete only if:
 - previous FCU reports and the branch cleanup history are preserved;
 - the new research is committed, pushed and verified on validation/problem-feasibility-review only.
 
-The final response must provide the verified commit SHA, links to the six primary deliverables, the ranked top three with the strongest reason for each, any hard stops, and the single candidate recommended for the next feasibility gate. This is a recommendation, not final project approval.
+The final response must provide the verified commit SHA, links to the six primary deliverables, the ranked top three with the strongest reason for each, any hard stops, and the single candidate recommended as shortlist winner. Clearly state that the user/technical decision-maker must choose the candidate that advances. Do not start Stage 2 validation until the user selects the candidate, and do not create the Stage 3 execution plan until validation passes and is approved. This is a shortlist recommendation, not final project approval.
