@@ -143,13 +143,16 @@ Score each finalist from 1 to 5 on:
 - license and data access;
 - label credibility and completeness;
 - independent event/system sufficiency;
-- DL suitability;
+- DL suitability and a credible role for a lightweight model;
 - value of classical ML comparisons;
 - evaluation validity;
 - data/compute/time feasibility;
-- interview defensibility.
+- expected implementation effort (higher score = more manageable);
+- ease of explaining and defending the full project in an interview;
+- demo/resume value;
+- software-engineering and basic-MLOps fit without over-engineering.
 
-For every score, provide evidence and confidence. Identify hard stops separately: missing/unclear license, inaccessible data, no usable target, too few independent runs for the intended claim, invalid labels, required paid resources, or no genuine task gap. Hard-stop failures cannot be offset by a high average score.
+For every score, provide evidence, confidence and a short rationale. Keep hard stops separate from the average score: a missing license, unusable target, inaccessible data, invalid evaluation unit or unaffordable compute cannot be offset by high scores. Also include 5–8 likely interview questions for each finalist and the exact evidence, plots, tests or reasoning the project owner would need to answer them convincingly. Identify hard stops separately: missing/unclear license, inaccessible data, no usable target, too few independent runs for the intended claim, invalid labels, required paid resources, or no genuine task gap. Hard-stop failures cannot be offset by a high average score.
 
 ### 5. No implementation at this gate
 
