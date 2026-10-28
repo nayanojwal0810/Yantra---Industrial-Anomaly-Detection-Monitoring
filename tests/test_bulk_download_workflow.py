@@ -16,6 +16,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import requests
+import yaml
 
 from scripts.download_via_bulk_api import (
     ConfigError,
@@ -24,15 +25,16 @@ from scripts.download_via_bulk_api import (
     PrecheckValidationError,
     UntrustedHostError,
     ZIPValidationError,
-    compare_with_manual_archive,
+    compare_with_manual_archives,
+    create_session,
     download_zip_stream,
-    execute_count_precheck,
-    generate_manifest_and_report,
-    initiate_bulk_download_job,
-    inspect_zip_in_memory,
+    initiate_download_job,
+    inspect_award_zip,
+    inspect_transaction_zip,
     load_config,
     parse_count_response,
     poll_download_status,
+    query_count_endpoint,
     redact_sensitive,
     resolve_api_url,
     run_bulk_download,
@@ -45,11 +47,12 @@ def sample_config(tmp_path: Path) -> dict[str, Any]:
     """Provide a validated sample configuration pointing to temporary paths."""
     manifest_file = tmp_path / "reports" / "test_manifest.json"
     report_file = tmp_path / "reports" / "test_report.md"
-    raw_dir = tmp_path / "data" / "raw" / "sample"
-    manual_zip = raw_dir / "NASA_2020.zip"
+    bulk_dir = tmp_path / "data" / "raw" / "sample" / "bulk_api"
+    manual_on = tmp_path / "data" / "raw" / "sample" / "manual_on.zip"
+    manual_off = tmp_path / "data" / "raw" / "sample" / "manual_off.zip"
 
     return {
-        "version": "1.0.0",
+        "version": "1.1.0",
         "api": {
             "base_url": "https://api.usaspending.gov",
             "endpoints": {
@@ -65,7 +68,7 @@ def sample_config(tmp_path: Path) -> dict[str, Any]:
         },
         "controlled_cohort": {
             "cohort_id": "nasa_naics541330_fy2020",
-            "description": "NASA Awarding Agency, NAICS 541330, FY2020 action dates",
+            "description": "NASA Awarding Agency, NAICS 541330, FY2020 new awards",
             "filters": {
                 "award_type_codes": ["A", "B", "C", "D"],
                 "agencies": [
@@ -75,25 +78,33 @@ def sample_config(tmp_path: Path) -> dict[str, Any]:
                         "name": "National Aeronautics and Space Administration",
                     }
                 ],
-                "naics_codes": ["541330"],
+                "naics_codes": {"require": ["541330"]},
                 "time_period": [
                     {
                         "start_date": "2019-10-01",
                         "end_date": "2020-09-30",
-                        "date_type": "action_date",
+                        "date_type": "new_awards_only",
                     }
                 ],
             },
-            "spending_levels": ["awards", "transactions"],
+            "spending_level_count": "awards",
+            "spending_level_download": ["awards"],
             "file_format": "csv",
         },
-        "reference_ui_counts": {
-            "awards": 785,
-            "transactions": 1384,
+        "transaction_cohort": {
+            "batch_size": 2,
+            "exact_match_quoting": True,
+            "spending_level_count": "transactions",
+            "spending_level_download": ["transactions"],
+            "max_transactions_per_batch: 25000": 25000,
+        },
+        "reference_observations": {
+            "manual_on_download": {"awards": 221, "transactions": 390},
+            "manual_off_download": {"awards": 785, "transactions": 1384},
         },
         "safety_caps": {
             "awards_max": 5000,
-            "transactions_max": 25000,
+            "transactions_max_per_batch": 25000,
         },
         "http_policy": {
             "timeout_seconds": 10,
@@ -107,8 +118,10 @@ def sample_config(tmp_path: Path) -> dict[str, Any]:
             "overall_timeout_seconds": 0.5,
         },
         "paths": {
-            "raw_data_dir": str(raw_dir),
-            "manual_archive_path": str(manual_zip),
+            "bulk_api_dir": str(bulk_dir),
+            "raw_data_dir": str(tmp_path / "data" / "raw" / "sample"),
+            "manual_archive_on": str(manual_on),
+            "manual_archive_off": str(manual_off),
             "manifest_path": str(manifest_file),
             "validation_report_path": str(report_file),
         },
@@ -116,48 +129,37 @@ def sample_config(tmp_path: Path) -> dict[str, Any]:
 
 
 def create_test_zip(
-    awards: list[dict[str, str]],
-    transactions: list[dict[str, str]],
-    include_subawards: bool = False,
+    filename_in_zip: str,
+    rows: list[dict[str, str]],
+    extra_members: dict[str, str] | None = None,
 ) -> bytes:
-    """Helper to create an in-memory ZIP bytes buffer containing CSV members."""
+    """Helper to create an in-memory ZIP buffer with CSV members."""
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
-        # Awards member
-        if awards:
+        if rows:
             out = io.StringIO()
-            writer = csv.DictWriter(out, fieldnames=list(awards[0].keys()))
+            writer = csv.DictWriter(out, fieldnames=list(rows[0].keys()))
             writer.writeheader()
-            writer.writerows(awards)
-            z.writestr("Contracts_PrimeAwardSummaries_test.csv", out.getvalue())
+            writer.writerows(rows)
+            z.writestr(filename_in_zip, out.getvalue())
 
-        # Transactions member
-        if transactions:
-            out = io.StringIO()
-            writer = csv.DictWriter(out, fieldnames=list(transactions[0].keys()))
-            writer.writeheader()
-            writer.writerows(transactions)
-            z.writestr("Contracts_PrimeTransactions_test.csv", out.getvalue())
-
-        # Subawards member (forbidden in workflow)
-        if include_subawards:
-            z.writestr("Contracts_Subawards_test.csv", "subaward_key,parent_award_key\nS1,A1\n")
+        if extra_members:
+            for fname, content in extra_members.items():
+                z.writestr(fname, content)
 
     return buf.getvalue()
 
 
 # -----------------------------------------------------------------------------
-# 1. Configuration & Dry-run Tests
+# 1. Configuration & Dry-Run Tests
 # -----------------------------------------------------------------------------
 
 
 def test_dry_run_sends_zero_requests_and_writes_zero_raw_files(
     sample_config: dict[str, Any], tmp_path: Path
 ) -> None:
-    """Dry run mode must not make network requests and must not create raw sample files."""
+    """Dry run mode must not make network calls and must not write raw data."""
     cfg_path = tmp_path / "test_config.yaml"
-    import yaml
-
     with cfg_path.open("w", encoding="utf-8") as f:
         yaml.safe_dump(sample_config, f)
 
@@ -168,8 +170,8 @@ def test_dry_run_sends_zero_requests_and_writes_zero_raw_files(
         mock_post.assert_not_called()
         mock_get.assert_not_called()
 
-        raw_dir = Path(sample_config["paths"]["raw_data_dir"])
-        assert not raw_dir.exists() or len(list(raw_dir.glob("*.zip"))) == 0
+        bulk_dir = Path(sample_config["paths"]["bulk_api_dir"])
+        assert not bulk_dir.exists() or len(list(bulk_dir.glob("*.zip"))) == 0
 
         manifest_path = Path(sample_config["paths"]["manifest_path"])
         assert manifest_path.exists()
@@ -177,39 +179,75 @@ def test_dry_run_sends_zero_requests_and_writes_zero_raw_files(
         assert manifest_data["run_status"] == "dry_run"
 
 
-def test_load_config_rejects_unauthorized_cohort(sample_config: dict[str, Any], tmp_path: Path) -> None:
-    """Config loader must refuse cohorts other than nasa_naics541330_fy2020."""
-    sample_config["controlled_cohort"]["cohort_id"] = "dod_naics541715_fy2021"
-    cfg_path = tmp_path / "bad_cohort_config.yaml"
-    import yaml
+def test_load_config_validates_naics_object_and_new_awards_only(
+    sample_config: dict[str, Any], tmp_path: Path
+) -> None:
+    """load_config must reject list naics_codes or missing new_awards_only date_type."""
+    # Test 1: naics_codes as list instead of dict
+    bad_cfg = dict(sample_config)
+    bad_cfg["controlled_cohort"] = dict(sample_config["controlled_cohort"])
+    bad_cfg["controlled_cohort"]["filters"] = dict(sample_config["controlled_cohort"]["filters"])
+    bad_cfg["controlled_cohort"]["filters"]["naics_codes"] = ["541330"]
 
-    with cfg_path.open("w", encoding="utf-8") as f:
-        yaml.safe_dump(sample_config, f)
+    cfg_file = tmp_path / "bad_naics.yaml"
+    cfg_file.write_text(yaml.safe_dump(bad_cfg), encoding="utf-8")
+    with pytest.raises(ConfigError, match="naics_codes must be an object with 'require' list"):
+        load_config(cfg_file)
 
+    # Test 2: date_type not new_awards_only
+    bad_cfg2 = dict(sample_config)
+    bad_cfg2["controlled_cohort"] = dict(sample_config["controlled_cohort"])
+    bad_cfg2["controlled_cohort"]["filters"] = dict(sample_config["controlled_cohort"]["filters"])
+    bad_cfg2["controlled_cohort"]["filters"]["time_period"] = [
+        {"start_date": "2019-10-01", "end_date": "2020-09-30", "date_type": "action_date"}
+    ]
+    cfg_file2 = tmp_path / "bad_date.yaml"
+    cfg_file2.write_text(yaml.safe_dump(bad_cfg2), encoding="utf-8")
+    with pytest.raises(ConfigError, match="date_type: 'new_awards_only'"):
+        load_config(cfg_file2)
+
+
+def test_load_config_rejects_unauthorized_cohort(
+    sample_config: dict[str, Any], tmp_path: Path
+) -> None:
+    """load_config must reject cohorts other than nasa_naics541330_fy2020."""
+    sample_config["controlled_cohort"]["cohort_id"] = "dod_other_cohort"
+    cfg_file = tmp_path / "unauthorized.yaml"
+    cfg_file.write_text(yaml.safe_dump(sample_config), encoding="utf-8")
     with pytest.raises(ConfigError, match="Unsupported cohort"):
-        load_config(cfg_path)
+        load_config(cfg_file)
 
 
 # -----------------------------------------------------------------------------
-# 2. Host and URL Resolution Tests
+# 2. Host, Protocol, and URL Resolution Tests
 # -----------------------------------------------------------------------------
 
 
-def test_trusted_host_validation() -> None:
-    """Trusted host validator must accept whitelisted hosts and reject others."""
+def test_validate_trusted_host_enforces_https_and_rejects_untrusted() -> None:
+    """validate_trusted_host must reject HTTP, localhost, and non-whitelisted domains."""
     trusted = ["api.usaspending.gov", "files.usaspending.gov"]
+
+    # Valid HTTPS
     assert validate_trusted_host("https://api.usaspending.gov/endpoint", trusted)
-    assert validate_trusted_host("https://files.usaspending.gov/download.zip", trusted)
+    assert validate_trusted_host("https://files.usaspending.gov/test.zip", trusted)
 
-    with pytest.raises(UntrustedHostError, match="not in trusted hosts list"):
-        validate_trusted_host("https://attacker.com/download.zip", trusted)
+    # Non-HTTPS
+    with pytest.raises(UntrustedHostError, match="Only HTTPS is permitted"):
+        validate_trusted_host("http://api.usaspending.gov/endpoint", trusted)
 
+    # Localhost
+    with pytest.raises(UntrustedHostError, match="Localhost access rejected"):
+        validate_trusted_host("https://localhost/endpoint", trusted)
+    with pytest.raises(UntrustedHostError, match="Localhost access rejected"):
+        validate_trusted_host("https://127.0.0.1/endpoint", trusted)
+
+    # Untrusted domain
     with pytest.raises(UntrustedHostError, match="not in trusted hosts list"):
-        validate_trusted_host("https://subdomain.api.usaspending.gov.attacker.com/endpoint", trusted)
+        validate_trusted_host("https://malicious.com/test.zip", trusted)
 
 
 def test_resolve_api_url_relative_and_absolute() -> None:
-    """resolve_api_url must handle both relative paths and absolute URLs safely."""
+    """resolve_api_url safely joins relative paths and validates absolute URLs."""
     base = "https://api.usaspending.gov"
     trusted = ["api.usaspending.gov", "files.usaspending.gov"]
 
@@ -220,153 +258,166 @@ def test_resolve_api_url_relative_and_absolute() -> None:
     assert abs_url == "https://files.usaspending.gov/bulk/sample.zip"
 
 
+def test_redirect_to_untrusted_host_rejected(sample_config: dict[str, Any]) -> None:
+    """HTTP session hook must abort if a redirect target is an untrusted host."""
+    session = create_session(sample_config["http_policy"], sample_config["api"]["trusted_hosts"])
+
+    # Simulate response history with untrusted redirect
+    mock_resp = MagicMock()
+    mock_resp.url = "https://untrusted.com/download.zip"
+    mock_resp.history = []
+
+    with pytest.raises(UntrustedHostError, match="not in trusted hosts list"):
+        for hook in session.hooks["response"]:
+            hook(mock_resp)
+
+
 # -----------------------------------------------------------------------------
-# 3. Count Precheck Parsing and Validation Tests
+# 3. Payload Shape, Quoting, and Spending Level Tests
 # -----------------------------------------------------------------------------
 
 
-def test_parse_count_response_valid() -> None:
-    """parse_count_response parses valid count endpoint payload."""
-    payload = {
-        "calculated_count": 785,
-        "maximum_limit": 500000,
+def test_award_cohort_payload_shape_and_spending_level(sample_config: dict[str, Any]) -> None:
+    """Award cohort job must use string 'awards' for count and ['awards'] for search."""
+    session = requests.Session()
+    base_url = sample_config["api"]["base_url"]
+    trusted = sample_config["api"]["trusted_hosts"]
+
+    # 1. Count query
+    mock_count_resp = MagicMock()
+    mock_count_resp.status_code = 200
+    mock_count_resp.json.return_value = {
+        "calculated_count": 221,
         "rows_gt_limit": False,
-        "messages": [],
     }
-    parsed = parse_count_response(payload, "awards")
-    assert parsed["calculated_count"] == 785
-    assert parsed["rows_gt_limit"] is False
+
+    with patch.object(session, "post", return_value=mock_count_resp) as mock_post:
+        res = query_count_endpoint(
+            session=session,
+            base_url=base_url,
+            count_endpoint="/api/v2/download/count/",
+            trusted_hosts=trusted,
+            filters=sample_config["controlled_cohort"]["filters"],
+            spending_level="awards",
+        )
+        assert res["calculated_count"] == 221
+
+        count_call_payload = mock_post.call_args[1]["json"]
+        assert count_call_payload["spending_level"] == "awards"  # Singular string!
+        assert count_call_payload["filters"]["naics_codes"] == {"require": ["541330"]}
+        assert count_call_payload["filters"]["time_period"][0]["date_type"] == "new_awards_only"
+
+    # 2. Search job
+    mock_search_resp = MagicMock()
+    mock_search_resp.status_code = 200
+    mock_search_resp.json.return_value = {
+        "file_name": "test_awards.zip",
+        "status_url": "/api/v2/download/status/?file_name=test_awards.zip",
+        "file_url": "https://files.usaspending.gov/test_awards.zip",
+        "download_request": {},
+    }
+
+    with patch.object(session, "post", return_value=mock_search_resp) as mock_post2:
+        job = initiate_download_job(
+            session=session,
+            base_url=base_url,
+            search_endpoint="/api/v2/download/search/",
+            trusted_hosts=trusted,
+            filters=sample_config["controlled_cohort"]["filters"],
+            spending_levels=["awards"],
+            file_format="csv",
+        )
+        assert job["file_name"] == "test_awards.zip"
+        search_call_payload = mock_post2.call_args[1]["json"]
+        assert search_call_payload["spending_level"] == ["awards"]  # Array of string!
+        assert "columns" not in search_call_payload  # Full schema preserved
+
+
+def test_transaction_cohort_payload_shape_no_date_filters_and_exact_quoting(
+    sample_config: dict[str, Any],
+) -> None:
+    """Transaction query must have ONLY award_ids, NO time_period, and exact quoting."""
+    session = requests.Session()
+    base_url = sample_config["api"]["base_url"]
+    trusted = sample_config["api"]["trusted_hosts"]
+
+    batch_piids = ["80AFRC20C0012", "80AFRC20C0019"]
+    quoted_piids = [f'"{p}"' for p in batch_piids]
+    tx_filters = {"award_ids": quoted_piids}
+
+    # Verify no date or NAICS filters
+    assert "time_period" not in tx_filters
+    assert "naics_codes" not in tx_filters
+    assert "agencies" not in tx_filters
+
+    # 1. Count query
+    mock_count_resp = MagicMock()
+    mock_count_resp.status_code = 200
+    mock_count_resp.json.return_value = {
+        "calculated_count": 15,
+        "rows_gt_limit": False,
+    }
+
+    with patch.object(session, "post", return_value=mock_count_resp) as mock_post:
+        res = query_count_endpoint(
+            session=session,
+            base_url=base_url,
+            count_endpoint="/api/v2/download/count/",
+            trusted_hosts=trusted,
+            filters=tx_filters,
+            spending_level="transactions",
+        )
+        assert res["calculated_count"] == 15
+
+        payload = mock_post.call_args[1]["json"]
+        assert payload["spending_level"] == "transactions"  # Singular string!
+        assert payload["filters"]["award_ids"] == ['"80AFRC20C0012"', '"80AFRC20C0019"']
+
+
+# -----------------------------------------------------------------------------
+# 4. Count Precheck Parsing & Defensiveness Tests
+# -----------------------------------------------------------------------------
 
 
 def test_parse_count_response_rejects_booleans_and_malformed() -> None:
-    """parse_count_response defensively rejects boolean or malformed counts."""
-    # Boolean masquerading as number
+    """parse_count_response defensively rejects boolean, string, or negative counts."""
     with pytest.raises(PrecheckValidationError, match="invalid calculated_count"):
         parse_count_response({"calculated_count": True}, "awards")
 
-    # String masquerading as number
     with pytest.raises(PrecheckValidationError, match="invalid calculated_count"):
-        parse_count_response({"calculated_count": "785"}, "awards")
+        parse_count_response({"calculated_count": "221"}, "awards")
 
-    # Negative count
     with pytest.raises(PrecheckValidationError, match="negative calculated_count"):
-        parse_count_response({"calculated_count": -5}, "awards")
+        parse_count_response({"calculated_count": -1}, "awards")
 
-    # rows_gt_limit = True
     with pytest.raises(PrecheckValidationError, match="rows_gt_limit=True"):
         parse_count_response({"calculated_count": 500000, "rows_gt_limit": True}, "awards")
 
-    # transaction_rows_gt_limit = True
-    with pytest.raises(PrecheckValidationError, match="transaction_rows_gt_limit=True"):
-        parse_count_response(
-            {"calculated_count": 500000, "transaction_rows_gt_limit": True}, "transactions"
-        )
 
-
-def test_execute_count_precheck_ui_count_mismatch_stops(sample_config: dict[str, Any]) -> None:
-    """Precheck must raise PrecheckValidationError if count differs from reference UI count."""
-    session = requests.Session()
-
-    mock_resp_awards = MagicMock()
-    mock_resp_awards.status_code = 200
-    mock_resp_awards.json.return_value = {
-        "calculated_count": 800,  # Expected 785!
-        "rows_gt_limit": False,
-    }
-
-    with (
-        patch.object(session, "post", return_value=mock_resp_awards),
-        pytest.raises(PrecheckValidationError, match="Count precheck mismatch for awards"),
-    ):
-        execute_count_precheck(session, sample_config)
-
-
-def test_execute_count_precheck_exceeding_safety_cap_stops(sample_config: dict[str, Any]) -> None:
-    """Precheck must stop if calculated count exceeds configured safety cap."""
-    session = requests.Session()
-
-    sample_config["safety_caps"]["awards_max"] = 500
-    sample_config["reference_ui_counts"]["awards"] = 785
-
-    mock_resp_awards = MagicMock()
-    mock_resp_awards.status_code = 200
-    mock_resp_awards.json.return_value = {
-        "calculated_count": 785,
-        "rows_gt_limit": False,
-    }
-
-    with (
-        patch.object(session, "post", return_value=mock_resp_awards),
-        pytest.raises(PrecheckValidationError, match="exceeds safety cap"),
-    ):
-        execute_count_precheck(session, sample_config)
-
-
-def test_execute_count_precheck_success(sample_config: dict[str, Any]) -> None:
-    """Precheck succeeds when awards=785 and transactions=1384."""
-    session = requests.Session()
-
-    resp_awards = MagicMock()
-    resp_awards.status_code = 200
-    resp_awards.json.return_value = {
-        "calculated_count": 785,
-        "rows_gt_limit": False,
-    }
-
-    resp_tx = MagicMock()
-    resp_tx.status_code = 200
-    resp_tx.json.return_value = {
-        "calculated_count": 1384,
-        "rows_gt_limit": False,
-    }
-
-    with patch.object(session, "post", side_effect=[resp_awards, resp_tx]):
-        result = execute_count_precheck(session, sample_config)
-        assert result["awards"]["calculated_count"] == 785
-        assert result["transactions"]["calculated_count"] == 1384
+def test_no_gate_on_unrelated_reference_ui_counts(sample_config: dict[str, Any]) -> None:
+    """Precheck does not hard-gate against manual 785/1384 counts when running new_awards_only."""
+    # When API returns 221 awards (or any non-capped number), it does not fail
+    # simply because reference_observations mentions 785 or 221.
+    payload = {"calculated_count": 221, "rows_gt_limit": False}
+    parsed = parse_count_response(payload, "awards")
+    assert parsed["calculated_count"] == 221
 
 
 # -----------------------------------------------------------------------------
-# 4. Asynchronous Bulk Download Job Creation & Polling Tests
+# 5. Polling, Timeout, and Status Failure Tests
 # -----------------------------------------------------------------------------
 
 
-def test_initiate_bulk_download_job_payload_shape(sample_config: dict[str, Any]) -> None:
-    """Job creation must send exact filters, csv format, and awards+transactions spending level."""
+def test_poll_download_status_transitions_running_to_finished(
+    sample_config: dict[str, Any],
+) -> None:
+    """Polling transitions through running -> finished correctly and captures total_rows."""
     session = requests.Session()
-
-    mock_resp = MagicMock()
-    mock_resp.status_code = 200
-    mock_resp.json.return_value = {
-        "file_name": "PrimeAwardSummariesAndTransactions_test.zip",
-        "status_url": "/api/v2/download/status/?file_name=test.zip",
-        "file_url": "https://files.usaspending.gov/test.zip",
-        "download_request": {"spending_level": ["awards", "transactions"]},
-    }
-
-    with patch.object(session, "post", return_value=mock_resp) as mock_post:
-        job = initiate_bulk_download_job(session, sample_config)
-
-        assert job["file_name"] == "PrimeAwardSummariesAndTransactions_test.zip"
-        assert "file_url" in job
-
-        # Check call arguments
-        call_kwargs = mock_post.call_args[1]
-        payload = call_kwargs["json"]
-        assert payload["file_format"] == "csv"
-        assert payload["spending_level"] == ["awards", "transactions"]
-        assert "columns" not in payload  # Must preserve full schema
-        assert payload["filters"]["award_type_codes"] == ["A", "B", "C", "D"]
-        assert payload["filters"]["time_period"][0]["date_type"] == "action_date"
-
-
-def test_poll_download_status_transitions_running_to_finished(sample_config: dict[str, Any]) -> None:
-    """Polling transitions through running -> finished correctly."""
-    session = requests.Session()
+    base_url = sample_config["api"]["base_url"]
+    trusted = sample_config["api"]["trusted_hosts"]
     job_info = {
         "file_name": "test.zip",
         "status_url": "/api/v2/download/status/?file_name=test.zip",
-        "file_url": "https://files.usaspending.gov/test.zip",
     }
 
     resp1 = MagicMock()
@@ -378,77 +429,94 @@ def test_poll_download_status_transitions_running_to_finished(sample_config: dic
     resp2.json.return_value = {
         "status": "finished",
         "url": "https://files.usaspending.gov/test.zip",
-        "message": "Complete",
+        "total_rows": 221,
+        "message": None,
     }
 
     with patch.object(session, "get", side_effect=[resp1, resp2]):
-        result = poll_download_status(session, job_info, sample_config)
+        result = poll_download_status(
+            session=session,
+            base_url=base_url,
+            status_endpoint_cfg="/api/v2/download/status/",
+            trusted_hosts=trusted,
+            job_info=job_info,
+            poll_interval=0.01,
+            overall_timeout=1.0,
+        )
         assert result["final_status"] == "finished"
-        assert result["file_url"] == "https://files.usaspending.gov/test.zip"
-        assert len(result["history"]) == 2
+        assert result["total_rows"] == 221
 
 
 def test_poll_download_status_failed_raises_error(sample_config: dict[str, Any]) -> None:
-    """Polling server failure raises DownloadJobError with server message."""
+    """Polling server failure raises DownloadJobError with message."""
     session = requests.Session()
-    job_info = {
-        "file_name": "test.zip",
-        "status_url": "/api/v2/download/status/?file_name=test.zip",
-    }
+    base_url = sample_config["api"]["base_url"]
+    trusted = sample_config["api"]["trusted_hosts"]
+    job_info = {"file_name": "test.zip"}
 
     resp_failed = MagicMock()
     resp_failed.status_code = 200
-    resp_failed.json.return_value = {
-        "status": "failed",
-        "message": "Out of memory processing transaction records",
-    }
+    resp_failed.json.return_value = {"status": "failed", "message": "Backend query timeout"}
 
     with (
         patch.object(session, "get", return_value=resp_failed),
-        pytest.raises(DownloadJobError, match="Out of memory processing"),
+        pytest.raises(DownloadJobError, match="Backend query timeout"),
     ):
-        poll_download_status(session, job_info, sample_config)
+        poll_download_status(
+            session=session,
+            base_url=base_url,
+            status_endpoint_cfg="/api/v2/download/status/",
+            trusted_hosts=trusted,
+            job_info=job_info,
+        )
 
 
-def test_poll_download_status_timeout_stops_without_resubmit(sample_config: dict[str, Any]) -> None:
-    """Polling exceeding timeout raises DownloadJobTimeoutError."""
+def test_poll_download_status_timeout_stops_without_resubmit(
+    sample_config: dict[str, Any],
+) -> None:
+    """Polling timeout raises DownloadJobTimeoutError and sends zero new job submissions."""
     session = requests.Session()
-    job_info = {
-        "file_name": "test.zip",
-        "status_url": "/api/v2/download/status/?file_name=test.zip",
-    }
-    sample_config["polling_policy"]["overall_timeout_seconds"] = 0.05
-    sample_config["polling_policy"]["poll_interval_seconds"] = 0.02
+    base_url = sample_config["api"]["base_url"]
+    trusted = sample_config["api"]["trusted_hosts"]
+    job_info = {"file_name": "test.zip"}
 
     resp_running = MagicMock()
     resp_running.status_code = 200
-    resp_running.json.return_value = {"status": "running", "message": "Still running"}
+    resp_running.json.return_value = {"status": "running"}
 
-    with patch.object(session, "get", return_value=resp_running), patch.object(session, "post") as mock_post:
-        with pytest.raises(DownloadJobTimeoutError, match="Polling timed out"):
-            poll_download_status(session, job_info, sample_config)
-
-        # Must not resubmit job
-        mock_post.assert_not_called()
+    with (
+        patch.object(session, "get", return_value=resp_running),
+        patch.object(session, "post") as mock_post,
+        pytest.raises(DownloadJobTimeoutError, match="Polling timed out"),
+    ):
+        poll_download_status(
+            session=session,
+            base_url=base_url,
+            status_endpoint_cfg="/api/v2/download/status/",
+            trusted_hosts=trusted,
+            job_info=job_info,
+            poll_interval=0.01,
+            overall_timeout=0.03,
+        )
+    mock_post.assert_not_called()
 
 
 # -----------------------------------------------------------------------------
-# 5. Streaming Download and Atomic Save Tests
+# 6. Streaming Download, CRC Validation & Atomic Rename Tests
 # -----------------------------------------------------------------------------
 
 
-def test_download_zip_stream_atomic_rename(sample_config: dict[str, Any], tmp_path: Path) -> None:
-    """Download streams to .part file and atomically renames on success."""
+def test_download_zip_stream_atomic_rename_and_no_overwrite(
+    sample_config: dict[str, Any], tmp_path: Path
+) -> None:
+    """download_zip_stream streams to .part, CRC checks, and atomically renames."""
     session = requests.Session()
     target_zip = tmp_path / "downloads" / "final.zip"
+    trusted = sample_config["api"]["trusted_hosts"]
 
     zip_bytes = create_test_zip(
-        awards=[{"contract_award_unique_key": "AW1", "award_id_piid": "PIID1"}],
-        transactions=[{
-            "contract_transaction_unique_key": "TX1",
-            "contract_award_unique_key": "AW1",
-            "action_date": "2020-05-01",
-        }],
+        "Contracts_PrimeAwardSummaries.csv",
+        [{"contract_award_unique_key": "AW1", "award_id_piid": "PIID1"}],
     )
 
     mock_resp = MagicMock()
@@ -458,31 +526,22 @@ def test_download_zip_stream_atomic_rename(sample_config: dict[str, Any], tmp_pa
 
     with patch.object(session, "get", return_value=mock_resp):
         res = download_zip_stream(
-            session,
-            "https://files.usaspending.gov/test.zip",
-            target_zip,
-            sample_config,
+            session=session,
+            file_url="https://files.usaspending.gov/test.zip",
+            target_path=target_zip,
+            trusted_hosts=trusted,
         )
-
         assert res.is_file()
         assert not target_zip.with_suffix(".zip.part").exists()
         assert zipfile.is_zipfile(target_zip)
 
-
-def test_download_zip_stream_refuses_to_overwrite_existing(
-    sample_config: dict[str, Any], tmp_path: Path
-) -> None:
-    """download_zip_stream must raise FileExistsError if target already exists."""
-    session = requests.Session()
-    target_zip = tmp_path / "already_exists.zip"
-    target_zip.write_text("existing data", encoding="utf-8")
-
-    with pytest.raises(FileExistsError, match="Target download path already exists"):
+    # Overwrite refusal
+    with pytest.raises(FileExistsError, match="already exists"):
         download_zip_stream(
-            session,
-            "https://files.usaspending.gov/test.zip",
-            target_zip,
-            sample_config,
+            session=session,
+            file_url="https://files.usaspending.gov/test.zip",
+            target_path=target_zip,
+            trusted_hosts=trusted,
         )
 
 
@@ -492,160 +551,199 @@ def test_download_zip_stream_corrupt_zip_fails_safely(
     """Corrupt streamed content cleans up temporary .part and raises ZIPValidationError."""
     session = requests.Session()
     target_zip = tmp_path / "bad.zip"
+    trusted = sample_config["api"]["trusted_hosts"]
 
     mock_resp = MagicMock()
     mock_resp.__enter__.return_value = mock_resp
     mock_resp.status_code = 200
     mock_resp.iter_content.return_value = [b"NOT A VALID ZIP ARCHIVE CONTENT"]
 
-    with patch.object(session, "get", return_value=mock_resp):
-        with pytest.raises(ZIPValidationError, match="not a valid ZIP archive"):
-            download_zip_stream(
-                session,
-                "https://files.usaspending.gov/bad.zip",
-                target_zip,
-                sample_config,
-            )
-
-        assert not target_zip.exists()
-        assert not target_zip.with_suffix(".zip.part").exists()
+    with (
+        patch.object(session, "get", return_value=mock_resp),
+        pytest.raises(ZIPValidationError, match="not a valid ZIP archive"),
+    ):
+        download_zip_stream(
+            session=session,
+            file_url="https://files.usaspending.gov/bad.zip",
+            target_path=target_zip,
+            trusted_hosts=trusted,
+        )
+    assert not target_zip.exists()
+    assert not target_zip.with_suffix(".zip.part").exists()
 
 
 # -----------------------------------------------------------------------------
-# 6. In-Memory ZIP Quality Inspection and Linkage Tests
+# 7. In-Memory QA, Deduplication, and Linkage Tests
 # -----------------------------------------------------------------------------
 
 
-def test_inspect_zip_in_memory_metrics(tmp_path: Path) -> None:
-    """In-memory QA correctly calculates row counts, keys, linkage, and date coverage."""
+def test_inspect_award_zip_in_memory_metrics_and_subaward_rejection(tmp_path: Path) -> None:
+    """inspect_award_zip calculates row counts, PIIDs, repeated PIIDs, and rejects subawards."""
     awards = [
-        {"contract_award_unique_key": "A1", "award_id_piid": "P1"},
-        {"contract_award_unique_key": "A2", "award_id_piid": "P2"},
+        {"contract_award_unique_key": "A1", "award_id_piid": "P1", "awarding_agency_name": "NASA"},
+        {"contract_award_unique_key": "A2", "award_id_piid": "P2", "awarding_agency_name": "NASA"},
+        {"contract_award_unique_key": "A3", "award_id_piid": "P1", "awarding_agency_name": "NASA"},  # Repeated P1!
+        {"contract_award_unique_key": "A4", "award_id_piid": "", "awarding_agency_name": "NASA"},    # Blank PIID!
     ]
-    transactions = [
+    zip_bytes = create_test_zip("Contracts_PrimeAwardSummaries_test.csv", awards)
+    zip_path = tmp_path / "award_test.zip"
+    zip_path.write_bytes(zip_bytes)
+
+    qa = inspect_award_zip(zip_path)
+    assert qa["row_count"] == 4
+    assert qa["blank_piid_count"] == 1
+    assert qa["unique_piids_count"] == 2  # P1, P2
+    assert qa["repeated_piids_count"] == 1  # P1 appeared twice
+    assert qa["unique_piids"] == ["P1", "P2"]
+
+    # Reject subawards
+    bad_zip_bytes = create_test_zip(
+        "Contracts_PrimeAwardSummaries.csv",
+        awards,
+        extra_members={"Contracts_Subawards.csv": "subaward_key\nS1\n"},
+    )
+    bad_zip_path = tmp_path / "has_subawards.zip"
+    bad_zip_path.write_bytes(bad_zip_bytes)
+    with pytest.raises(ZIPValidationError, match="Forbidden subaward members"):
+        inspect_award_zip(bad_zip_path)
+
+
+def test_inspect_transaction_zip_accepts_outside_fy2020_and_audits_keys(tmp_path: Path) -> None:
+    """inspect_transaction_zip accepts transactions outside FY2020 and audits keys."""
+    txs = [
         {
             "contract_transaction_unique_key": "T1",
             "contract_award_unique_key": "A1",
-            "action_date": "2019-11-15",  # In FY2020
+            "award_id_piid": "P1",
+            "action_date": "2020-03-15",  # In FY2020
         },
         {
             "contract_transaction_unique_key": "T2",
             "contract_award_unique_key": "A1",
-            "action_date": "2020-03-20",  # In FY2020
+            "award_id_piid": "P1",
+            "action_date": "2021-06-20",  # Outside FY2020 (expected!)
         },
         {
             "contract_transaction_unique_key": "T3",
             "contract_award_unique_key": "A2",
-            "action_date": "2020-08-10",  # In FY2020
-        },
-        {
-            "contract_transaction_unique_key": "T4",
-            "contract_award_unique_key": "A999",  # Unlinked!
-            "action_date": "2021-02-01",  # Out of FY2020!
+            "award_id_piid": "P2",
+            "action_date": "2018-01-10",  # Outside FY2020 (expected!)
         },
     ]
-
-    zip_bytes = create_test_zip(awards, transactions)
-    zip_path = tmp_path / "sample_qa.zip"
+    zip_bytes = create_test_zip("Contracts_PrimeTransactions_test.csv", txs)
+    zip_path = tmp_path / "tx_test.zip"
     zip_path.write_bytes(zip_bytes)
 
-    qa = inspect_zip_in_memory(zip_path)
-
-    # Awards QA
-    assert qa["awards"]["row_count"] == 2
-    assert qa["awards"]["unique_keys_count"] == 2
-    assert qa["awards"]["missing_keys_count"] == 0
-    assert qa["awards"]["duplicate_keys_count"] == 0
-
-    # Transactions QA
-    assert qa["transactions"]["row_count"] == 4
-    assert qa["transactions"]["unique_keys_count"] == 4
-    assert qa["transactions"]["unique_award_keys_referenced"] == 3  # A1, A2, A999
-    assert qa["transactions"]["linkage_referenced_in_awards_count"] == 2  # A1, A2
-    # 2 out of 3 awards linked = 66.67%
-    assert qa["transactions"]["linkage_percentage"] == 66.67
+    qa = inspect_transaction_zip(zip_path, expected_cohort_piids={"P1", "P2"})
+    assert qa["row_count"] == 3
+    assert qa["unique_tx_keys_count"] == 3
+    assert qa["missing_tx_keys_count"] == 0
+    assert qa["duplicate_tx_keys_count"] == 0
+    assert qa["cohort_piids_matched_count"] == 2
+    assert qa["unmatched_tx_piids_count"] == 0
 
     # Date audit
-    date_audit = qa["transactions"]["action_date_audit"]
-    assert date_audit["in_fy_count"] == 3
-    assert date_audit["out_of_fy_count"] == 1
-    assert len(date_audit["deviations_sample"]) == 1
-    assert date_audit["deviations_sample"][0]["transaction_key"] == "T4"
+    date_audit = qa["date_audit"]
+    assert date_audit["in_fy2020_count"] == 1
+    assert date_audit["outside_fy2020_count"] == 2
+    assert date_audit["min_action_date"] == "2018-01-10"
+    assert date_audit["max_action_date"] == "2021-06-20"
 
 
-def test_inspect_zip_in_memory_rejects_subawards(tmp_path: Path) -> None:
-    """inspect_zip_in_memory must reject any ZIP containing subaward members."""
-    zip_bytes = create_test_zip(
-        awards=[{"contract_award_unique_key": "A1"}],
-        transactions=[{"contract_transaction_unique_key": "T1", "contract_award_unique_key": "A1", "action_date": "2020-01-01"}],
-        include_subawards=True,
+def test_server_rejection_of_documented_form_captured_and_stops(
+    sample_config: dict[str, Any], tmp_path: Path
+) -> None:
+    """If count endpoint rejects documented quoted form (HTTP 503), client halts and records evidence."""
+    cfg_path = tmp_path / "test_cfg.yaml"
+    with cfg_path.open("w", encoding="utf-8") as f:
+        yaml.safe_dump(sample_config, f)
+
+    session = requests.Session()
+
+    # Stage 1 succeeds:
+    resp_award_count = MagicMock()
+    resp_award_count.status_code = 200
+    resp_award_count.json.return_value = {"calculated_count": 2, "rows_gt_limit": False}
+
+    resp_award_search = MagicMock()
+    resp_award_search.status_code = 200
+    resp_award_search.json.return_value = {
+        "file_name": "awards.zip",
+        "file_url": "https://files.usaspending.gov/awards.zip",
+        "status_url": "/status/?file_name=awards.zip",
+    }
+
+    resp_award_status = MagicMock()
+    resp_award_status.status_code = 200
+    resp_award_status.json.return_value = {"status": "finished", "total_rows": 2}
+
+    award_zip_bytes = create_test_zip(
+        "Contracts_PrimeAwardSummaries.csv",
+        [
+            {"contract_award_unique_key": "A1", "award_id_piid": "P1"},
+            {"contract_award_unique_key": "A2", "award_id_piid": "P2"},
+        ],
     )
-    zip_path = tmp_path / "has_subawards.zip"
-    zip_path.write_bytes(zip_bytes)
+    resp_award_stream = MagicMock()
+    resp_award_stream.__enter__.return_value = resp_award_stream
+    resp_award_stream.status_code = 200
+    resp_award_stream.iter_content.return_value = [award_zip_bytes]
 
-    with pytest.raises(ZIPValidationError, match="unexpected subaward members"):
-        inspect_zip_in_memory(zip_path)
+    # Stage 2: server returns 503 on quoted award_ids count precheck
+    resp_tx_count_503 = MagicMock()
+    resp_tx_count_503.status_code = 503
+    resp_tx_count_503.text = "Service Unavailable"
+    resp_tx_count_503.headers = {"X-Server": "BIG-IP"}
 
+    with (
+        patch("scripts.download_via_bulk_api.create_session", return_value=session),
+        patch.object(
+            session,
+            "post",
+            side_effect=[resp_award_count, resp_award_search, resp_tx_count_503],
+        ),
+        patch.object(session, "get", side_effect=[resp_award_status, resp_award_stream]),
+    ):
+        exit_code = run_bulk_download(config_path=cfg_path, confirm_download=True)
 
-def test_compare_with_manual_archive(tmp_path: Path) -> None:
-    """compare_with_manual_archive correctly calculates key overlap without altering files."""
-    awards_api = [
-        {"contract_award_unique_key": "A1"},
-        {"contract_award_unique_key": "A2"},
-    ]
-    tx_api = [
-        {"contract_transaction_unique_key": "T1", "contract_award_unique_key": "A1", "action_date": "2020-01-01"},
-        {"contract_transaction_unique_key": "T2", "contract_award_unique_key": "A2", "action_date": "2020-01-01"},
-    ]
-    api_zip = tmp_path / "api.zip"
-    api_zip.write_bytes(create_test_zip(awards_api, tx_api))
-    api_qa = inspect_zip_in_memory(api_zip)
+        assert exit_code == 10  # Stopped on transaction precheck rejection!
 
-    awards_manual = [
-        {"contract_award_unique_key": "A1"},
-        {"contract_award_unique_key": "A3"},
-    ]
-    tx_manual = [
-        {"contract_transaction_unique_key": "T1", "contract_award_unique_key": "A1", "action_date": "2020-01-01"},
-        {"contract_transaction_unique_key": "T3", "contract_award_unique_key": "A3", "action_date": "2020-01-01"},
-    ]
-    manual_zip = tmp_path / "NASA_2020.zip"
-    manual_zip.write_bytes(create_test_zip(awards_manual, tx_manual))
-
-    overlap = compare_with_manual_archive(api_qa, manual_zip)
-
-    assert overlap["manual_archive_present"] is True
-    assert overlap["award_keys_overlap_count"] == 1  # A1
-    assert overlap["award_keys_manual_only"] == 1  # A3
-    assert overlap["award_keys_api_only"] == 1  # A2
-    assert overlap["tx_keys_overlap_count"] == 1  # T1
+        manifest_path = Path(sample_config["paths"]["manifest_path"])
+        assert manifest_path.exists()
+        manifest_data = json.loads(manifest_path.read_text(encoding="utf-8"))
+        assert manifest_data["run_status"] == "transaction_precheck_rejected"
+        assert manifest_data["stage_2_transaction_history"]["status"] == "rejected_by_server"
 
 
 # -----------------------------------------------------------------------------
-# 7. Redaction and Manifest Formatting Tests
+# 8. Redaction and Manual Archive Audit Tests
 # -----------------------------------------------------------------------------
 
 
 def test_redact_sensitive() -> None:
-    """redact_sensitive masks bearer tokens and query parameter secrets."""
-    auth_header = "Authorization: Bearer secret_token_xyz_12345"
-    redacted = redact_sensitive(auth_header)
-    assert "[REDACTED]" in redacted
-    assert "secret_token_xyz_12345" not in redacted
+    """redact_sensitive masks bearer tokens and API keys."""
+    text = "Authorization: Bearer secret_token_xyz"
+    assert "[REDACTED]" in redact_sensitive(text)
+    assert "secret_token_xyz" not in redact_sensitive(text)
 
-    url = "https://api.usaspending.gov/endpoint?api_key=my_super_secret_key&other=param"
-    redacted_url = redact_sensitive(url)
-    assert "[REDACTED]" in redacted_url
-    assert "my_super_secret_key" not in redacted_url
+    url = "https://api.usaspending.gov/download?api_key=secret123"
+    assert "[REDACTED]" in redact_sensitive(url)
+    assert "secret123" not in redact_sensitive(url)
 
 
-def test_generate_manifest_and_report_mismatch(sample_config: dict[str, Any]) -> None:
-    """generate_manifest_and_report records count_mismatch status properly."""
-    manifest, report = generate_manifest_and_report(
-        sample_config,
-        run_status="count_mismatch",
-        error_message="API returned 800 awards instead of 785",
+def test_compare_with_manual_archives(tmp_path: Path) -> None:
+    """compare_with_manual_archives inspects ON and OFF manual archives."""
+    on_zip = tmp_path / "on.zip"
+    on_zip.write_bytes(
+        create_test_zip("Contracts_PrimeAwardSummaries.csv", [{"contract_award_unique_key": "A1"}])
     )
-    assert manifest["run_status"] == "count_mismatch"
-    assert "800 awards" in manifest["error_message"]
-    assert "count_mismatch" in report
+    off_zip = tmp_path / "off.zip"
+    off_zip.write_bytes(
+        create_test_zip("Contracts_PrimeAwardSummaries.csv", [{"contract_award_unique_key": "A2"}])
+    )
+
+    res = compare_with_manual_archives(on_zip, off_zip)
+    assert res["manual_on"]["present"] is True
+    assert res["manual_on"]["award_rows"] == 1
+    assert res["manual_off"]["present"] is True
+    assert res["manual_off"]["award_rows"] == 1

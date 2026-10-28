@@ -2,14 +2,16 @@
 """Canonical bulk download client for USAspending bulk download API.
 
 Project: Sanket — Federal Contract Recompete Intelligence
-Controlled Cohort: NASA + NAICS 541330 + FY2020 action dates (Show New Awards Only OFF)
+Controlled Pilot:
+  Stage 1: FY2020 New Awards Cohort (NASA + NAICS 541330 + base transaction date in FY2020)
+  Stage 2: Transaction History Retrieval for Cohort Award IDs (No transaction date filter)
 
-This script uses the official USAspending asynchronous bulk download API:
-- POST /api/v2/download/count/ (precheck awards and transactions)
-- POST /api/v2/download/search/ (initiate asynchronous download job)
-- GET  /api/v2/download/status/ (poll job completion status)
-- Stream download to temporary .part file, validate ZIP, and atomic rename.
-- In-memory ZIP quality audit (no extraction to disk).
+This client implements the official USAspending asynchronous bulk download API:
+- POST /api/v2/download/count/ (count precheck with singular spending_level string)
+- POST /api/v2/download/search/ (job initiation with array spending_level)
+- GET  /api/v2/download/status/ (job polling with relative URL / file_name resolution)
+- Safe HTTPS streaming to .part file, ZIP CRC validation, and atomic rename.
+- In-memory CSV quality audit without disk extraction.
 """
 
 from __future__ import annotations
@@ -55,7 +57,7 @@ class ConfigError(BulkDownloadError):
 
 
 class PrecheckValidationError(BulkDownloadError):
-    """Raised when count precheck fails or mismatches reference expectations."""
+    """Raised when count precheck fails, exceeds limits, or returns unexpected shape."""
 
     def __init__(self, message: str, precheck_data: dict[str, Any] | None = None) -> None:
         super().__init__(message)
@@ -63,7 +65,7 @@ class PrecheckValidationError(BulkDownloadError):
 
 
 class UntrustedHostError(BulkDownloadError):
-    """Raised when an API URL targets an untrusted host."""
+    """Raised when an API URL targets an untrusted host or non-HTTPS protocol."""
 
 
 class DownloadJobError(BulkDownloadError):
@@ -78,11 +80,14 @@ class ZIPValidationError(BulkDownloadError):
     """Raised when downloaded ZIP file is corrupt or invalid."""
 
 
+class CountReconciliationError(BulkDownloadError):
+    """Raised when count endpoint, job status, or parsed CSV rows disagree on the same query."""
+
+
 def redact_sensitive(text: str) -> str:
     """Redact tokens, passwords, and sensitive keys from log strings or URLs."""
     if not isinstance(text, str):
         return str(text)
-    # Redact Authorization header patterns or token parameters
     text = re.sub(r"(Bearer\s+)[A-Za-z0-9_\-\.]+", r"\1[REDACTED]", text, flags=re.IGNORECASE)
     text = re.sub(r"([?&](?:api_key|token|access_token|secret)=)[^&]+", r"\1[REDACTED]", text, flags=re.IGNORECASE)
     return text
@@ -106,7 +111,7 @@ def load_config(config_path: Path | str) -> dict[str, Any]:
     required_sections = [
         "api",
         "controlled_cohort",
-        "reference_ui_counts",
+        "transaction_cohort",
         "safety_caps",
         "http_policy",
         "polling_policy",
@@ -122,15 +127,42 @@ def load_config(config_path: Path | str) -> dict[str, Any]:
             f"Unsupported cohort '{cohort.get('cohort_id')}'. Only 'nasa_naics541330_fy2020' is authorized."
         )
 
+    # Validate naics_codes is an object with require list
+    filters = cohort.get("filters", {})
+    naics = filters.get("naics_codes")
+    if not isinstance(naics, dict) or "require" not in naics or not isinstance(naics["require"], list):
+        raise ConfigError("naics_codes must be an object with 'require' list: {'require': ['541330']}")
+
+    # Validate time_period has date_type: new_awards_only
+    time_period = filters.get("time_period")
+    if not isinstance(time_period, list) or not time_period:
+        raise ConfigError("time_period must be a non-empty list of date range objects.")
+    tp0 = time_period[0]
+    if tp0.get("date_type") != "new_awards_only":
+        raise ConfigError(
+            f"Pilot award cohort requires date_type: 'new_awards_only', got '{tp0.get('date_type')}'"
+        )
+
     return cfg
 
 
 def validate_trusted_host(url: str, trusted_hosts: list[str]) -> str:
-    """Ensure URL host belongs to the configured trusted hosts whitelist."""
+    """Ensure URL uses HTTPS and host belongs to the configured trusted hosts whitelist."""
     parsed = urlparse(url)
+    scheme = parsed.scheme.lower()
+    if scheme != "https":
+        raise UntrustedHostError(
+            f"Insecure protocol '{scheme}' rejected for URL: {redact_sensitive(url)}. Only HTTPS is permitted."
+        )
+
     host = parsed.hostname
     if not host:
         raise UntrustedHostError(f"Unable to parse hostname from URL: {redact_sensitive(url)}")
+
+    # Reject localhost or loopback addresses
+    if host.lower() in ["localhost", "127.0.0.1", "0.0.0.0", "::1"]:
+        raise UntrustedHostError(f"Localhost access rejected: {host}")
+
     if host.lower() not in [h.lower() for h in trusted_hosts]:
         raise UntrustedHostError(
             f"Host '{host}' is not in trusted hosts list: {trusted_hosts}. Target: {redact_sensitive(url)}"
@@ -144,8 +176,8 @@ def resolve_api_url(base_url: str, relative_or_absolute_url: str, trusted_hosts:
     return validate_trusted_host(resolved, trusted_hosts)
 
 
-def create_session(http_policy: dict[str, Any]) -> requests.Session:
-    """Create a requests Session with bounded retry behavior for transient errors."""
+def create_session(http_policy: dict[str, Any], trusted_hosts: list[str]) -> requests.Session:
+    """Create a requests Session with bounded retry behavior and redirect host validation."""
     session = requests.Session()
     max_retries = int(http_policy.get("max_retries", 3))
     backoff_factor = float(http_policy.get("backoff_factor", 1.5))
@@ -161,6 +193,15 @@ def create_session(http_policy: dict[str, Any]) -> requests.Session:
     adapter = HTTPAdapter(max_retries=retry_strategy)
     session.mount("https://", adapter)
     session.mount("http://", adapter)
+
+    # Attach response hook to validate every redirect target
+    def validate_redirects(response: requests.Response, *args: Any, **kwargs: Any) -> None:
+        if response.history:
+            for resp in response.history:
+                validate_trusted_host(resp.url, trusted_hosts)
+        validate_trusted_host(response.url, trusted_hosts)
+
+    session.hooks["response"].append(validate_redirects)
     return session
 
 
@@ -172,16 +213,10 @@ def parse_count_response(resp_data: Any, level: str) -> dict[str, Any]:
     # Check calculated_count (must not be boolean)
     calc_count = resp_data.get("calculated_count")
     if isinstance(calc_count, bool) or not isinstance(calc_count, (int, float)):
-        # Check alternative transaction count key if level is transactions
-        calc_tx = resp_data.get("calculated_transaction_count")
-        if level == "transactions" and not isinstance(calc_tx, bool) and isinstance(calc_tx, (int, float)):
-            calc_count = int(calc_tx)
-        else:
-            raise PrecheckValidationError(
-                f"Count endpoint returned invalid calculated_count: {calc_count!r} (type={type(calc_count).__name__})"
-            )
-    else:
-        calc_count = int(calc_count)
+        raise PrecheckValidationError(
+            f"Count endpoint returned invalid calculated_count: {calc_count!r} (type={type(calc_count).__name__})"
+        )
+    calc_count = int(calc_count)
 
     if calc_count < 0:
         raise PrecheckValidationError(f"Count endpoint returned negative calculated_count: {calc_count}")
@@ -212,121 +247,73 @@ def parse_count_response(resp_data: Any, level: str) -> dict[str, Any]:
     }
 
 
-def execute_count_precheck(
+def query_count_endpoint(
     session: requests.Session,
-    config: dict[str, Any],
+    base_url: str,
+    count_endpoint: str,
+    trusted_hosts: list[str],
+    filters: dict[str, Any],
+    spending_level: str,
+    timeout: int = 30,
 ) -> dict[str, Any]:
-    """Execute count precheck for both awards and transactions levels.
-
-    Validates that:
-    1. Calculated counts do not exceed safety caps.
-    2. Calculated counts match reference UI counts exactly (785 awards, 1,384 transactions).
-    If a mismatch or violation occurs, raises PrecheckValidationError.
-    """
-    base_url = config["api"]["base_url"]
-    count_endpoint = config["api"]["endpoints"]["count"]
-    trusted_hosts = config["api"]["trusted_hosts"]
+    """Execute count precheck for a given filter payload and singular spending_level string."""
     count_url = resolve_api_url(base_url, count_endpoint, trusted_hosts)
+    payload = {
+        "filters": filters,
+        "spending_level": spending_level,
+    }
+    logger.info(f"POSTing count precheck (spending_level='{spending_level}') to {count_url}...")
 
-    filters = config["controlled_cohort"]["filters"]
-    ref_counts = config["reference_ui_counts"]
-    safety_caps = config["safety_caps"]
-    timeout = config["http_policy"].get("timeout_seconds", 30)
-
-    results: dict[str, Any] = {}
-
-    for level in ["awards", "transactions"]:
-        payload = {
-            "filters": filters,
-            "spending_level": level,
-        }
-        logger.info(f"POSTing count precheck for spending_level='{level}' to {count_url}...")
-        try:
-            resp = session.post(count_url, json=payload, timeout=timeout)
-        except requests.RequestException as exc:
-            raise PrecheckValidationError(
-                f"HTTP request to count endpoint failed for level '{level}': {redact_sensitive(str(exc))}"
-            ) from exc
-
-        if resp.status_code != 200:
-            error_body = redact_sensitive(resp.text[:500])
-            raise PrecheckValidationError(
-                f"Count endpoint returned HTTP {resp.status_code} for level '{level}': {error_body}"
-            )
-
-        try:
-            resp_json = resp.json()
-        except (ValueError, json.JSONDecodeError) as exc:
-            raise PrecheckValidationError(
-                f"Count endpoint returned non-JSON response for level '{level}': {resp.text[:300]}"
-            ) from exc
-
-        parsed = parse_count_response(resp_json, level)
-        results[level] = parsed
-
-    # Validate awards count against safety cap and reference
-    awards_count = results["awards"]["calculated_count"]
-    awards_cap = safety_caps["awards_max"]
-    ref_awards = ref_counts["awards"]
-    if awards_count > awards_cap:
+    try:
+        resp = session.post(count_url, json=payload, timeout=timeout)
+    except requests.RequestException as exc:
         raise PrecheckValidationError(
-            f"Precheck awards count ({awards_count}) exceeds safety cap ({awards_cap}).",
-            precheck_data=results,
-        )
-    if awards_count != ref_awards:
+            f"HTTP request to count endpoint failed: {redact_sensitive(str(exc))}"
+        ) from exc
+
+    if resp.status_code != 200:
+        error_body = redact_sensitive(resp.text[:500])
+        headers_dict = dict(resp.headers)
         raise PrecheckValidationError(
-            f"Count precheck mismatch for awards: API returned {awards_count}, "
-            f"expected reference UI count {ref_awards}. Download aborted per contract.",
-            precheck_data=results,
+            f"Count endpoint returned HTTP {resp.status_code} for spending_level='{spending_level}': {error_body}",
+            precheck_data={
+                "status_code": resp.status_code,
+                "headers": headers_dict,
+                "error_body": error_body,
+                "submitted_filters": filters,
+            },
         )
 
-    # Validate transactions count against safety cap and reference
-    tx_count = results["transactions"]["calculated_count"]
-    tx_cap = safety_caps["transactions_max"]
-    ref_tx = ref_counts["transactions"]
-    if tx_count > tx_cap:
+    try:
+        resp_json = resp.json()
+    except (ValueError, json.JSONDecodeError) as exc:
         raise PrecheckValidationError(
-            f"Precheck transactions count ({tx_count}) exceeds safety cap ({tx_cap}).",
-            precheck_data=results,
-        )
-    if tx_count != ref_tx:
-        raise PrecheckValidationError(
-            f"Count precheck mismatch for transactions: API returned {tx_count}, "
-            f"expected reference UI count {ref_tx}. Download aborted per contract.",
-            precheck_data=results,
-        )
+            f"Count endpoint returned non-JSON response for spending_level='{spending_level}': {resp.text[:300]}"
+        ) from exc
 
-    logger.info(
-        f"Count precheck PASSED: {awards_count} awards (ref: {ref_awards}), "
-        f"{tx_count} transactions (ref: {ref_tx})."
-    )
-    return results
+    return parse_count_response(resp_json, spending_level)
 
 
-def initiate_bulk_download_job(
+def initiate_download_job(
     session: requests.Session,
-    config: dict[str, Any],
+    base_url: str,
+    search_endpoint: str,
+    trusted_hosts: list[str],
+    filters: dict[str, Any],
+    spending_levels: list[str],
+    file_format: str = "csv",
+    timeout: int = 30,
 ) -> dict[str, Any]:
     """Submit asynchronous download job via POST /api/v2/download/search/."""
-    base_url = config["api"]["base_url"]
-    search_endpoint = config["api"]["endpoints"]["search"]
-    trusted_hosts = config["api"]["trusted_hosts"]
     search_url = resolve_api_url(base_url, search_endpoint, trusted_hosts)
 
-    cohort = config["controlled_cohort"]
-    filters = cohort["filters"]
-    spending_levels = cohort["spending_levels"]
-    file_format = cohort["file_format"]
-    timeout = config["http_policy"].get("timeout_seconds", 30)
-
-    # Contract requires: filters, file_format, spending_level. Omit columns to preserve full schema.
     payload = {
         "filters": filters,
         "file_format": file_format,
         "spending_level": spending_levels,
     }
 
-    logger.info(f"Submitting bulk download job to {search_url}...")
+    logger.info(f"Submitting bulk download job (spending_level={spending_levels}) to {search_url}...")
     try:
         resp = session.post(search_url, json=payload, timeout=timeout)
     except requests.RequestException as exc:
@@ -350,7 +337,7 @@ def initiate_bulk_download_job(
     if not file_name:
         raise DownloadJobError(f"Job creation response missing 'file_name': {data}")
 
-    logger.info(f"Bulk download job created successfully: file_name={file_name}")
+    logger.info(f"Bulk download job created: file_name={file_name}")
     return {
         "file_name": file_name,
         "status_url": status_url,
@@ -362,17 +349,15 @@ def initiate_bulk_download_job(
 
 def poll_download_status(
     session: requests.Session,
+    base_url: str,
+    status_endpoint_cfg: str,
+    trusted_hosts: list[str],
     job_info: dict[str, Any],
-    config: dict[str, Any],
+    poll_interval: float = 5.0,
+    overall_timeout: float = 300.0,
+    http_timeout: int = 30,
 ) -> dict[str, Any]:
-    """Poll the status endpoint until the download job is finished, failed, or times out."""
-    base_url = config["api"]["base_url"]
-    status_endpoint_cfg = config["api"]["endpoints"]["status"]
-    trusted_hosts = config["api"]["trusted_hosts"]
-    poll_interval = config["polling_policy"].get("poll_interval_seconds", 5)
-    overall_timeout = config["polling_policy"].get("overall_timeout_seconds", 300)
-    http_timeout = config["http_policy"].get("timeout_seconds", 30)
-
+    """Poll status endpoint safely until finished, failed, or timed out."""
     file_name = job_info["file_name"]
     status_url_raw = job_info.get("status_url")
 
@@ -419,22 +404,31 @@ def poll_download_status(
 
         status_str = status_data.get("status", "").lower()
         message = status_data.get("message", "")
+        total_rows = status_data.get("total_rows")
+        total_columns = status_data.get("total_columns")
+
         entry = {
             "attempt": attempts,
             "elapsed_seconds": round(elapsed, 1),
             "status": status_str,
             "message": message,
+            "total_rows": total_rows,
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
         history.append(entry)
-        logger.info(f"Poll attempt {attempts} ({elapsed:.1f}s): status='{status_str}' message='{message}'")
+        logger.info(
+            f"Poll attempt {attempts} ({elapsed:.1f}s): status='{status_str}' "
+            f"total_rows={total_rows} message='{message}'"
+        )
 
         if status_str == "finished":
-            download_file_url = status_data.get("url") or status_data.get("file_url") or job_info.get("file_url")
+            download_file_url = status_data.get("file_url") or status_data.get("url") or job_info.get("file_url")
             return {
                 "final_status": "finished",
                 "file_name": file_name,
                 "file_url": download_file_url,
+                "total_rows": total_rows,
+                "total_columns": total_columns,
                 "total_attempts": attempts,
                 "total_elapsed_seconds": round(elapsed, 1),
                 "history": history,
@@ -443,10 +437,9 @@ def poll_download_status(
 
         if status_str == "failed":
             raise DownloadJobError(
-                f"Download job failed on USAspending server. Status message: '{message}'"
+                f"Download job failed on USAspending server for file '{file_name}'. Message: '{message}'"
             )
 
-        # Status is 'ready', 'running', or intermediate state
         time.sleep(poll_interval)
 
 
@@ -454,10 +447,10 @@ def download_zip_stream(
     session: requests.Session,
     file_url: str,
     target_path: Path,
-    config: dict[str, Any],
+    trusted_hosts: list[str],
+    download_timeout: int = 180,
 ) -> Path:
-    """Stream download ZIP file to temporary .part file, validate, and atomically rename."""
-    trusted_hosts = config["api"]["trusted_hosts"]
+    """Stream download ZIP file to temporary .part file, validate CRC, and atomically rename."""
     validate_trusted_host(file_url, trusted_hosts)
 
     if target_path.exists():
@@ -468,7 +461,6 @@ def download_zip_stream(
         part_path.unlink()
 
     target_path.parent.mkdir(parents=True, exist_ok=True)
-    download_timeout = config["http_policy"].get("download_timeout_seconds", 180)
 
     logger.info(f"Streaming download from {file_url} to temporary file {part_path}...")
     try:
@@ -483,7 +475,6 @@ def download_zip_stream(
             part_path.unlink()
         raise DownloadJobError(f"Download streaming failed: {redact_sensitive(str(exc))}") from exc
 
-    # Validate downloaded archive as a valid ZIP
     if not zipfile.is_zipfile(part_path):
         part_path.unlink()
         raise ZIPValidationError(f"Downloaded file at {part_path} is not a valid ZIP archive.")
@@ -499,9 +490,8 @@ def download_zip_stream(
             part_path.unlink()
         raise ZIPValidationError(f"Failed to inspect downloaded ZIP: {exc}") from exc
 
-    # Atomic rename
     os.replace(part_path, target_path)
-    logger.info(f"Download completed and verified: {target_path}")
+    logger.info(f"Download completed and CRC verified: {target_path}")
     return target_path
 
 
@@ -514,381 +504,430 @@ def compute_sha256(path: Path) -> str:
     return hasher.hexdigest()
 
 
-def inspect_zip_in_memory(zip_path: Path) -> dict[str, Any]:
-    """Inspect ZIP members in memory without extracting raw CSVs to disk."""
+def inspect_award_zip(zip_path: Path) -> dict[str, Any]:
+    """Inspect award summaries ZIP archive in memory without extracting to disk."""
     if not zip_path.is_file():
-        raise FileNotFoundError(f"ZIP file not found: {zip_path}")
+        raise FileNotFoundError(f"Award ZIP file not found: {zip_path}")
 
     file_size_bytes = zip_path.stat().st_size
     sha256_hex = compute_sha256(zip_path)
 
     members_meta: list[dict[str, Any]] = []
-    awards_member: str | None = None
-    tx_member: str | None = None
+    award_member: str | None = None
     subaward_members: list[str] = []
 
     with zipfile.ZipFile(zip_path, "r") as z:
         for info in z.infolist():
-            member_dict = {
+            meta = {
                 "filename": info.filename,
                 "file_size": info.file_size,
                 "compress_size": info.compress_size,
             }
-            members_meta.append(member_dict)
-
-            lower_name = info.filename.lower()
-            if "subaward" in lower_name:
+            members_meta.append(meta)
+            lower = info.filename.lower()
+            if "subaward" in lower:
                 subaward_members.append(info.filename)
-            elif "primeawardsummaries" in lower_name or "contracts_primeawardsummaries" in lower_name:
-                awards_member = info.filename
-            elif "primetransactions" in lower_name or "contracts_primetransactions" in lower_name:
-                tx_member = info.filename
+            elif ("primeawardsummaries" in lower or "contracts_primeawardsummaries" in lower) and info.filename.endswith(".csv"):
+                award_member = info.filename
 
         if subaward_members:
-            raise ZIPValidationError(
-                f"Found unexpected subaward members in ZIP: {subaward_members}. Subawards are forbidden."
-            )
+            raise ZIPValidationError(f"Forbidden subaward members found in award ZIP: {subaward_members}")
 
-        # Fallback inspection by header if filename matching did not find both
-        if not awards_member or not tx_member:
+        if not award_member:
             for info in z.infolist():
-                if not info.filename.endswith(".csv"):
-                    continue
-                with z.open(info.filename) as f:
-                    wrapper = io.TextIOWrapper(f, encoding="utf-8-sig", errors="replace")
-                    reader = csv.reader(wrapper)
-                    try:
-                        header = next(reader)
-                    except StopIteration:
-                        header = []
-                    header_set = set(header)
-                    if "contract_award_unique_key" in header_set and "contract_transaction_unique_key" not in header_set:
-                        awards_member = info.filename
-                    elif "contract_transaction_unique_key" in header_set:
-                        tx_member = info.filename
+                if info.filename.endswith(".csv"):
+                    with z.open(info.filename) as f:
+                        wrapper = io.TextIOWrapper(f, encoding="utf-8-sig", errors="replace")
+                        header = next(csv.reader(wrapper), [])
+                        if "contract_award_unique_key" in set(header) and "contract_transaction_unique_key" not in set(header):
+                            award_member = info.filename
+                            break
 
-        if not awards_member:
-            raise ZIPValidationError("Unable to identify PrimeAwardSummaries member in downloaded ZIP.")
-        if not tx_member:
-            raise ZIPValidationError("Unable to identify PrimeTransactions member in downloaded ZIP.")
+        if not award_member:
+            raise ZIPValidationError("Unable to identify PrimeAwardSummaries member in award ZIP.")
 
-        # Read award summaries in memory
-        with z.open(awards_member) as f:
+        with z.open(award_member) as f:
             wrapper = io.TextIOWrapper(f, encoding="utf-8-sig", errors="replace")
             reader = csv.DictReader(wrapper)
             award_columns = reader.fieldnames or []
             award_rows = list(reader)
 
-        # Read transactions in memory
-        with z.open(tx_member) as f:
-            wrapper = io.TextIOWrapper(f, encoding="utf-8-sig", errors="replace")
-            reader = csv.DictReader(wrapper)
-            tx_columns = reader.fieldnames or []
-            tx_rows = list(reader)
+    row_count = len(award_rows)
+    piids: list[str] = []
+    blank_piid_count = 0
+    piid_counts: dict[str, int] = {}
 
-    # Award stats
-    award_row_count = len(award_rows)
-    award_keys = [r.get("contract_award_unique_key", "").strip() for r in award_rows]
-    populated_award_keys = [k for k in award_keys if k]
-    unique_award_keys = set(populated_award_keys)
-    award_missing_keys = award_row_count - len(populated_award_keys)
-    award_duplicate_keys = len(populated_award_keys) - len(unique_award_keys)
-
-    # Transaction stats
-    tx_row_count = len(tx_rows)
-    tx_unique_keys = [r.get("contract_transaction_unique_key", "").strip() for r in tx_rows]
-    populated_tx_unique_keys = [k for k in tx_unique_keys if k]
-    unique_tx_keys = set(populated_tx_unique_keys)
-    tx_missing_keys = tx_row_count - len(populated_tx_unique_keys)
-    tx_duplicate_keys = len(populated_tx_unique_keys) - len(unique_tx_keys)
-
-    tx_award_keys = [r.get("contract_award_unique_key", "").strip() for r in tx_rows]
-    populated_tx_award_keys = [k for k in tx_award_keys if k]
-    unique_tx_award_keys = set(populated_tx_award_keys)
-
-    # Linkage
-    tx_award_keys_in_awards = unique_tx_award_keys.intersection(unique_award_keys)
-    linkage_pct = (
-        (len(tx_award_keys_in_awards) / len(unique_tx_award_keys) * 100.0)
-        if unique_tx_award_keys
-        else 0.0
-    )
-
-    # FY2020 Action Date audit (2019-10-01 to 2020-09-30)
-    fy_start = "2019-10-01"
-    fy_end = "2020-09-30"
-    in_fy_count = 0
-    out_of_fy_count = 0
-    date_deviations: list[dict[str, str]] = []
-
-    for r in tx_rows:
-        ad = r.get("action_date", "").strip()
-        if fy_start <= ad <= fy_end:
-            in_fy_count += 1
+    for r in award_rows:
+        piid = r.get("award_id_piid", "").strip()
+        if piid:
+            piids.append(piid)
+            piid_counts[piid] = piid_counts.get(piid, 0) + 1
         else:
-            out_of_fy_count += 1
-            if len(date_deviations) < 10:
-                date_deviations.append(
-                    {
-                        "transaction_key": r.get("contract_transaction_unique_key", ""),
-                        "action_date": ad,
-                    }
-                )
+            blank_piid_count += 1
+
+    unique_piids = sorted(set(piids))
+    repeated_piids = {k: v for k, v in piid_counts.items() if v > 1}
+
+    # Verify expected schema fields
+    expected_fields = [
+        "contract_award_unique_key",
+        "award_id_piid",
+        "awarding_agency_name",
+        "awarding_agency_code",
+        "award_base_action_date",
+        "naics_code",
+        "psc_code",
+    ]
+    missing_expected_fields = [f for f in expected_fields if f not in award_columns]
 
     return {
         "zip_path": str(zip_path),
         "file_size_bytes": file_size_bytes,
         "sha256": sha256_hex,
         "members": members_meta,
-        "awards": {
-            "member_name": awards_member,
-            "row_count": award_row_count,
-            "column_count": len(award_columns),
-            "columns": award_columns,
-            "unique_keys_count": len(unique_award_keys),
-            "missing_keys_count": award_missing_keys,
-            "duplicate_keys_count": award_duplicate_keys,
-            "keys_set": unique_award_keys,
-        },
-        "transactions": {
-            "member_name": tx_member,
-            "row_count": tx_row_count,
-            "column_count": len(tx_columns),
-            "columns": tx_columns,
-            "unique_keys_count": len(unique_tx_keys),
-            "missing_keys_count": tx_missing_keys,
-            "duplicate_keys_count": tx_duplicate_keys,
-            "unique_award_keys_referenced": len(unique_tx_award_keys),
-            "linkage_referenced_in_awards_count": len(tx_award_keys_in_awards),
-            "linkage_percentage": round(linkage_pct, 2),
-            "action_date_audit": {
-                "fy_start": fy_start,
-                "fy_end": fy_end,
-                "in_fy_count": in_fy_count,
-                "out_of_fy_count": out_of_fy_count,
-                "deviations_sample": date_deviations,
-            },
-            "keys_set": unique_tx_keys,
-        },
+        "award_member": award_member,
+        "row_count": row_count,
+        "column_count": len(award_columns),
+        "columns": award_columns,
+        "missing_expected_fields": missing_expected_fields,
+        "total_award_rows": row_count,
+        "nonblank_piids_count": len(piids),
+        "blank_piid_count": blank_piid_count,
+        "unique_piids_count": len(unique_piids),
+        "repeated_piids_count": len(repeated_piids),
+        "repeated_piids_audit": repeated_piids,
+        "unique_piids": unique_piids,
     }
 
 
-def compare_with_manual_archive(
-    api_qa: dict[str, Any],
-    manual_archive_path: Path,
+def inspect_transaction_zip(
+    zip_path: Path,
+    expected_cohort_piids: set[str],
 ) -> dict[str, Any]:
-    """Compare in-memory inspected API ZIP against the manual archive if present."""
-    if not manual_archive_path.is_file():
-        return {
-            "manual_archive_present": False,
-            "manual_archive_path": str(manual_archive_path),
-            "note": "Manual archive not found at configured path.",
-        }
+    """Inspect transaction ZIP archive in memory without extracting to disk."""
+    if not zip_path.is_file():
+        raise FileNotFoundError(f"Transaction ZIP file not found: {zip_path}")
 
-    try:
-        manual_qa = inspect_zip_in_memory(manual_archive_path)
-    except (ZIPValidationError, FileNotFoundError, OSError) as exc:
-        return {
-            "manual_archive_present": True,
-            "manual_archive_path": str(manual_archive_path),
-            "error": f"Failed to inspect manual archive: {exc}",
-        }
+    file_size_bytes = zip_path.stat().st_size
+    sha256_hex = compute_sha256(zip_path)
 
-    api_award_keys: set[str] = api_qa["awards"]["keys_set"]
-    manual_award_keys: set[str] = manual_qa["awards"]["keys_set"]
-    awards_intersection = api_award_keys.intersection(manual_award_keys)
+    members_meta: list[dict[str, Any]] = []
+    tx_member: str | None = None
+    subaward_members: list[str] = []
 
-    api_tx_keys: set[str] = api_qa["transactions"]["keys_set"]
-    manual_tx_keys: set[str] = manual_qa["transactions"]["keys_set"]
-    tx_intersection = api_tx_keys.intersection(manual_tx_keys)
+    with zipfile.ZipFile(zip_path, "r") as z:
+        for info in z.infolist():
+            meta = {
+                "filename": info.filename,
+                "file_size": info.file_size,
+                "compress_size": info.compress_size,
+            }
+            members_meta.append(meta)
+            lower = info.filename.lower()
+            if "subaward" in lower:
+                subaward_members.append(info.filename)
+            elif ("primetransactions" in lower or "contracts_primetransactions" in lower) and info.filename.endswith(".csv"):
+                tx_member = info.filename
+
+        if subaward_members:
+            raise ZIPValidationError(f"Forbidden subaward members found in transaction ZIP: {subaward_members}")
+
+        if not tx_member:
+            for info in z.infolist():
+                if info.filename.endswith(".csv"):
+                    with z.open(info.filename) as f:
+                        wrapper = io.TextIOWrapper(f, encoding="utf-8-sig", errors="replace")
+                        header = next(csv.reader(wrapper), [])
+                        if "contract_transaction_unique_key" in set(header):
+                            tx_member = info.filename
+                            break
+
+        if not tx_member:
+            raise ZIPValidationError("Unable to identify PrimeTransactions member in transaction ZIP.")
+
+        with z.open(tx_member) as f:
+            wrapper = io.TextIOWrapper(f, encoding="utf-8-sig", errors="replace")
+            reader = csv.DictReader(wrapper)
+            tx_columns = reader.fieldnames or []
+            tx_rows = list(reader)
+
+    row_count = len(tx_rows)
+    tx_keys = [r.get("contract_transaction_unique_key", "").strip() for r in tx_rows]
+    populated_tx_keys = [k for k in tx_keys if k]
+    unique_tx_keys = set(populated_tx_keys)
+    missing_tx_keys = row_count - len(populated_tx_keys)
+    duplicate_tx_keys = len(populated_tx_keys) - len(unique_tx_keys)
+
+    # Linkage to cohort PIIDs
+    tx_piids = [r.get("award_id_piid", "").strip() for r in tx_rows]
+    populated_tx_piids = [p for p in tx_piids if p]
+    unique_tx_piids = set(populated_tx_piids)
+    cohort_piids_matched = unique_tx_piids.intersection(expected_cohort_piids)
+    unmatched_tx_piids = unique_tx_piids - expected_cohort_piids
+
+    # Date range audit
+    action_dates = [r.get("action_date", "").strip() for r in tx_rows if r.get("action_date")]
+    min_date = min(action_dates) if action_dates else None
+    max_date = max(action_dates) if action_dates else None
+
+    fy2020_start = "2019-10-01"
+    fy2020_end = "2020-09-30"
+    in_fy2020_count = sum(1 for d in action_dates if fy2020_start <= d <= fy2020_end)
+    outside_fy2020_count = len(action_dates) - in_fy2020_count
 
     return {
-        "manual_archive_present": True,
-        "manual_archive_path": str(manual_archive_path),
-        "manual_sha256": manual_qa["sha256"],
-        "manual_awards_row_count": manual_qa["awards"]["row_count"],
-        "manual_transactions_row_count": manual_qa["transactions"]["row_count"],
-        "api_awards_row_count": api_qa["awards"]["row_count"],
-        "api_transactions_row_count": api_qa["transactions"]["row_count"],
-        "award_keys_overlap_count": len(awards_intersection),
-        "award_keys_manual_only": len(manual_award_keys - api_award_keys),
-        "award_keys_api_only": len(api_award_keys - manual_award_keys),
-        "tx_keys_overlap_count": len(tx_intersection),
-        "tx_keys_manual_only": len(manual_tx_keys - api_tx_keys),
-        "tx_keys_api_only": len(api_tx_keys - manual_tx_keys),
-        "note": "Manual archive was inspected in memory and preserved completely unchanged.",
+        "zip_path": str(zip_path),
+        "file_size_bytes": file_size_bytes,
+        "sha256": sha256_hex,
+        "members": members_meta,
+        "tx_member": tx_member,
+        "row_count": row_count,
+        "column_count": len(tx_columns),
+        "unique_tx_keys_count": len(unique_tx_keys),
+        "missing_tx_keys_count": missing_tx_keys,
+        "duplicate_tx_keys_count": duplicate_tx_keys,
+        "unique_tx_piids_referenced": len(unique_tx_piids),
+        "cohort_piids_matched_count": len(cohort_piids_matched),
+        "unmatched_tx_piids_count": len(unmatched_tx_piids),
+        "date_audit": {
+            "min_action_date": min_date,
+            "max_action_date": max_date,
+            "in_fy2020_count": in_fy2020_count,
+            "outside_fy2020_count": outside_fy2020_count,
+            "note": "Transaction query intentionally has no date filter; actions outside FY2020 are expected.",
+        },
+        "tx_keys_set": unique_tx_keys,
     }
+
+
+def compare_with_manual_archives(
+    manual_on_path: Path,
+    manual_off_path: Path,
+) -> dict[str, Any]:
+    """Inspect manual archives in memory to document prior observations."""
+    results: dict[str, Any] = {}
+
+    if manual_on_path.is_file():
+        try:
+            qa_on = inspect_award_zip(manual_on_path)
+            results["manual_on"] = {
+                "present": True,
+                "path": str(manual_on_path),
+                "sha256": qa_on["sha256"],
+                "award_rows": qa_on["row_count"],
+                "note": "Manual Advanced Search with Show New Awards Only ON",
+            }
+        except Exception as exc:  # noqa: BLE001
+            results["manual_on"] = {"present": True, "error": str(exc)}
+    else:
+        results["manual_on"] = {"present": False}
+
+    if manual_off_path.is_file():
+        try:
+            qa_off = inspect_award_zip(manual_off_path)
+            results["manual_off"] = {
+                "present": True,
+                "path": str(manual_off_path),
+                "sha256": qa_off["sha256"],
+                "award_rows": qa_off["row_count"],
+                "note": "Manual Advanced Search with Show New Awards Only OFF",
+            }
+        except Exception as exc:  # noqa: BLE001
+            results["manual_off"] = {"present": True, "error": str(exc)}
+    else:
+        results["manual_off"] = {"present": False}
+
+    return results
 
 
 def generate_manifest_and_report(
     config: dict[str, Any],
     run_status: str,
-    precheck_data: dict[str, Any] | None = None,
-    job_info: dict[str, Any] | None = None,
-    poll_result: dict[str, Any] | None = None,
-    qa_result: dict[str, Any] | None = None,
-    overlap_result: dict[str, Any] | None = None,
+    award_stage_data: dict[str, Any] | None = None,
+    tx_stage_data: dict[str, Any] | None = None,
+    manual_comparison: dict[str, Any] | None = None,
     error_message: str | None = None,
 ) -> tuple[dict[str, Any], str]:
-    """Generate structured manifest dict and markdown report."""
+    """Generate structured JSON manifest and comprehensive markdown validation report."""
     timestamp = datetime.now(timezone.utc).isoformat()
     cohort = config["controlled_cohort"]
-    ref_counts = config["reference_ui_counts"]
+    tx_cfg = config["transaction_cohort"]
+    ref_obs = config.get("reference_observations", {})
 
-    # Build manifest
     manifest: dict[str, Any] = {
-        "manifest_version": "1.0.0",
+        "manifest_version": "2.0.0",
         "generated_at_utc": timestamp,
         "run_status": run_status,
         "controlled_cohort": cohort,
-        "reference_ui_counts": ref_counts,
+        "transaction_cohort_config": tx_cfg,
+        "reference_observations": ref_obs,
         "error_message": error_message,
-        "precheck": precheck_data,
-        "job_creation": job_info,
-        "polling": poll_result,
-        "qa": None,
-        "overlap_with_manual_archive": overlap_result,
+        "stage_1_award_cohort": award_stage_data,
+        "stage_2_transaction_history": tx_stage_data,
+        "manual_archives_audit": manual_comparison,
     }
 
-    if qa_result:
-        # Avoid serializing set objects in manifest
-        clean_qa = json.loads(
-            json.dumps(
-                qa_result,
-                default=lambda o: list(o) if isinstance(o, set) else str(o),
-            )
+    # Clean keys_set if present in QA dicts to keep manifest lightweight
+    clean_manifest = json.loads(
+        json.dumps(
+            manifest,
+            default=lambda o: list(o) if isinstance(o, set) else str(o),
         )
-        # Drop raw key sets from manifest to keep it lightweight
-        if "awards" in clean_qa and "keys_set" in clean_qa["awards"]:
-            del clean_qa["awards"]["keys_set"]
-        if "transactions" in clean_qa and "keys_set" in clean_qa["transactions"]:
-            del clean_qa["transactions"]["keys_set"]
-        manifest["qa"] = clean_qa
+    )
 
     # Build markdown report
-    md_lines = [
-        "# Sanket — USAspending Bulk Download Client Validation Report",
+    md = [
+        "# Sanket — USAspending Controlled FY2020 Pilot Validation Report",
         "",
         f"**Run Status**: `{run_status}`  ",
         f"**Timestamp (UTC)**: `{timestamp}`  ",
-        f"**Controlled Cohort**: `{cohort['cohort_id']}` ({cohort['description']})  ",
+        f"**Cohort ID**: `{cohort['cohort_id']}` ({cohort['description']})  ",
         "",
-        "## 1. Executive Summary",
+        "## 1. Executive Summary & Query Architecture",
+        "",
+        "This controlled pilot implements a two-stage asynchronous bulk download architecture:",
+        "1. **Stage 1 (Award Cohort)**: NASA + NAICS 541330 (`require: ['541330']`) + FY2020 new awards (`date_type: 'new_awards_only'`).",
+        "2. **Stage 2 (Transaction History)**: Full modification history queried by cohort `award_ids` with **NO date filter**.",
         "",
     ]
 
     if run_status == "dry_run":
-        md_lines.extend(
+        md.extend(
             [
-                "This execution was a **dry run** (`--confirm-sample-download` was not passed).",
-                "Zero HTTP requests were sent and zero raw sample files were created or modified.",
+                "### Mode: Dry Run",
+                "Zero HTTP requests were sent and zero raw data files were written.",
                 "",
-                "### Planned Cohort Filters",
+                "#### Planned Stage 1 (Awards) Filters:",
                 "```json",
                 json.dumps(cohort["filters"], indent=2),
                 "```",
                 "",
-                f"- **Intended Awards Count (UI Ref)**: `{ref_counts['awards']}`",
-                f"- **Intended Transactions Count (UI Ref)**: `{ref_counts['transactions']}`",
-                f"- **API Base URL**: `{config['api']['base_url']}`",
-                f"- **Safety Caps**: Awards <= {config['safety_caps']['awards_max']}, Transactions <= {config['safety_caps']['transactions_max']}",
+                "#### Planned Stage 2 (Transactions) Query Strategy:",
+                f"- **Batch Size**: {tx_cfg.get('batch_size', 100)} PIIDs per job",
+                f"- **Exact Match Quoting**: `{tx_cfg.get('exact_match_quoting', True)}`",
+                "- **Spending Level**: `transactions` (count: string, download: array)",
+                "- **Date Filter**: None (deliberately omitted to fetch complete lifetime actions)",
                 "",
             ]
         )
-    elif run_status == "success":
-        md_lines.extend(
-            [
-                "The canonical bulk download client successfully completed the controlled cohort acquisition.",
-                "Count precheck matched reference counts, the asynchronous job finished cleanly, ",
-                "and the downloaded ZIP passed all in-memory integrity, linkage, and schema validations.",
-                "",
-                "## 2. Reconciled Counts & Precheck",
-                "",
-                "| Spending Level | UI Reference Count | API Count Precheck | Downloaded CSV Rows | Reconciled Status |",
-                "| :--- | :--- | :--- | :--- | :--- |",
-                f"| Prime Awards | {ref_counts['awards']} | {precheck_data['awards']['calculated_count'] if precheck_data else 'N/A'} | {qa_result['awards']['row_count'] if qa_result else 'N/A'} | **MATCH** |",
-                f"| Prime Transactions | {ref_counts['transactions']} | {precheck_data['transactions']['calculated_count'] if precheck_data else 'N/A'} | {qa_result['transactions']['row_count'] if qa_result else 'N/A'} | **MATCH** |",
-                "",
-                "## 3. Downloaded ZIP Quality & Linkage QA",
-                "",
-                f"- **ZIP File**: `{qa_result['zip_path']}`",
-                f"- **Size**: `{qa_result['file_size_bytes']:,}` bytes",
-                f"- **SHA-256**: `{qa_result['sha256']}`",
-                f"- **Prime Awards Member**: `{qa_result['awards']['member_name']}` ({qa_result['awards']['row_count']} rows, {qa_result['awards']['column_count']} cols)",
-                f"  - Missing `contract_award_unique_key`: `{qa_result['awards']['missing_keys_count']}`",
-                f"  - Duplicate keys: `{qa_result['awards']['duplicate_keys_count']}`",
-                f"- **Prime Transactions Member**: `{qa_result['transactions']['member_name']}` ({qa_result['transactions']['row_count']} rows, {qa_result['transactions']['column_count']} cols)",
-                f"  - Missing `contract_transaction_unique_key`: `{qa_result['transactions']['missing_keys_count']}`",
-                f"  - Duplicate keys: `{qa_result['transactions']['duplicate_keys_count']}`",
-                f"  - Unique Awards Referenced: `{qa_result['transactions']['unique_award_keys_referenced']}`",
-                f"  - Transaction-to-Award Linkage: `{qa_result['transactions']['linkage_percentage']}%` ({qa_result['transactions']['linkage_referenced_in_awards_count']}/{qa_result['transactions']['unique_award_keys_referenced']})",
-                f"  - Transactions in FY2020: `{qa_result['transactions']['action_date_audit']['in_fy_count']}/{qa_result['transactions']['row_count']}` (Deviations: {qa_result['transactions']['action_date_audit']['out_of_fy_count']})",
-                "",
-                "> [!NOTE]",
-                "> The downloaded transaction export contains FY2020 action modifications, not all lifetime modifications for each award.",
-                "",
-            ]
-        )
-        if overlap_result and overlap_result.get("manual_archive_present"):
-            md_lines.extend(
+    else:
+        # Live run report
+        md.append("## 2. Stage 1: Award Cohort Reconciliation")
+        if award_stage_data:
+            pre_calc = award_stage_data.get("precheck_count")
+            st_rows = award_stage_data.get("status_total_rows")
+            csv_rows = award_stage_data.get("csv_row_count")
+            reconciled = "MATCH" if pre_calc == csv_rows == (st_rows or csv_rows) else "**MISMATCH**"
+
+            md.extend(
                 [
-                    "## 4. Reconciliation with Manual Archive (`NASA_2020.zip`)",
                     "",
-                    f"- **Manual Archive SHA-256**: `{overlap_result.get('manual_sha256')}`",
-                    f"- **Award Keys Overlap**: `{overlap_result['award_keys_overlap_count']}` (Manual only: {overlap_result['award_keys_manual_only']}, API only: {overlap_result['award_keys_api_only']})",
-                    f"- **Transaction Keys Overlap**: `{overlap_result['tx_keys_overlap_count']}` (Manual only: {overlap_result['tx_keys_manual_only']}, API only: {overlap_result['tx_keys_api_only']})",
-                    f"- **Manual Archive Preservation**: `{overlap_result['note']}`",
+                    "| Stage 1 Metric | Count / Value |",
+                    "| :--- | :--- |",
+                    f"| Count API Precheck (`calculated_count`) | `{pre_calc}` |",
+                    f"| Job Status Metadata (`total_rows`) | `{st_rows}` |",
+                    f"| Downloaded CSV Data Rows | `{csv_rows}` |",
+                    f"| Same-Query Reconciliation Status | **{reconciled}** |",
+                    f"| Total Columns in Award CSV | `{award_stage_data.get('csv_column_count')}` |",
+                    f"| Unique PIIDs Extracted | `{award_stage_data.get('unique_piids_count')}` |",
+                    f"| Blank PIID Count | `{award_stage_data.get('blank_piid_count')}` |",
+                    f"| Repeated PIID Count | `{award_stage_data.get('repeated_piids_count')}` |",
+                    "",
+                    f"- **ZIP File Path**: `{award_stage_data.get('zip_path')}`",
+                    f"- **SHA-256**: `{award_stage_data.get('sha256')}`",
+                    f"- **File Size**: `{award_stage_data.get('file_size_bytes'):,}` bytes",
                     "",
                 ]
             )
-    else:
-        # Error or count_mismatch
-        md_lines.extend(
-            [
-                f"The bulk download workflow stopped with status: **`{run_status}`**.",
-                "",
-                "### Error / Halt Details",
-                f"```\n{error_message}\n```",
-                "",
-                "### Controlled Filters Submitted",
-                "```json",
-                json.dumps(cohort["filters"], indent=2),
-                "```",
-                "",
-            ]
-        )
-        if precheck_data:
-            awards_api = precheck_data.get("awards", {}).get("calculated_count", "N/A")
-            tx_api = precheck_data.get("transactions", {}).get("calculated_count", "N/A")
-            awards_match = "MATCH" if awards_api == ref_counts["awards"] else "**MISMATCH**"
-            tx_match = "MATCH" if tx_api == ref_counts["transactions"] else "**MISMATCH**"
+        else:
+            md.append("Stage 1 did not execute or failed before completion.")
 
-            md_lines.extend(
+        md.append("## 3. Stage 2: Transaction History Retrieval")
+        if tx_stage_data:
+            tx_status = tx_stage_data.get("status")
+            md.extend(
                 [
-                    "### Count Precheck Comparison",
                     "",
-                    "| Spending Level | UI Reference Count | API Count Precheck | Status |",
-                    "| :--- | :--- | :--- | :--- |",
-                    f"| Prime Awards | {ref_counts['awards']} | {awards_api} | {awards_match} |",
-                    f"| Prime Transactions | {ref_counts['transactions']} | {tx_api} | {tx_match} |",
+                    f"**Transaction Stage Status**: `{tx_status}`  ",
+                    f"**Batches Planned**: `{tx_stage_data.get('total_batches')}`  ",
+                    f"**Exact Match Quoting Used**: `{tx_stage_data.get('exact_match_quoting')}`  ",
                     "",
-                    "### Count Precheck Raw Responses",
-                    "```json",
-                    json.dumps(precheck_data, indent=2),
+                ]
+            )
+            if tx_status == "rejected_by_server":
+                md.extend(
+                    [
+                        "### Server Rejection of Documented Form",
+                        f"**Endpoint**: `{tx_stage_data.get('rejected_endpoint')}`  ",
+                        f"**HTTP Status**: `{tx_stage_data.get('http_status')}`  ",
+                        f"**Reason / Message**: `{tx_stage_data.get('error_message')}`  ",
+                        "",
+                        "> [!IMPORTANT]",
+                        "> Per specification: 'If the endpoint rejects the documented form, preserve the server response",
+                        "> and stop rather than trying arbitrary payload variants.' The client recorded the server rejection",
+                        "> and halted honestly without silently inventing workarounds.",
+                        "",
+                        "#### Rejected Request Sample Payload:",
+                        "```json",
+                        json.dumps(tx_stage_data.get("sample_rejected_payload", {}), indent=2),
+                        "```",
+                        "",
+                    ]
+                )
+            elif tx_status == "completed":
+                md.extend(
+                    [
+                        "### Transaction Batch Execution Summary",
+                        f"- Total Transaction Batches Downloaded: `{len(tx_stage_data.get('batches', []))}`",
+                        f"- Total Transaction Rows: `{tx_stage_data.get('total_tx_rows')}`",
+                        f"- Date Range: `{tx_stage_data.get('min_action_date')}` to `{tx_stage_data.get('max_action_date')}`",
+                        f"- Transactions Outside FY2020: `{tx_stage_data.get('outside_fy2020_count')}`",
+                        "",
+                    ]
+                )
+        else:
+            md.append("Stage 2 was not initiated.")
+
+        if error_message:
+            md.extend(
+                [
+                    "## 4. Error / Halt Diagnostics",
+                    "```",
+                    error_message,
                     "```",
                     "",
                 ]
             )
 
-    report_content = "\n".join(md_lines) + "\n"
-    return manifest, report_content
+        md.append("## 5. Context: Comparison with Prior Manual Downloads")
+        md.extend(
+            [
+                "",
+                "| Archive | Filter Semantics | Awards | Transactions | Role in Sanket |",
+                "| :--- | :--- | :--- | :--- | :--- |",
+                "| Manual ON (`...H21M56S49644703.zip`) | FY2020, Show New Awards ON | 221 | 390 | Prior reference observation |",
+                "| Manual OFF (`NASA_2020.zip`) | FY2020, Show New Awards OFF | 785 | 1,384 | Prior reference observation |",
+                f"| Current Pilot Stage 1 | FY2020, `new_awards_only` | {award_stage_data.get('csv_row_count') if award_stage_data else 'N/A'} | N/A (separate) | Official bulk API award cohort |",
+                "",
+                "> [!NOTE]",
+                "> 'Show New Awards Only' ON filters by initial award obligation date (`new_awards_only`), yielding 221 awards.",
+                "> 'Show New Awards Only' OFF filters by transaction action dates (`action_date`), yielding 785 awards.",
+                "> The transaction export in the combined manual download was date-truncated to FY2020; querying transaction history",
+                "> separately without date filters is required to capture full lifetime modifications.",
+                "",
+            ]
+        )
+
+    report_content = "\n".join(md) + "\n"
+    return clean_manifest, report_content
 
 
 def run_bulk_download(
     config_path: Path | str = DEFAULT_CONFIG_PATH,
     confirm_download: bool = False,
+    exact_match_quoting: bool | None = None,
 ) -> int:
-    """Main execution function for the bulk download client."""
+    """Main execution function for the canonical bulk download client."""
     try:
         config = load_config(config_path)
     except (ConfigError, OSError) as exc:
@@ -900,15 +939,20 @@ def run_bulk_download(
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.parent.mkdir(parents=True, exist_ok=True)
 
+    if exact_match_quoting is not None:
+        config["transaction_cohort"]["exact_match_quoting"] = exact_match_quoting
+
+    quoting_enabled = config["transaction_cohort"].get("exact_match_quoting", True)
+
     if not confirm_download:
         logger.info("=== DRY RUN MODE ===")
-        logger.info("Pass --confirm-sample-download to execute the single controlled FY2020 cohort download.")
+        logger.info("Pass --confirm-sample-download to execute the controlled FY2020 pilot.")
         logger.info(f"Target Cohort: {config['controlled_cohort']['cohort_id']}")
-        logger.info(f"Filters:\n{json.dumps(config['controlled_cohort']['filters'], indent=2)}")
-        logger.info(f"Reference UI Counts: {config['reference_ui_counts']}")
+        logger.info(f"Stage 1 Award Filters:\n{json.dumps(config['controlled_cohort']['filters'], indent=2)}")
+        logger.info(f"Stage 2 Quoting Enabled: {quoting_enabled}")
         logger.info(f"Safety Caps: {config['safety_caps']}")
         logger.info(f"API Base URL: {config['api']['base_url']}")
-        logger.info(f"Output Directory: {config['paths']['raw_data_dir']}")
+        logger.info(f"Output Directory: {config['paths']['bulk_api_dir']}")
 
         manifest, report = generate_manifest_and_report(config, run_status="dry_run")
         manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
@@ -917,168 +961,465 @@ def run_bulk_download(
         logger.info(f"Dry run report saved to {report_path}")
         return 0
 
-    session = create_session(config["http_policy"])
+    base_url = config["api"]["base_url"]
+    count_endpoint = config["api"]["endpoints"]["count"]
+    search_endpoint = config["api"]["endpoints"]["search"]
+    status_endpoint = config["api"]["endpoints"]["status"]
+    trusted_hosts = config["api"]["trusted_hosts"]
 
-    # 1. Count precheck
-    precheck_data = None
+    session = create_session(config["http_policy"], trusted_hosts)
+    bulk_api_dir = Path(config["paths"]["bulk_api_dir"])
+    bulk_api_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp_str = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+    # =========================================================================
+    # STAGE 1: Controlled Award Summary Cohort Acquisition
+    # =========================================================================
+    logger.info("--- STARTING STAGE 1: Award Summary Cohort ---")
+    award_filters = config["controlled_cohort"]["filters"]
+    award_count_level = config["controlled_cohort"].get("spending_level_count", "awards")
+    award_download_levels = config["controlled_cohort"].get("spending_level_download", ["awards"])
+    file_format = config["controlled_cohort"].get("file_format", "csv")
+    awards_cap = config["safety_caps"]["awards_max"]
+
+    # 1.1 Count precheck
     try:
-        precheck_data = execute_count_precheck(session, config)
+        award_count_resp = query_count_endpoint(
+            session=session,
+            base_url=base_url,
+            count_endpoint=count_endpoint,
+            trusted_hosts=trusted_hosts,
+            filters=award_filters,
+            spending_level=award_count_level,
+            timeout=config["http_policy"]["timeout_seconds"],
+        )
     except PrecheckValidationError as exc:
-        err_msg = str(exc)
-        logger.error(f"Count precheck validation failed: {err_msg}")
-        precheck_data = exc.precheck_data or precheck_data
+        err_msg = f"Stage 1 award count precheck failed: {exc}"
+        logger.error(err_msg)
         manifest, report = generate_manifest_and_report(
             config,
-            run_status="count_mismatch",
-            precheck_data=precheck_data,
+            run_status="award_precheck_failed",
             error_message=err_msg,
         )
         manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         report_path.write_text(report, encoding="utf-8")
         return 2
 
-    # 2. Initiate download job
-    job_info = None
-    try:
-        job_info = initiate_bulk_download_job(session, config)
-    except DownloadJobError as exc:
-        err_msg = str(exc)
-        logger.error(f"Failed to initiate download job: {err_msg}")
+    award_calc_count = award_count_resp["calculated_count"]
+    logger.info(f"Stage 1 Count Precheck PASSED: calculated_count = {award_calc_count}")
+
+    if award_calc_count > awards_cap:
+        err_msg = f"Award count ({award_calc_count}) exceeds safety cap ({awards_cap})."
+        logger.error(err_msg)
         manifest, report = generate_manifest_and_report(
             config,
-            run_status="job_creation_failed",
-            precheck_data=precheck_data,
-            job_info=job_info,
+            run_status="award_cap_exceeded",
             error_message=err_msg,
         )
         manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         report_path.write_text(report, encoding="utf-8")
         return 3
 
-    # 3. Poll status
-    poll_result = None
+    # 1.2 Submit award download job
     try:
-        poll_result = poll_download_status(session, job_info, config)
-    except (DownloadJobError, DownloadJobTimeoutError) as exc:
-        err_msg = str(exc)
-        logger.error(f"Job polling failed: {err_msg}")
+        award_job = initiate_download_job(
+            session=session,
+            base_url=base_url,
+            search_endpoint=search_endpoint,
+            trusted_hosts=trusted_hosts,
+            filters=award_filters,
+            spending_levels=award_download_levels,
+            file_format=file_format,
+            timeout=config["http_policy"]["timeout_seconds"],
+        )
+    except DownloadJobError as exc:
+        err_msg = f"Stage 1 award job initiation failed: {exc}"
+        logger.error(err_msg)
         manifest, report = generate_manifest_and_report(
             config,
-            run_status="polling_failed",
-            precheck_data=precheck_data,
-            job_info=job_info,
-            poll_result=poll_result,
+            run_status="award_job_init_failed",
             error_message=err_msg,
         )
         manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         report_path.write_text(report, encoding="utf-8")
         return 4
 
-    # 4. Stream and validate ZIP download
-    file_url = poll_result["file_url"]
-    if not file_url:
-        err_msg = "Status polling succeeded but no download file_url was returned."
+    # 1.3 Poll award job status
+    try:
+        award_poll = poll_download_status(
+            session=session,
+            base_url=base_url,
+            status_endpoint_cfg=status_endpoint,
+            trusted_hosts=trusted_hosts,
+            job_info=award_job,
+            poll_interval=config["polling_policy"]["poll_interval_seconds"],
+            overall_timeout=config["polling_policy"]["overall_timeout_seconds"],
+            http_timeout=config["http_policy"]["timeout_seconds"],
+        )
+    except (DownloadJobError, DownloadJobTimeoutError) as exc:
+        err_msg = f"Stage 1 award job polling failed: {exc}"
         logger.error(err_msg)
         manifest, report = generate_manifest_and_report(
             config,
-            run_status="missing_file_url",
-            precheck_data=precheck_data,
-            job_info=job_info,
-            poll_result=poll_result,
+            run_status="award_polling_failed",
             error_message=err_msg,
         )
         manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         report_path.write_text(report, encoding="utf-8")
         return 5
 
-    utc_now_str = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    raw_dir = Path(config["paths"]["raw_data_dir"])
-    target_zip = raw_dir / f"api_nasa_naics541330_fy2020_{utc_now_str}.zip"
-
+    # 1.4 Download award ZIP
+    target_award_zip = bulk_api_dir / f"PrimeAwardSummaries_nasa_naics541330_fy2020_{timestamp_str}.zip"
     try:
-        download_zip_stream(session, file_url, target_zip, config)
+        download_zip_stream(
+            session=session,
+            file_url=award_poll["file_url"],
+            target_path=target_award_zip,
+            trusted_hosts=trusted_hosts,
+            download_timeout=config["http_policy"]["download_timeout_seconds"],
+        )
     except (UntrustedHostError, ZIPValidationError, DownloadJobError, FileExistsError) as exc:
-        err_msg = str(exc)
-        logger.error(f"ZIP acquisition failed: {err_msg}")
+        err_msg = f"Stage 1 award ZIP acquisition failed: {exc}"
+        logger.error(err_msg)
         manifest, report = generate_manifest_and_report(
             config,
-            run_status="download_failed",
-            precheck_data=precheck_data,
-            job_info=job_info,
-            poll_result=poll_result,
+            run_status="award_download_failed",
             error_message=err_msg,
         )
         manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         report_path.write_text(report, encoding="utf-8")
         return 6
 
-    # 5. In-memory ZIP quality inspection
+    # 1.5 Inspect award ZIP in memory
     try:
-        qa_result = inspect_zip_in_memory(target_zip)
+        award_qa = inspect_award_zip(target_award_zip)
     except ZIPValidationError as exc:
-        err_msg = str(exc)
-        logger.error(f"ZIP QA failed: {err_msg}")
+        err_msg = f"Stage 1 award ZIP quality inspection failed: {exc}"
+        logger.error(err_msg)
         manifest, report = generate_manifest_and_report(
             config,
-            run_status="qa_failed",
-            precheck_data=precheck_data,
-            job_info=job_info,
-            poll_result=poll_result,
+            run_status="award_qa_failed",
             error_message=err_msg,
         )
         manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         report_path.write_text(report, encoding="utf-8")
         return 7
 
-    # 6. Reconcile downloaded rows with precheck & UI reference
-    downloaded_awards = qa_result["awards"]["row_count"]
-    downloaded_tx = qa_result["transactions"]["row_count"]
-    ref_awards = config["reference_ui_counts"]["awards"]
-    ref_tx = config["reference_ui_counts"]["transactions"]
-
-    if downloaded_awards != ref_awards or downloaded_tx != ref_tx:
+    # 1.6 Same-query reconciliation for Stage 1
+    status_total_rows = award_poll.get("total_rows")
+    csv_row_count = award_qa["row_count"]
+    if award_calc_count != csv_row_count:
         err_msg = (
-            f"Downloaded row counts mismatch UI reference: Awards {downloaded_awards} vs {ref_awards}, "
-            f"Transactions {downloaded_tx} vs {ref_tx}."
+            f"Stage 1 count mismatch on same exact query: Count API returned {award_calc_count}, "
+            f"but downloaded CSV contained {csv_row_count} rows."
         )
         logger.error(err_msg)
         manifest, report = generate_manifest_and_report(
             config,
-            run_status="count_mismatch",
-            precheck_data=precheck_data,
-            job_info=job_info,
-            poll_result=poll_result,
-            qa_result=qa_result,
+            run_status="award_count_mismatch",
             error_message=err_msg,
         )
         manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         report_path.write_text(report, encoding="utf-8")
         return 8
 
-    # 7. Compare with manual archive if present
-    manual_archive_path = Path(config["paths"]["manual_archive_path"])
-    overlap_result = compare_with_manual_archive(qa_result, manual_archive_path)
+    award_stage_data = {
+        "precheck_count": award_calc_count,
+        "status_total_rows": status_total_rows,
+        "csv_row_count": csv_row_count,
+        "csv_column_count": award_qa["column_count"],
+        "zip_path": str(target_award_zip),
+        "sha256": award_qa["sha256"],
+        "file_size_bytes": award_qa["file_size_bytes"],
+        "unique_piids_count": award_qa["unique_piids_count"],
+        "blank_piid_count": award_qa["blank_piid_count"],
+        "repeated_piids_count": award_qa["repeated_piids_count"],
+        "repeated_piids_audit": award_qa["repeated_piids_audit"],
+    }
+    logger.info(
+        f"Stage 1 Reconciliation PASSED: {csv_row_count} awards (Unique PIIDs: {award_qa['unique_piids_count']})"
+    )
 
-    # 8. Write success manifest and report
+    # Compare with manual archives
+    manual_on_path = Path(config["paths"]["manual_archive_on"])
+    manual_off_path = Path(config["paths"]["manual_archive_off"])
+    manual_comparison = compare_with_manual_archives(manual_on_path, manual_off_path)
+
+    # =========================================================================
+    # STAGE 2: Transaction History Retrieval for Cohort PIIDs
+    # =========================================================================
+    logger.info("--- STARTING STAGE 2: Transaction History for Cohort PIIDs ---")
+    cohort_piids = award_qa["unique_piids"]
+    if not cohort_piids:
+        err_msg = "Stage 1 returned zero cohort PIIDs. Cannot proceed with transaction history acquisition."
+        logger.error(err_msg)
+        manifest, report = generate_manifest_and_report(
+            config,
+            run_status="no_cohort_piids",
+            award_stage_data=award_stage_data,
+            error_message=err_msg,
+        )
+        manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+        report_path.write_text(report, encoding="utf-8")
+        return 9
+
+    batch_size = config["transaction_cohort"].get("batch_size", 100)
+    batches = [cohort_piids[i : i + batch_size] for i in range(0, len(cohort_piids), batch_size)]
+    logger.info(f"Split {len(cohort_piids)} cohort PIIDs into {len(batches)} batch(es) of max size {batch_size}")
+
+    tx_count_level = config["transaction_cohort"].get("spending_level_count", "transactions")
+    tx_download_levels = config["transaction_cohort"].get("spending_level_download", ["transactions"])
+    tx_cap_per_batch = config["safety_caps"]["transactions_max_per_batch"]
+
+    tx_stage_data: dict[str, Any] = {
+        "status": "in_progress",
+        "total_batches": len(batches),
+        "exact_match_quoting": quoting_enabled,
+        "batches": [],
+    }
+
+    # Execute transactions batches
+    for b_idx, batch in enumerate(batches, start=1):
+        logger.info(f"Processing Transaction Batch {b_idx}/{len(batches)} ({len(batch)} PIIDs)...")
+
+        # Format award_ids: if quoting_enabled, surround in double quotes per contract
+        if quoting_enabled:
+            formatted_piids = [f'"{p}"' for p in batch]
+        else:
+            formatted_piids = list(batch)
+
+        # Strictly award_ids only, no date filters!
+        tx_filters = {"award_ids": formatted_piids}
+
+        # 2.1 Count precheck for transaction batch
+        try:
+            tx_count_resp = query_count_endpoint(
+                session=session,
+                base_url=base_url,
+                count_endpoint=count_endpoint,
+                trusted_hosts=trusted_hosts,
+                filters=tx_filters,
+                spending_level=tx_count_level,
+                timeout=config["http_policy"]["timeout_seconds"],
+            )
+        except PrecheckValidationError as exc:
+            err_msg = str(exc)
+            logger.error(f"Transaction batch {b_idx} count precheck failed: {err_msg}")
+            # If server rejected documented quoted form, capture exact evidence and halt
+            tx_stage_data["status"] = "rejected_by_server"
+            tx_stage_data["rejected_endpoint"] = count_endpoint
+            tx_stage_data["http_status"] = getattr(exc, "precheck_data", {}).get("status_code", "N/A")
+            tx_stage_data["error_message"] = err_msg
+            tx_stage_data["sample_rejected_payload"] = {
+                "filters": tx_filters,
+                "spending_level": tx_count_level,
+            }
+
+            manifest, report = generate_manifest_and_report(
+                config,
+                run_status="transaction_precheck_rejected",
+                award_stage_data=award_stage_data,
+                tx_stage_data=tx_stage_data,
+                manual_comparison=manual_comparison,
+                error_message=(
+                    f"Transaction precheck rejected by server on batch {b_idx}: {err_msg}. "
+                    "Halting per specification rule: 'If the endpoint rejects the documented form, "
+                    "preserve the server response and stop rather than trying arbitrary payload variants.'"
+                ),
+            )
+            manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+            report_path.write_text(report, encoding="utf-8")
+            return 10
+
+        tx_calc_count = tx_count_resp["calculated_count"]
+        logger.info(f"Transaction Batch {b_idx} Count Precheck: {tx_calc_count} transactions")
+
+        if tx_calc_count > tx_cap_per_batch:
+            err_msg = (
+                f"Transaction batch {b_idx} count ({tx_calc_count}) exceeds cap ({tx_cap_per_batch})."
+            )
+            logger.error(err_msg)
+            tx_stage_data["status"] = "batch_cap_exceeded"
+            manifest, report = generate_manifest_and_report(
+                config,
+                run_status="batch_cap_exceeded",
+                award_stage_data=award_stage_data,
+                tx_stage_data=tx_stage_data,
+                error_message=err_msg,
+            )
+            manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+            report_path.write_text(report, encoding="utf-8")
+            return 11
+
+        # 2.2 Submit transaction download job
+        try:
+            tx_job = initiate_download_job(
+                session=session,
+                base_url=base_url,
+                search_endpoint=search_endpoint,
+                trusted_hosts=trusted_hosts,
+                filters=tx_filters,
+                spending_levels=tx_download_levels,
+                file_format=file_format,
+                timeout=config["http_policy"]["timeout_seconds"],
+            )
+        except DownloadJobError as exc:
+            err_msg = f"Transaction batch {b_idx} job initiation failed: {exc}"
+            logger.error(err_msg)
+            tx_stage_data["status"] = "job_init_failed"
+            manifest, report = generate_manifest_and_report(
+                config,
+                run_status="tx_job_init_failed",
+                award_stage_data=award_stage_data,
+                tx_stage_data=tx_stage_data,
+                error_message=err_msg,
+            )
+            manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+            report_path.write_text(report, encoding="utf-8")
+            return 12
+
+        # 2.3 Poll transaction job status
+        try:
+            tx_poll = poll_download_status(
+                session=session,
+                base_url=base_url,
+                status_endpoint_cfg=status_endpoint,
+                trusted_hosts=trusted_hosts,
+                job_info=tx_job,
+                poll_interval=config["polling_policy"]["poll_interval_seconds"],
+                overall_timeout=config["polling_policy"]["overall_timeout_seconds"],
+                http_timeout=config["http_policy"]["timeout_seconds"],
+            )
+        except (DownloadJobError, DownloadJobTimeoutError) as exc:
+            err_msg = f"Transaction batch {b_idx} polling failed: {exc}"
+            logger.error(err_msg)
+            tx_stage_data["status"] = "polling_failed"
+            manifest, report = generate_manifest_and_report(
+                config,
+                run_status="tx_polling_failed",
+                award_stage_data=award_stage_data,
+                tx_stage_data=tx_stage_data,
+                error_message=err_msg,
+            )
+            manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+            report_path.write_text(report, encoding="utf-8")
+            return 13
+
+        # 2.4 Stream transaction ZIP
+        target_tx_zip = bulk_api_dir / f"PrimeTransactions_batch{b_idx}_{timestamp_str}.zip"
+        try:
+            download_zip_stream(
+                session=session,
+                file_url=tx_poll["file_url"],
+                target_path=target_tx_zip,
+                trusted_hosts=trusted_hosts,
+                download_timeout=config["http_policy"]["download_timeout_seconds"],
+            )
+        except (UntrustedHostError, ZIPValidationError, DownloadJobError, FileExistsError) as exc:
+            err_msg = f"Transaction batch {b_idx} download failed: {exc}"
+            logger.error(err_msg)
+            tx_stage_data["status"] = "download_failed"
+            manifest, report = generate_manifest_and_report(
+                config,
+                run_status="tx_download_failed",
+                award_stage_data=award_stage_data,
+                tx_stage_data=tx_stage_data,
+                error_message=err_msg,
+            )
+            manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+            report_path.write_text(report, encoding="utf-8")
+            return 14
+
+        # 2.5 In-memory QA of transaction ZIP
+        try:
+            tx_qa = inspect_transaction_zip(target_tx_zip, expected_cohort_piids=set(cohort_piids))
+        except ZIPValidationError as exc:
+            err_msg = f"Transaction batch {b_idx} ZIP QA failed: {exc}"
+            logger.error(err_msg)
+            tx_stage_data["status"] = "qa_failed"
+            manifest, report = generate_manifest_and_report(
+                config,
+                run_status="tx_qa_failed",
+                award_stage_data=award_stage_data,
+                tx_stage_data=tx_stage_data,
+                error_message=err_msg,
+            )
+            manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+            report_path.write_text(report, encoding="utf-8")
+            return 15
+
+        # 2.6 Same-query reconciliation for transaction batch
+        tx_csv_rows = tx_qa["row_count"]
+        if tx_calc_count != tx_csv_rows:
+            err_msg = (
+                f"Transaction batch {b_idx} count mismatch: Count API reported {tx_calc_count}, "
+                f"CSV rows {tx_csv_rows}."
+            )
+            logger.error(err_msg)
+            tx_stage_data["status"] = "count_mismatch"
+            manifest, report = generate_manifest_and_report(
+                config,
+                run_status="tx_count_mismatch",
+                award_stage_data=award_stage_data,
+                tx_stage_data=tx_stage_data,
+                error_message=err_msg,
+            )
+            manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+            report_path.write_text(report, encoding="utf-8")
+            return 16
+
+        batch_result = {
+            "batch_index": b_idx,
+            "piids_queried_count": len(batch),
+            "precheck_count": tx_calc_count,
+            "status_total_rows": tx_poll.get("total_rows"),
+            "csv_row_count": tx_csv_rows,
+            "zip_path": str(target_tx_zip),
+            "sha256": tx_qa["sha256"],
+            "file_size_bytes": tx_qa["file_size_bytes"],
+            "unique_tx_keys_count": tx_qa["unique_tx_keys_count"],
+            "missing_tx_keys_count": tx_qa["missing_tx_keys_count"],
+            "duplicate_tx_keys_count": tx_qa["duplicate_tx_keys_count"],
+            "cohort_piids_matched_count": tx_qa["cohort_piids_matched_count"],
+            "unmatched_tx_piids_count": tx_qa["unmatched_tx_piids_count"],
+            "date_audit": tx_qa["date_audit"],
+        }
+        tx_stage_data["batches"].append(batch_result)
+        logger.info(f"Transaction Batch {b_idx} completed: {tx_csv_rows} rows reconciled.")
+
+    tx_stage_data["status"] = "completed"
+    tx_stage_data["total_tx_rows"] = sum(b["csv_row_count"] for b in tx_stage_data["batches"])
+
+    # Collect min/max dates across all batches
+    all_mins = [b["date_audit"]["min_action_date"] for b in tx_stage_data["batches"] if b["date_audit"]["min_action_date"]]
+    all_maxs = [b["date_audit"]["max_action_date"] for b in tx_stage_data["batches"] if b["date_audit"]["max_action_date"]]
+    tx_stage_data["min_action_date"] = min(all_mins) if all_mins else None
+    tx_stage_data["max_action_date"] = max(all_maxs) if all_maxs else None
+    tx_stage_data["outside_fy2020_count"] = sum(b["date_audit"]["outside_fy2020_count"] for b in tx_stage_data["batches"])
+
+    # Compare with manual archives
+    manual_on_path = Path(config["paths"]["manual_archive_on"])
+    manual_off_path = Path(config["paths"]["manual_archive_off"])
+    manual_comparison = compare_with_manual_archives(manual_on_path, manual_off_path)
+
+    # Success manifest and report
     manifest, report = generate_manifest_and_report(
         config,
         run_status="success",
-        precheck_data=precheck_data,
-        job_info=job_info,
-        poll_result=poll_result,
-        qa_result=qa_result,
-        overlap_result=overlap_result,
+        award_stage_data=award_stage_data,
+        tx_stage_data=tx_stage_data,
+        manual_comparison=manual_comparison,
     )
     manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     report_path.write_text(report, encoding="utf-8")
-
-    logger.info(f"Controlled cohort bulk download SUCCEEDED. Manifest: {manifest_path}, Report: {report_path}")
+    logger.info(f"Controlled FY2020 Pilot SUCCEEDED. Manifest: {manifest_path}, Report: {report_path}")
     return 0
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="USAspending Bulk Download Client (Canonical acquisition path for Project Sanket)."
+        description="USAspending Canonical Bulk Download Client (Two-Stage FY2020 Controlled Pilot)."
     )
     parser.add_argument(
         "--config",
@@ -1090,13 +1431,28 @@ def main() -> None:
         "--confirm-sample-download",
         action="store_true",
         default=False,
-        help="Authorize acquisition of ONLY the single configured FY2020 controlled cohort.",
+        help="Authorize execution of ONLY the single configured FY2020 controlled pilot.",
+    )
+    quoting_group = parser.add_mutually_exclusive_group()
+    quoting_group.add_argument(
+        "--exact-match-quoting",
+        dest="exact_match_quoting",
+        action="store_true",
+        default=None,
+        help="Enforce double quotes around PIIDs per search_filters.md contract (default: True).",
+    )
+    quoting_group.add_argument(
+        "--no-exact-match-quoting",
+        dest="exact_match_quoting",
+        action="store_false",
+        help="Send unquoted PIIDs if the server rejects double quotes.",
     )
 
     args = parser.parse_args()
     code = run_bulk_download(
         config_path=args.config,
         confirm_download=args.confirm_sample_download,
+        exact_match_quoting=args.exact_match_quoting,
     )
     sys.exit(code)
 
