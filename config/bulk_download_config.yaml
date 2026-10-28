@@ -1,0 +1,73 @@
+version: "1.0.0"
+
+api:
+  base_url: "https://api.usaspending.gov"
+  endpoints:
+    count: "/api/v2/download/count/"
+    search: "/api/v2/download/search/"
+    status: "/api/v2/download/status/"
+  trusted_hosts:
+    - "api.usaspending.gov"
+    - "files.usaspending.gov"
+    - "files-nonprod.usaspending.gov"
+
+official_sources:
+  endpoint_index: "https://api.usaspending.gov/docs/endpoints"
+  download_search_contract: "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/contracts/v2/download/search.md"
+  download_count_contract: "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/contracts/v2/download/count.md"
+  download_status_contract: "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/contracts/v2/download/status.md"
+  search_filters_contract: "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/search_filters.md"
+
+controlled_cohort:
+  cohort_id: "nasa_naics541330_fy2020"
+  description: "NASA Awarding Agency, NAICS 541330 (Engineering Services), FY2020 action dates (Show New Awards Only OFF)"
+  filters:
+    award_type_codes:
+      - "A"
+      - "B"
+      - "C"
+      - "D"
+    agencies:
+      - type: "awarding"
+        tier: "toptier"
+        name: "National Aeronautics and Space Administration"
+    naics_codes:
+      - "541330"
+    time_period:
+      - start_date: "2019-10-01"
+        end_date: "2020-09-30"
+        date_type: "action_date"
+  spending_levels:
+    - "awards"
+    - "transactions"
+  file_format: "csv"
+
+reference_ui_counts:
+  awards: 785
+  transactions: 1384
+
+safety_caps:
+  awards_max: 5000
+  transactions_max: 25000
+
+http_policy:
+  timeout_seconds: 30
+  download_timeout_seconds: 180
+  max_retries: 3
+  backoff_factor: 1.5
+  retry_status_codes:
+    - 429
+    - 500
+    - 502
+    - 503
+    - 504
+
+polling_policy:
+  poll_interval_seconds: 5
+  overall_timeout_seconds: 300
+
+paths:
+  raw_data_dir: "data/raw/sample"
+  manual_archive_path: "data/raw/sample/NASA_2020.zip"
+  manifest_path: "reports/data_feasibility/bulk_download_manifest.json"
+  validation_report_path: "reports/data_feasibility/bulk_download_validation.md"

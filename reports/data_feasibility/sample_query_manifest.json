@@ -1,0 +1,57 @@
+{
+  "manifest_version": "1.0.0",
+  "run_status": "incomplete",
+  "retrieved_at_utc": "2026-10-27T16:54:10Z",
+  "config_version": "1.0.0",
+  "official_sources": {
+    "endpoint_index": "https://api.usaspending.gov/docs/endpoints",
+    "spending_by_award_contract": "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/contracts/v2/search/spending_by_award.md",
+    "spending_by_award_count_contract": "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/contracts/v2/search/spending_by_award_count.md",
+    "search_filters_contract": "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/search_filters.md",
+    "transactions_contract": "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/contracts/v2/transactions.md",
+    "psc_tree_contract": "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/contracts/v2/references/filter_tree/psc.md",
+    "psc_manual_page": "https://www.acquisition.gov/psc-manual",
+    "psc_manual_pdf": "https://www.acquisition.gov/sites/default/files/manual/PSC%20Manual%20April%202025.pdf",
+    "naics_manual_pdf": "https://www.census.gov/naics/reference_files_tools/2022_NAICS_Manual.pdf"
+  },
+  "date_semantics": {
+    "date_type": "new_awards_only",
+    "definition": "Selects awards whose base transaction date falls within the requested bounds"
+  },
+  "sampling_limits": {
+    "strata_count_max": 16,
+    "target_rows_per_stratum": 25,
+    "hard_cap_unique_awards": 400,
+    "detail_sample_award_cap": 30,
+    "transaction_page_limit": 100
+  },
+  "psc_resolution": {
+    "psc_group_d": {
+      "node_id": "D",
+      "description": "IT AND TELECOM - INFORMATION TECHNOLOGY AND TELECOMMUNICATIONS",
+      "full_path": [
+        "Service",
+        "D"
+      ],
+      "manual_url": "https://www.acquisition.gov/sites/default/files/manual/PSC%20Manual%20April%202025.pdf",
+      "manual_version": "April 2025"
+    },
+    "psc_group_r": {
+      "node_id": "R",
+      "description": "SUPPORT SVCS (PROF, ADMIN, MGMT)",
+      "full_path": [
+        "Service",
+        "R"
+      ],
+      "manual_url": "https://www.acquisition.gov/sites/default/files/manual/PSC%20Manual%20April%202025.pdf",
+      "manual_version": "April 2025"
+    }
+  },
+  "queries": [],
+  "deduplication_summary": {},
+  "transaction_detail_summary": {},
+  "api_warnings": [],
+  "errors": [
+    "422 Client Error: Unprocessable Entity for url: https://api.usaspending.gov/api/v2/search/spending_by_award/"
+  ]
+}

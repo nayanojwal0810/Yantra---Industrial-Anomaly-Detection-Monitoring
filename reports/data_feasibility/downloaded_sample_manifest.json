@@ -1,0 +1,290 @@
+{
+  "zip_metadata": {
+    "path": "D:/sanket/data/raw/sample/PrimeAwardSummariesAndTransactions_2026-10-27_H21M56S49644703.zip",
+    "file_size_bytes": 122643,
+    "sha256": "9b4abc45db0e617b0ee1aea80e74ff0e88da86beac3666c2bbe5c4a6096d39cd",
+    "members": [
+      {
+        "filename": "Contracts_PrimeAwardSummaries_2026-10-27_H21M56S50_1.csv",
+        "compressed_bytes": 51553,
+        "uncompressed_bytes": 508715
+      },
+      {
+        "filename": "Contracts_PrimeTransactions_2026-10-27_H21M56S56_1.csv",
+        "compressed_bytes": 70696,
+        "uncompressed_bytes": 1003722
+      }
+    ]
+  },
+  "members": {
+    "award_summaries": {
+      "filename": "Contracts_PrimeAwardSummaries_2026-10-27_H21M56S50_1.csv",
+      "row_count": 221,
+      "column_count": 286,
+      "missing_required_columns": [],
+      "award_unique_keys_count": 221,
+      "award_unique_keys_unique": 221,
+      "award_unique_keys_missing": 0,
+      "award_id_piid_unique": 221,
+      "award_id_piid_missing": 0,
+      "base_action_date_range": {
+        "min": "2019-10-08",
+        "max": "2020-09-30"
+      },
+      "latest_action_date_range": {
+        "min": "2019-10-15",
+        "max": "2026-10-06"
+      },
+      "base_fiscal_years": {
+        "2020": 221
+      },
+      "latest_fiscal_years": {
+        "2020": 82,
+        "2021": 42,
+        "2022": 42,
+        "2023": 23,
+        "2024": 12,
+        "2025": 7,
+        "2026": 12,
+        "2027": 1
+      },
+      "agency_compliance_nasa": {
+        "count": 221,
+        "percentage": 100.0
+      },
+      "naics_compliance_541330": {
+        "count": 221,
+        "percentage": 100.0
+      },
+      "amount_stats": {
+        "total_obligated_amount": {
+          "column": "total_obligated_amount",
+          "total_rows": 221,
+          "valid_count": 221,
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "zero_count": 5,
+          "negative_count": 0,
+          "positive_count": 216,
+          "min": 0.0,
+          "median": 175531.26,
+          "max": 104034311.5
+        },
+        "current_total_value_of_award": {
+          "column": "current_total_value_of_award",
+          "total_rows": 221,
+          "valid_count": 221,
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "zero_count": 5,
+          "negative_count": 0,
+          "positive_count": 216,
+          "min": -0.0,
+          "median": 175531.26,
+          "max": 104304311.5
+        },
+        "potential_total_value_of_award": {
+          "column": "potential_total_value_of_award",
+          "total_rows": 221,
+          "valid_count": 221,
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "zero_count": 5,
+          "negative_count": 0,
+          "positive_count": 216,
+          "min": -0.0,
+          "median": 175531.26,
+          "max": 104304311.5
+        }
+      },
+      "top_missing_columns": [
+        {
+          "column": "outlayed_amount_from_IIJA_supplemental",
+          "missing_count": 221,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "obligated_amount_from_IIJA_supplemental",
+          "missing_count": 221,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "ordering_period_end_date",
+          "missing_count": 221,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "sam_exception",
+          "missing_count": 221,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "sam_exception_description",
+          "missing_count": 221,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "idv_type_code",
+          "missing_count": 221,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "idv_type",
+          "missing_count": 221,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "multiple_or_single_award_idv_code",
+          "missing_count": 221,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "multiple_or_single_award_idv",
+          "missing_count": 221,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "type_of_idc_code",
+          "missing_count": 221,
+          "missing_pct": 100.0
+        }
+      ]
+    },
+    "transactions": {
+      "filename": "Contracts_PrimeTransactions_2026-10-27_H21M56S56_1.csv",
+      "row_count": 390,
+      "column_count": 297,
+      "missing_required_columns": [],
+      "tx_unique_keys_count": 390,
+      "tx_unique_keys_unique": 390,
+      "tx_unique_keys_missing": 0,
+      "unique_award_keys_referenced": 221,
+      "action_date_range": {
+        "min": "2019-10-08",
+        "max": "2020-09-30"
+      },
+      "action_fiscal_years": {
+        "2020": 390
+      },
+      "post_fy2020_transactions_count": 0,
+      "pre_fy2020_transactions_count": 0,
+      "agency_compliance_nasa": {
+        "count": 390,
+        "percentage": 100.0
+      },
+      "naics_compliance_541330": {
+        "count": 390,
+        "percentage": 100.0
+      },
+      "amount_stats": {
+        "federal_action_obligation": {
+          "column": "federal_action_obligation",
+          "total_rows": 390,
+          "valid_count": 390,
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "zero_count": 58,
+          "negative_count": 13,
+          "positive_count": 319,
+          "min": -1265976.15,
+          "median": 93441.5,
+          "max": 11257021.81
+        }
+      },
+      "top_missing_columns": [
+        {
+          "column": "outlayed_amount_from_IIJA_supplemental_for_overall_award",
+          "missing_count": 390,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "obligated_amount_from_IIJA_supplemental_for_overall_award",
+          "missing_count": 390,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "ordering_period_end_date",
+          "missing_count": 390,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "sam_exception",
+          "missing_count": 390,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "sam_exception_description",
+          "missing_count": 390,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "idv_type_code",
+          "missing_count": 390,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "idv_type",
+          "missing_count": 390,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "multiple_or_single_award_idv_code",
+          "missing_count": 390,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "multiple_or_single_award_idv",
+          "missing_count": 390,
+          "missing_pct": 100.0
+        },
+        {
+          "column": "type_of_idc_code",
+          "missing_count": 390,
+          "missing_pct": 100.0
+        }
+      ]
+    }
+  },
+  "linkage": {
+    "shared_key": "contract_award_unique_key",
+    "total_transaction_rows": 390,
+    "total_award_summary_rows": 221,
+    "unmatched_transaction_keys_count": 0,
+    "awards_with_zero_transactions_count": 0,
+    "awards_with_transactions_count": 221,
+    "transactions_per_award_histogram": {
+      "1": 150,
+      "2": 43,
+      "3": 8,
+      "4": 9,
+      "5": 3,
+      "6": 1,
+      "7": 3,
+      "8": 1,
+      "10": 1,
+      "13": 1,
+      "21": 1
+    },
+    "transactions_per_award_summary": {
+      "min": 1,
+      "median": 1,
+      "max": 21
+    }
+  },
+  "website_reconciliation": {
+    "website_declared_awards": 221,
+    "actual_downloaded_awards": 221,
+    "awards_discrepancy": 0,
+    "website_declared_transactions": 1384,
+    "actual_downloaded_transactions": 390,
+    "transactions_discrepancy": -994,
+    "discrepancy_status": "UNRESOLVED",
+    "status_notes": "The website download dialog displayed 1,384 Transactions and 221 Awards for the applied filters. The downloaded archive contains exactly 221 Award Summary rows and 390 Transaction rows. All 390 transactions have action dates within FY2020 (2019-10-08 to 2020-09-30). While 139 of the 221 awards show subsequent modifications through FY2027 in their summary records, the transaction export does not include post-FY2020 transaction records. Whether the 1,384 figure represents all lifetime transactions across all fiscal years for the 221 awards or reflects a different query scoping cannot be established without official server-side confirmation."
+  },
+  "feasibility_assessment": {
+    "schema_validation_status": "SUFFICIENT",
+    "schema_validation_notes": "The sample reliably confirms the USAspending contract export format, column headers, primary keys (contract_award_unique_key, contract_transaction_unique_key), and clean 100% referential integrity between awards and transactions within the sample.",
+    "successor_feasibility_status": "INSUFFICIENT",
+    "successor_feasibility_notes": "This sample is bounded to a single agency (NASA), a single NAICS code (541330), and awards originated in FY2020. The transaction file omits post-FY2020 modifications. It is neither a complete historical transaction history nor a representative sample of federal contracts, and cannot establish feasibility for successor matching or recompete lifecycle models."
+  }
+}
