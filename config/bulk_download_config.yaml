@@ -1,4 +1,4 @@
-version: "1.1.0"
+version: "1.2.0"
 
 api:
   base_url: "https://api.usaspending.gov"
@@ -6,6 +6,8 @@ api:
     count: "/api/v2/download/count/"
     search: "/api/v2/download/search/"
     status: "/api/v2/download/status/"
+    award_transaction_count: "/api/v2/awards/count/transaction/{award_id}/"
+    transactions: "/api/v2/transactions/"
   trusted_hosts:
     - "api.usaspending.gov"
     - "files.usaspending.gov"
@@ -17,8 +19,10 @@ official_sources:
   download_count_contract: "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/contracts/v2/download/count.md"
   download_status_contract: "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/contracts/v2/download/status.md"
   search_filters_contract: "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/search_filters.md"
+  transactions_contract: "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/contracts/v2/transactions.md"
+  award_transaction_count_contract: "https://github.com/fedspendingtransparency/usaspending-api/blob/master/usaspending_api/api_contracts/contracts/v2/awards/count/transaction/award_id.md"
 
-# Stage 1: Controlled Award Summary Cohort
+# Award Summary Cohort
 controlled_cohort:
   cohort_id: "nasa_naics541330_fy2020"
   description: "NASA Awarding Agency, NAICS 541330 (Engineering Services), FY2020 new awards (base transaction date in FY2020)"
@@ -44,10 +48,13 @@ controlled_cohort:
   spending_level_download:
     - "awards"
 
-# Stage 2: Transaction History Retrieval for Cohort PIIDs
+# Transaction History Retrieval for Cohort Awards
 transaction_cohort:
-  batch_size: 100
-  exact_match_quoting: true
+  bulk_diagnostic_sample_size: 3
+  page_size: 5000
+  max_concurrency: 2
+  inter_request_delay_seconds: 0.1
+  cache_dir: "data/raw/sample/bulk_api/tx_cache"
   spending_level_count: "transactions"
   spending_level_download:
     - "transactions"

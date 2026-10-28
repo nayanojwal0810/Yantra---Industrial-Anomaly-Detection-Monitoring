@@ -19,26 +19,37 @@ import requests
 import yaml
 
 from scripts.download_via_bulk_api import (
+    AwardCohortAuditError,
     ConfigError,
     DownloadJobError,
     DownloadJobTimeoutError,
     PrecheckValidationError,
+    TransactionQualityError,
     UntrustedHostError,
     ZIPValidationError,
+    aggregate_and_package_transactions,
+    audit_award_cohort,
     compare_with_manual_archives,
     create_session,
     download_zip_stream,
+    fetch_award_transaction_count,
+    fetch_award_transactions,
     initiate_download_job,
     inspect_award_zip,
     inspect_transaction_zip,
+    load_cached_award_result,
     load_config,
     parse_count_response,
     poll_download_status,
+    process_all_cohort_transactions,
     query_count_endpoint,
     redact_sensitive,
     resolve_api_url,
+    run_bulk_diagnostic,
     run_bulk_download,
+    save_cached_award_result,
     validate_trusted_host,
+    verify_transaction_archive_from_disk,
 )
 
 
@@ -650,69 +661,315 @@ def test_inspect_transaction_zip_accepts_outside_fy2020_and_audits_keys(tmp_path
     assert date_audit["max_action_date"] == "2021-06-20"
 
 
-def test_server_rejection_of_documented_form_captured_and_stops(
-    sample_config: dict[str, Any], tmp_path: Path
-) -> None:
-    """If count endpoint rejects documented quoted form (HTTP 503), client halts and records evidence."""
-    cfg_path = tmp_path / "test_cfg.yaml"
-    with cfg_path.open("w", encoding="utf-8") as f:
-        yaml.safe_dump(sample_config, f)
+# -----------------------------------------------------------------------------
+# 8. Transaction Pilot & Diagnostics Tests
+# -----------------------------------------------------------------------------
 
+
+def test_bulk_diagnostic_quoted_503_preserved_as_service_issue() -> None:
+    """run_bulk_diagnostic captures 503 on quoted probe without labeling it schema failure."""
     session = requests.Session()
+    resp_503 = MagicMock()
+    resp_503.status_code = 503
+    resp_503.text = ""
+    resp_503.headers = {"X-Server": "BIG-IP"}
 
-    # Stage 1 succeeds:
-    resp_award_count = MagicMock()
-    resp_award_count.status_code = 200
-    resp_award_count.json.return_value = {"calculated_count": 2, "rows_gt_limit": False}
+    resp_200 = MagicMock()
+    resp_200.status_code = 200
+    resp_200.json.return_value = {"calculated_count": 11}
+    resp_200.headers = {}
 
-    resp_award_search = MagicMock()
-    resp_award_search.status_code = 200
-    resp_award_search.json.return_value = {
-        "file_name": "awards.zip",
-        "file_url": "https://files.usaspending.gov/awards.zip",
-        "status_url": "/status/?file_name=awards.zip",
+    sample_awards = [
+        {"contract_award_unique_key": "A1", "award_id_piid": "P1"},
+        {"contract_award_unique_key": "A2", "award_id_piid": "P2"},
+    ]
+    http_policy = {"timeout_seconds": 5, "max_retries": 1, "backoff_factor": 0.01, "retry_status_codes": [503]}
+
+    with patch.object(session, "post", side_effect=[resp_503, resp_200]):
+        diag = run_bulk_diagnostic(
+            session=session,
+            base_url="https://api.usaspending.gov",
+            count_endpoint="/api/v2/download/count/",
+            trusted_hosts=["api.usaspending.gov"],
+            sample_awards=sample_awards,
+            http_policy=http_policy,
+        )
+
+        assert diag["sample_size"] == 2
+        quoted_probe = diag["probes"]["quoted_award_ids"]
+        assert quoted_probe["status_code"] == 503
+        assert "NOT be treated as evidence of invalid JSON" in quoted_probe["interpretation"]
+
+        unquoted_probe = diag["probes"]["unquoted_award_ids"]
+        assert unquoted_probe["status_code"] == 200
+        assert unquoted_probe["calculated_count"] == 11
+
+
+def test_audit_award_cohort_validates_generated_natural_ids() -> None:
+    """audit_award_cohort asserts row count, nonblank unique keys, and nonblank unique PIIDs."""
+    # Valid cohort
+    valid_qa = {
+        "row_count": 2,
+        "unique_keys_count": 2,
+        "blank_key_count": 0,
+        "unique_piids_count": 2,
+        "blank_piid_count": 0,
+        "award_records": [
+            {"contract_award_unique_key": "K1", "award_id_piid": "P1"},
+            {"contract_award_unique_key": "K2", "award_id_piid": "P2"},
+        ],
+    }
+    records = audit_award_cohort(valid_qa, expected_count=2)
+    assert len(records) == 2
+
+    # Blank natural key
+    bad_key_qa = dict(valid_qa)
+    bad_key_qa["blank_key_count"] = 1
+    with pytest.raises(AwardCohortAuditError, match="blank contract_award_unique_key"):
+        audit_award_cohort(bad_key_qa, expected_count=2)
+
+    # Duplicate natural key
+    dup_key_qa = dict(valid_qa)
+    dup_key_qa["unique_keys_count"] = 1
+    with pytest.raises(AwardCohortAuditError, match="Expected 2 unique contract_award_unique_key"):
+        audit_award_cohort(dup_key_qa, expected_count=2)
+
+    # Blank PIID
+    bad_piid_qa = dict(valid_qa)
+    bad_piid_qa["blank_piid_count"] = 1
+    with pytest.raises(AwardCohortAuditError, match="blank award_id_piid"):
+        audit_award_cohort(bad_piid_qa, expected_count=2)
+
+    # Row count mismatch
+    wrong_count_qa = dict(valid_qa)
+    wrong_count_qa["row_count"] = 3
+    with pytest.raises(AwardCohortAuditError, match="Expected 2 award rows"):
+        audit_award_cohort(wrong_count_qa, expected_count=2)
+
+
+def test_fetch_award_transactions_pagination_across_pages() -> None:
+    """fetch_award_transactions iterates pages until hasNext is False."""
+    session = requests.Session()
+    http_policy = {"timeout_seconds": 5, "max_retries": 1, "backoff_factor": 0.01, "retry_status_codes": [503]}
+
+    resp_p1 = MagicMock()
+    resp_p1.status_code = 200
+    resp_p1.json.return_value = {
+        "page_metadata": {"page": 1, "hasNext": True},
+        "results": [{"id": "TX_1", "action_date": "2020-01-15"}],
     }
 
-    resp_award_status = MagicMock()
-    resp_award_status.status_code = 200
-    resp_award_status.json.return_value = {"status": "finished", "total_rows": 2}
+    resp_p2 = MagicMock()
+    resp_p2.status_code = 200
+    resp_p2.json.return_value = {
+        "page_metadata": {"page": 2, "hasNext": False},
+        "results": [{"id": "TX_2", "action_date": "2021-02-10"}],
+    }
 
-    award_zip_bytes = create_test_zip(
-        "Contracts_PrimeAwardSummaries.csv",
-        [
-            {"contract_award_unique_key": "A1", "award_id_piid": "P1"},
-            {"contract_award_unique_key": "A2", "award_id_piid": "P2"},
-        ],
-    )
-    resp_award_stream = MagicMock()
-    resp_award_stream.__enter__.return_value = resp_award_stream
-    resp_award_stream.status_code = 200
-    resp_award_stream.iter_content.return_value = [award_zip_bytes]
+    with patch.object(session, "post", side_effect=[resp_p1, resp_p2]):
+        res = fetch_award_transactions(
+            session=session,
+            base_url="https://api.usaspending.gov",
+            tx_endpoint="/api/v2/transactions/",
+            award_unique_key="CONT_AWD_TEST",
+            trusted_hosts=["api.usaspending.gov"],
+            http_policy=http_policy,
+            inter_request_delay=0.001,
+        )
 
-    # Stage 2: server returns 503 on quoted award_ids count precheck
-    resp_tx_count_503 = MagicMock()
-    resp_tx_count_503.status_code = 503
-    resp_tx_count_503.text = "Service Unavailable"
-    resp_tx_count_503.headers = {"X-Server": "BIG-IP"}
+        assert res["status"] == "completed"
+        assert res["total_transactions"] == 2
+        assert res["pages_retrieved"] == 2
+        assert [t["id"] for t in res["transactions"]] == ["TX_1", "TX_2"]
+
+
+def test_fetch_award_transactions_detects_non_advancing_loop() -> None:
+    """Non-advancing page number raises TransactionQualityError to prevent infinite loop."""
+    session = requests.Session()
+    http_policy = {"timeout_seconds": 5, "max_retries": 1, "backoff_factor": 0.01, "retry_status_codes": [503]}
+
+    resp_bad = MagicMock()
+    resp_bad.status_code = 200
+    # Returns page 1 when page 1 was requested, but with hasNext=True, and then returns page 1 again
+    resp_bad.json.return_value = {
+        "page_metadata": {"page": 99, "hasNext": True},  # Mismatched page!
+        "results": [{"id": "TX_1"}],
+    }
 
     with (
-        patch("scripts.download_via_bulk_api.create_session", return_value=session),
-        patch.object(
-            session,
-            "post",
-            side_effect=[resp_award_count, resp_award_search, resp_tx_count_503],
-        ),
-        patch.object(session, "get", side_effect=[resp_award_status, resp_award_stream]),
+        patch.object(session, "post", return_value=resp_bad),
+        pytest.raises(TransactionQualityError, match="Page mismatch"),
     ):
-        exit_code = run_bulk_download(config_path=cfg_path, confirm_download=True)
+        fetch_award_transactions(
+            session=session,
+            base_url="https://api.usaspending.gov",
+            tx_endpoint="/api/v2/transactions/",
+            award_unique_key="CONT_AWD_TEST",
+            trusted_hosts=["api.usaspending.gov"],
+            http_policy=http_policy,
+        )
 
-        assert exit_code == 10  # Stopped on transaction precheck rejection!
 
-        manifest_path = Path(sample_config["paths"]["manifest_path"])
-        assert manifest_path.exists()
-        manifest_data = json.loads(manifest_path.read_text(encoding="utf-8"))
-        assert manifest_data["run_status"] == "transaction_precheck_rejected"
-        assert manifest_data["stage_2_transaction_history"]["status"] == "rejected_by_server"
+def test_transient_503_retry_behavior_with_retry_after() -> None:
+    """fetch_award_transaction_count retries on 503 and honors Retry-After."""
+    session = requests.Session()
+    http_policy = {"timeout_seconds": 5, "max_retries": 3, "backoff_factor": 0.01, "retry_status_codes": [503]}
+
+    resp_503 = MagicMock()
+    resp_503.status_code = 503
+    resp_503.headers = {"Retry-After": "0.01"}
+
+    resp_200 = MagicMock()
+    resp_200.status_code = 200
+    resp_200.json.return_value = {"transactions": 6}
+
+    with patch.object(session, "get", side_effect=[resp_503, resp_200]):
+        res = fetch_award_transaction_count(
+            session=session,
+            base_url="https://api.usaspending.gov",
+            endpoint_template="/api/v2/awards/count/transaction/{award_id}/",
+            award_unique_key="CONT_AWD_TEST",
+            trusted_hosts=["api.usaspending.gov"],
+            http_policy=http_policy,
+        )
+
+        assert res["status_code"] == 200
+        assert res["expected_count"] == 6
+        assert res["attempts"] == 2
+
+
+def test_non_retryable_client_errors_return_immediately() -> None:
+    """Client errors (e.g. 404) return without exhausting max_retries."""
+    session = requests.Session()
+    http_policy = {"timeout_seconds": 5, "max_retries": 3, "backoff_factor": 0.01, "retry_status_codes": [503]}
+
+    resp_404 = MagicMock()
+    resp_404.status_code = 404
+    resp_404.text = "Award Not Found"
+
+    with patch.object(session, "get", return_value=resp_404):
+        res = fetch_award_transaction_count(
+            session=session,
+            base_url="https://api.usaspending.gov",
+            endpoint_template="/api/v2/awards/count/transaction/{award_id}/",
+            award_unique_key="CONT_AWD_NONEXISTENT",
+            trusted_hosts=["api.usaspending.gov"],
+            http_policy=http_policy,
+        )
+
+        assert res["status_code"] == 404
+        assert res["expected_count"] is None
+        assert res["attempts"] == 1  # Exactly 1 attempt, no useless retries!
+
+
+def test_malformed_and_empty_responses_handled_safely() -> None:
+    """Non-JSON or malformed responses do not cause unhandled crashes."""
+    session = requests.Session()
+    http_policy = {"timeout_seconds": 5, "max_retries": 1, "backoff_factor": 0.01, "retry_status_codes": [503]}
+
+    resp_bad_json = MagicMock()
+    resp_bad_json.status_code = 200
+    resp_bad_json.json.side_effect = ValueError("Invalid JSON")
+
+    with patch.object(session, "get", return_value=resp_bad_json):
+        res = fetch_award_transaction_count(
+            session=session,
+            base_url="https://api.usaspending.gov",
+            endpoint_template="/api/v2/awards/count/transaction/{award_id}/",
+            award_unique_key="CONT_AWD_TEST",
+            trusted_hosts=["api.usaspending.gov"],
+            http_policy=http_policy,
+        )
+        assert res["expected_count"] is None
+        assert "Malformed JSON" in res["error"]
+
+
+def test_duplicate_and_blank_transaction_ids_flagged(tmp_path: Path) -> None:
+    """verify_transaction_archive_from_disk flags duplicate and blank transaction IDs."""
+    tx_rows = [
+        {"id": "T1", "cohort_award_unique_key": "A1", "action_date": "2020-05-01"},
+        {"id": "T1", "cohort_award_unique_key": "A1", "action_date": "2020-06-01"},  # Duplicate T1
+        {"id": "", "cohort_award_unique_key": "A1", "action_date": "2020-07-01"},    # Blank ID
+    ]
+    zip_bytes = create_test_zip("Contracts_PrimeTransactions.csv", tx_rows)
+    tx_zip = tmp_path / "bad_tx.zip"
+    tx_zip.write_bytes(zip_bytes)
+
+    cohort = [{"contract_award_unique_key": "A1", "award_id_piid": "P1"}]
+    expected_counts = {"A1": 3}
+
+    res = verify_transaction_archive_from_disk(tx_zip, cohort, expected_counts)
+    assert res["is_valid"] is False
+    assert res["blank_ids_count"] == 1
+    assert res["duplicate_ids_count"] == 1
+
+
+def test_unexpected_off_cohort_awards_flagged(tmp_path: Path) -> None:
+    """verify_transaction_archive_from_disk flags transactions linking to off-cohort awards."""
+    tx_rows = [
+        {"id": "T1", "cohort_award_unique_key": "A1", "action_date": "2020-05-01"},
+        {"id": "T2", "cohort_award_unique_key": "OFF_COHORT_AWARD", "action_date": "2020-06-01"},
+    ]
+    zip_bytes = create_test_zip("Contracts_PrimeTransactions.csv", tx_rows)
+    tx_zip = tmp_path / "off_cohort.zip"
+    tx_zip.write_bytes(zip_bytes)
+
+    cohort = [{"contract_award_unique_key": "A1", "award_id_piid": "P1"}]
+    expected_counts = {"A1": 1}
+
+    res = verify_transaction_archive_from_disk(tx_zip, cohort, expected_counts)
+    assert res["is_valid"] is False
+    assert res["unmatched_keys_count"] == 1
+
+
+def test_resumability_cache_save_and_load(tmp_path: Path) -> None:
+    """save_cached_award_result writes atomically and load_cached_award_result reads it back."""
+    cache_dir = tmp_path / "tx_cache"
+    data = {
+        "award_unique_key": "CONT_AWD_TEST",
+        "piid": "PIID_TEST",
+        "status": "completed",
+        "transactions": [{"id": "T1"}],
+        "expected_count": 1,
+    }
+
+    save_cached_award_result(cache_dir, "CONT_AWD_TEST", data)
+    assert not (cache_dir / "tx_CONT_AWD_TEST.json.tmp").exists()
+
+    loaded = load_cached_award_result(cache_dir, "CONT_AWD_TEST")
+    assert loaded is not None
+    assert loaded["piid"] == "PIID_TEST"
+    assert loaded["transactions"] == [{"id": "T1"}]
+
+
+def test_honest_incomplete_status_when_retries_exhausted(tmp_path: Path) -> None:
+    """process_all_cohort_transactions marks status incomplete when an award fails repeatedly."""
+    session = requests.Session()
+    cache_dir = tmp_path / "cache"
+    http_policy = {"timeout_seconds": 5, "max_retries": 1, "backoff_factor": 0.01, "retry_status_codes": [500]}
+
+    cohort = [{"contract_award_unique_key": "A1", "award_id_piid": "P1"}]
+
+    resp_500 = MagicMock()
+    resp_500.status_code = 500
+    resp_500.text = "Internal Server Error"
+
+    with patch.object(session, "get", return_value=resp_500), patch.object(session, "post", return_value=resp_500):
+        res = process_all_cohort_transactions(
+            session=session,
+            base_url="https://api.usaspending.gov",
+            count_template="/count/{award_id}/",
+            tx_endpoint="/transactions/",
+            trusted_hosts=["api.usaspending.gov"],
+            cohort_awards=cohort,
+            cache_dir=cache_dir,
+            http_policy=http_policy,
+        )
+
+        assert res["status"] == "incomplete"
+        assert res["failed_awards"] == 1
+        assert len(res["failures"]) == 1
+        assert res["failures"][0]["piid"] == "P1"
 
 
 # -----------------------------------------------------------------------------
@@ -747,3 +1004,42 @@ def test_compare_with_manual_archives(tmp_path: Path) -> None:
     assert res["manual_on"]["award_rows"] == 1
     assert res["manual_off"]["present"] is True
     assert res["manual_off"]["award_rows"] == 1
+
+
+def test_aggregate_and_package_transactions(tmp_path: Path) -> None:
+    """aggregate_and_package_transactions creates atomic ZIP with provenance fields and CRC check."""
+    award_results = [
+        {
+            "award_unique_key": "CONT_AWD_1",
+            "piid": "PIID_1",
+            "transactions": [
+                {"id": "T1", "action_date": "2020-01-01", "federal_action_obligation": 1000.0},
+            ],
+        },
+        {
+            "award_unique_key": "CONT_AWD_2",
+            "piid": "PIID_2",
+            "transactions": [
+                {"id": "T2", "action_date": "2021-02-01", "federal_action_obligation": 2000.0},
+            ],
+        },
+    ]
+    target_zip = tmp_path / "test_tx.zip"
+    meta = aggregate_and_package_transactions(award_results, target_zip, "20261028T000000Z")
+
+    assert target_zip.is_file()
+    assert meta["row_count"] == 2
+    assert zipfile.is_zipfile(target_zip)
+
+    with zipfile.ZipFile(target_zip, "r") as z:
+        assert z.testzip() is None
+        csv_name = next(n for n in z.namelist() if n.endswith(".csv"))
+        with z.open(csv_name) as f:
+            reader = csv.DictReader(io.TextIOWrapper(f, encoding="utf-8"))
+            rows = list(reader)
+            assert len(rows) == 2
+            assert rows[0]["cohort_award_unique_key"] == "CONT_AWD_1"
+            assert rows[0]["cohort_award_id_piid"] == "PIID_1"
+            assert rows[1]["cohort_award_unique_key"] == "CONT_AWD_2"
+            assert rows[1]["cohort_award_id_piid"] == "PIID_2"
+

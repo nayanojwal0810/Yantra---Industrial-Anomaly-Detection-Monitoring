@@ -1,7 +1,7 @@
 {
-  "manifest_version": "2.0.0",
-  "generated_at_utc": "2026-10-28T06:37:46.273131+00:00",
-  "run_status": "transaction_precheck_rejected",
+  "manifest_version": "2.1.0",
+  "generated_at_utc": "2026-10-28T07:13:12.221913+00:00",
+  "run_status": "success",
   "controlled_cohort": {
     "cohort_id": "nasa_naics541330_fy2020",
     "description": "NASA Awarding Agency, NAICS 541330 (Engineering Services), FY2020 new awards (base transaction date in FY2020)",
@@ -39,8 +39,11 @@
     ]
   },
   "transaction_cohort_config": {
-    "batch_size": 100,
-    "exact_match_quoting": true,
+    "bulk_diagnostic_sample_size": 3,
+    "page_size": 5000,
+    "max_concurrency": 2,
+    "inter_request_delay_seconds": 0.1,
+    "cache_dir": "data/raw/sample/bulk_api/tx_cache",
     "spending_level_count": "transactions",
     "spending_level_download": [
       "transactions"
@@ -59,8 +62,8 @@
       "note": "Manual Advanced Search, NASA, NAICS 541330, FY2020, Show New Awards Only OFF"
     }
   },
-  "error_message": "Transaction precheck rejected by server on batch 1: Count endpoint returned HTTP 503 for spending_level='transactions': . Halting per specification rule: 'If the endpoint rejects the documented form, preserve the server response and stop rather than trying arbitrary payload variants.'",
-  "stage_1_award_cohort": {
+  "error_message": null,
+  "award_cohort_summary": {
     "precheck_count": 221,
     "status_total_rows": 221,
     "csv_row_count": 221,
@@ -68,126 +71,1921 @@
     "zip_path": "data\\raw\\sample\\bulk_api\\PrimeAwardSummaries_nasa_naics541330_fy2020_20261028T063731Z.zip",
     "sha256": "0b91c0ebf93473b7dd9100fae9fe029aaf70f364709e408b4a139783866cea89",
     "file_size_bytes": 51763,
+    "unique_keys_count": 221,
+    "blank_key_count": 0,
     "unique_piids_count": 221,
     "blank_piid_count": 0,
-    "repeated_piids_count": 0,
-    "repeated_piids_audit": {}
+    "repeated_piids_count": 0
   },
-  "stage_2_transaction_history": {
-    "status": "rejected_by_server",
-    "total_batches": 3,
-    "exact_match_quoting": true,
-    "batches": [],
-    "rejected_endpoint": "/api/v2/download/count/",
-    "http_status": 503,
-    "error_message": "Count endpoint returned HTTP 503 for spending_level='transactions': ",
-    "sample_rejected_payload": {
-      "filters": {
-        "award_ids": [
-          "\"80AFRC20C0012\"",
-          "\"80AFRC20C0019\"",
-          "\"80AFRC20C0020\"",
-          "\"80AFRC20C0022\"",
-          "\"80AFRC20F0095\"",
-          "\"80AFRC20F0118\"",
-          "\"80AFRC20F0163\"",
-          "\"80ARC020F0002\"",
-          "\"80ARC020F0015\"",
-          "\"80ARC020F0017\"",
-          "\"80ARC020F0029\"",
-          "\"80ARC020F0030\"",
-          "\"80ARC020F0035\"",
-          "\"80ARC020F0036\"",
-          "\"80ARC020F0037\"",
-          "\"80ARC020F0038\"",
-          "\"80ARC020F0040\"",
-          "\"80ARC020F0044\"",
-          "\"80ARC020F0049\"",
-          "\"80ARC020F0054\"",
-          "\"80ARC020F0055\"",
-          "\"80ARC020F0059\"",
-          "\"80ARC020F0060\"",
-          "\"80ARC020F0061\"",
-          "\"80ARC020F0062\"",
-          "\"80ARC020F0088\"",
-          "\"80ARC020F0100\"",
-          "\"80ARC020F0101\"",
-          "\"80ARC020F0103\"",
-          "\"80ARC020F0107\"",
-          "\"80ARC020F0108\"",
-          "\"80ARC020F0112\"",
-          "\"80ARC020F0117\"",
-          "\"80ARC020F0119\"",
-          "\"80ARC020F0120\"",
-          "\"80ARC020F0123\"",
-          "\"80GRC020F0009\"",
-          "\"80GRC020F0017\"",
-          "\"80GRC020F0019\"",
-          "\"80GRC020F0068\"",
-          "\"80GRC020F0080\"",
-          "\"80GRC020F0094\"",
-          "\"80GRC020F0186\"",
-          "\"80GRC020F0187\"",
-          "\"80GRC020F0209\"",
-          "\"80GRC020F0212\"",
-          "\"80GRC020F0217\"",
-          "\"80GRC020F0222\"",
-          "\"80GRC020F0223\"",
-          "\"80GRC020F0224\"",
-          "\"80GRC020F0227\"",
-          "\"80GSFC20C0034\"",
-          "\"80GSFC20C0115\"",
-          "\"80GSFC20F0020\"",
-          "\"80GSFC20F0021\"",
-          "\"80GSFC20F0022\"",
-          "\"80GSFC20F0023\"",
-          "\"80GSFC20F0134\"",
-          "\"80HQTR20F0021\"",
-          "\"80HQTR20F0022\"",
-          "\"80HQTR20F0023\"",
-          "\"80HQTR20F0024\"",
-          "\"80HQTR20F0034\"",
-          "\"80HQTR20F0071\"",
-          "\"80HQTR20F0105\"",
-          "\"80HQTR20F0146\"",
-          "\"80HQTR20F0239\"",
-          "\"80JSC020C0019\"",
-          "\"80JSC020F0005\"",
-          "\"80JSC020F0139\"",
-          "\"80JSC020F0162\"",
-          "\"80JSC020F0181\"",
-          "\"80JSC020F0318\"",
-          "\"80KSC020F0005\"",
-          "\"80KSC020F0031\"",
-          "\"80KSC020F0043\"",
-          "\"80KSC020F0044\"",
-          "\"80KSC020F0045\"",
-          "\"80KSC020F0046\"",
-          "\"80KSC020F0047\"",
-          "\"80KSC020F0048\"",
-          "\"80KSC020F0067\"",
-          "\"80KSC020F0078\"",
-          "\"80KSC020F0079\"",
-          "\"80KSC020F0080\"",
-          "\"80KSC020F0087\"",
-          "\"80KSC020F0093\"",
-          "\"80KSC020F0096\"",
-          "\"80KSC020F0098\"",
-          "\"80KSC020F0100\"",
-          "\"80KSC020F0103\"",
-          "\"80KSC020F0107\"",
-          "\"80KSC020F0119\"",
-          "\"80KSC020F0132\"",
-          "\"80KSC020F0135\"",
-          "\"80KSC020F0138\"",
-          "\"80KSC020F0139\"",
-          "\"80KSC020F0143\"",
-          "\"80KSC020F0155\"",
-          "\"80KSC020F0157\""
-        ]
+  "bulk_diagnostic": {
+    "sample_size": 3,
+    "sample_piids": [
+      "80AFRC20C0012",
+      "80AFRC20C0019",
+      "80AFRC20C0020"
+    ],
+    "probes": {
+      "quoted_award_ids": {
+        "endpoint": "/api/v2/download/count/",
+        "submitted_payload": {
+          "filters": {
+            "award_ids": [
+              "\"80AFRC20C0012\"",
+              "\"80AFRC20C0019\"",
+              "\"80AFRC20C0020\""
+            ]
+          },
+          "spending_level": "transactions"
+        },
+        "status_code": 503,
+        "history": [
+          {
+            "attempt": 1,
+            "status_code": 503,
+            "headers": {
+              "Date": "Wed, 28 Oct 2026 07:10:01 GMT",
+              "Content-Length": "0",
+              "Connection": "keep-alive",
+              "Vary": "Accept, Cookie, origin",
+              "Allow": "POST, OPTIONS",
+              "X-Frame-Options": "DENY",
+              "X-Content-Type-Options": "nosniff",
+              "Referrer-Policy": "same-origin",
+              "Cross-Origin-Opener-Policy": "same-origin",
+              "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+            },
+            "body_snippet": ""
+          },
+          {
+            "attempt": 2,
+            "status_code": 503,
+            "headers": {
+              "Date": "Wed, 28 Oct 2026 07:10:12 GMT",
+              "Content-Length": "0",
+              "Connection": "keep-alive",
+              "Vary": "Accept, Cookie, origin",
+              "Allow": "POST, OPTIONS",
+              "X-Frame-Options": "DENY",
+              "X-Content-Type-Options": "nosniff",
+              "Referrer-Policy": "same-origin",
+              "Cross-Origin-Opener-Policy": "same-origin",
+              "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+            },
+            "body_snippet": ""
+          },
+          {
+            "attempt": 3,
+            "status_code": 503,
+            "headers": {
+              "Date": "Wed, 28 Oct 2026 07:10:26 GMT",
+              "Content-Length": "0",
+              "Connection": "keep-alive",
+              "Vary": "Accept, Cookie, origin",
+              "Allow": "POST, OPTIONS",
+              "X-Frame-Options": "DENY",
+              "X-Content-Type-Options": "nosniff",
+              "Referrer-Policy": "same-origin",
+              "Cross-Origin-Opener-Policy": "same-origin",
+              "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+            },
+            "body_snippet": ""
+          }
+        ],
+        "interpretation": "HTTP 503 indicates a service-side availability problem. It must NOT be treated as evidence of invalid JSON or filter syntax."
       },
-      "spending_level": "transactions"
+      "unquoted_award_ids": {
+        "endpoint": "/api/v2/download/count/",
+        "submitted_payload": {
+          "filters": {
+            "award_ids": [
+              "80AFRC20C0012",
+              "80AFRC20C0019",
+              "80AFRC20C0020"
+            ]
+          },
+          "spending_level": "transactions"
+        },
+        "status_code": 200,
+        "calculated_count": 11,
+        "history": [
+          {
+            "attempt": 1,
+            "status_code": 200,
+            "headers": {
+              "Date": "Wed, 28 Oct 2026 07:10:26 GMT",
+              "Content-Type": "application/json",
+              "Content-Length": "809",
+              "Connection": "keep-alive",
+              "Vary": "Accept, Cookie, origin",
+              "Allow": "POST, OPTIONS",
+              "Cache-Trace": "hit-cache",
+              "key": "398fd01b95f357c368776cf966b5f483",
+              "X-Frame-Options": "DENY",
+              "X-Content-Type-Options": "nosniff",
+              "Referrer-Policy": "same-origin",
+              "Cross-Origin-Opener-Policy": "same-origin",
+              "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+            },
+            "body_snippet": "{\"calculated_transaction_count\":11,\"maximum_transaction_limit\":500000,\"transaction_rows_gt_limit\":false,\"calculated_count\":11,\"spending_level\":\"transactions\",\"maximum_limit\":500000,\"rows_gt_limit\":false,\"messages\":[\"For searches, time period start and end dates are currently limited to an earliest d"
+          }
+        ],
+        "interpretation": "HTTP 200 returned for unquoted award_ids, but unquoted filters are treated as potentially fuzzy. Exact natural award IDs on the per-award transaction endpoints are authoritative."
+      }
     }
+  },
+  "transaction_validation": {
+    "zip_path": "data\\raw\\sample\\bulk_api\\PrimeTransactions_nasa_naics541330_fy2020_20261028T070949Z.zip",
+    "sha256": "9b3ffe150d0192e4ae7678ce0c0ac79177c959eb9982e7f14b876b88b0d9bc6b",
+    "file_size_bytes": 31185,
+    "total_rows": 1056,
+    "column_count": 13,
+    "blank_ids_count": 0,
+    "unique_ids_count": 1056,
+    "duplicate_ids_count": 0,
+    "unmatched_keys_count": 0,
+    "total_cohort_awards_linked": 221,
+    "total_expected_transactions": 1056,
+    "all_expected_available": true,
+    "discrepancies_count": 0,
+    "discrepancies": [],
+    "per_award_reconciliation": [
+      {
+        "award_unique_key": "CONT_AWD_80AFRC20C0012_8000_-NONE-_-NONE-",
+        "piid": "80AFRC20C0012",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80AFRC20C0019_8000_-NONE-_-NONE-",
+        "piid": "80AFRC20C0019",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80AFRC20C0020_8000_-NONE-_-NONE-",
+        "piid": "80AFRC20C0020",
+        "expected_count": 6,
+        "actual_count": 6,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80AFRC20C0022_8000_-NONE-_-NONE-",
+        "piid": "80AFRC20C0022",
+        "expected_count": 8,
+        "actual_count": 8,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80AFRC20F0095_8000_NND16AA42Z_8000",
+        "piid": "80AFRC20F0095",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80AFRC20F0118_8000_NND17AA39Z_8000",
+        "piid": "80AFRC20F0118",
+        "expected_count": 8,
+        "actual_count": 8,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80AFRC20F0163_8000_GS10F0202X_4732",
+        "piid": "80AFRC20F0163",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0002_8000_80ARC019D0007_8000",
+        "piid": "80ARC020F0002",
+        "expected_count": 9,
+        "actual_count": 9,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0015_8000_80ARC018D0016_8000",
+        "piid": "80ARC020F0015",
+        "expected_count": 7,
+        "actual_count": 7,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0017_8000_80ARC018D0013_8000",
+        "piid": "80ARC020F0017",
+        "expected_count": 6,
+        "actual_count": 6,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0029_8000_80ARC020D0002_8000",
+        "piid": "80ARC020F0029",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0030_8000_80ARC020D0002_8000",
+        "piid": "80ARC020F0030",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0035_8000_80ARC020D0002_8000",
+        "piid": "80ARC020F0035",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0036_8000_GS00Q14OADS144_4732",
+        "piid": "80ARC020F0036",
+        "expected_count": 83,
+        "actual_count": 83,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0037_8000_80ARC019D0007_8000",
+        "piid": "80ARC020F0037",
+        "expected_count": 6,
+        "actual_count": 6,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0038_8000_80ARC019D0008_8000",
+        "piid": "80ARC020F0038",
+        "expected_count": 7,
+        "actual_count": 7,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0040_8000_80ARC019D0008_8000",
+        "piid": "80ARC020F0040",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0044_8000_80ARC018D0016_8000",
+        "piid": "80ARC020F0044",
+        "expected_count": 8,
+        "actual_count": 8,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0049_8000_80ARC020D0002_8000",
+        "piid": "80ARC020F0049",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0054_8000_NNA15AB12B_8000",
+        "piid": "80ARC020F0054",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0055_8000_NNA15AB13B_8000",
+        "piid": "80ARC020F0055",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0059_8000_80ARC018D0008_8000",
+        "piid": "80ARC020F0059",
+        "expected_count": 8,
+        "actual_count": 8,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0060_8000_80ARC018D0008_8000",
+        "piid": "80ARC020F0060",
+        "expected_count": 14,
+        "actual_count": 14,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0061_8000_80ARC018D0008_8000",
+        "piid": "80ARC020F0061",
+        "expected_count": 17,
+        "actual_count": 17,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0062_8000_80ARC018D0008_8000",
+        "piid": "80ARC020F0062",
+        "expected_count": 16,
+        "actual_count": 16,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0088_8000_80ARC020D0002_8000",
+        "piid": "80ARC020F0088",
+        "expected_count": 8,
+        "actual_count": 8,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0100_8000_80ARC019D0007_8000",
+        "piid": "80ARC020F0100",
+        "expected_count": 9,
+        "actual_count": 9,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0101_8000_80ARC019D0009_8000",
+        "piid": "80ARC020F0101",
+        "expected_count": 12,
+        "actual_count": 12,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0103_8000_80ARC020D0002_8000",
+        "piid": "80ARC020F0103",
+        "expected_count": 6,
+        "actual_count": 6,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0107_8000_80ARC019D0008_8000",
+        "piid": "80ARC020F0107",
+        "expected_count": 12,
+        "actual_count": 12,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0108_8000_80ARC018D0016_8000",
+        "piid": "80ARC020F0108",
+        "expected_count": 7,
+        "actual_count": 7,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0112_8000_80ARC019D0007_8000",
+        "piid": "80ARC020F0112",
+        "expected_count": 10,
+        "actual_count": 10,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0117_8000_80ARC019D0008_8000",
+        "piid": "80ARC020F0117",
+        "expected_count": 14,
+        "actual_count": 14,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0119_8000_80ARC019D0007_8000",
+        "piid": "80ARC020F0119",
+        "expected_count": 12,
+        "actual_count": 12,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0120_8000_80ARC019D0009_8000",
+        "piid": "80ARC020F0120",
+        "expected_count": 11,
+        "actual_count": 11,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80ARC020F0123_8000_80ARC018D0015_8000",
+        "piid": "80ARC020F0123",
+        "expected_count": 20,
+        "actual_count": 20,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0009_8000_80GRC019D0009_8000",
+        "piid": "80GRC020F0009",
+        "expected_count": 14,
+        "actual_count": 14,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0017_8000_GS00Q14OADU106_4732",
+        "piid": "80GRC020F0017",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0019_8000_80GRC019D0002_8000",
+        "piid": "80GRC020F0019",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0068_8000_80GRC019D0006_8000",
+        "piid": "80GRC020F0068",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0080_8000_80GRC019D0002_8000",
+        "piid": "80GRC020F0080",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0094_8000_80GRC019D0007_8000",
+        "piid": "80GRC020F0094",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0186_8000_80GRC019D0007_8000",
+        "piid": "80GRC020F0186",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0187_8000_80GRC019D0007_8000",
+        "piid": "80GRC020F0187",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0209_8000_80GRC020D0016_8000",
+        "piid": "80GRC020F0209",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0212_8000_80GRC019D0005_8000",
+        "piid": "80GRC020F0212",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0217_8000_80GRC019D0005_8000",
+        "piid": "80GRC020F0217",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0222_8000_80GRC019D0006_8000",
+        "piid": "80GRC020F0222",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0223_8000_80GRC019D0002_8000",
+        "piid": "80GRC020F0223",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0224_8000_80GRC019D0002_8000",
+        "piid": "80GRC020F0224",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GRC020F0227_8000_80GRC019D0007_8000",
+        "piid": "80GRC020F0227",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GSFC20C0034_8000_-NONE-_-NONE-",
+        "piid": "80GSFC20C0034",
+        "expected_count": 18,
+        "actual_count": 18,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GSFC20C0115_8000_-NONE-_-NONE-",
+        "piid": "80GSFC20C0115",
+        "expected_count": 12,
+        "actual_count": 12,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GSFC20F0020_8000_80GSFC19D0003_8000",
+        "piid": "80GSFC20F0020",
+        "expected_count": 15,
+        "actual_count": 15,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GSFC20F0021_8000_80GSFC19D0003_8000",
+        "piid": "80GSFC20F0021",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GSFC20F0022_8000_80GSFC19D0003_8000",
+        "piid": "80GSFC20F0022",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GSFC20F0023_8000_80GSFC20D0001_8000",
+        "piid": "80GSFC20F0023",
+        "expected_count": 32,
+        "actual_count": 32,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80GSFC20F0134_8000_80GRC019D0004_8000",
+        "piid": "80GSFC20F0134",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80HQTR20F0021_8000_80HQTR17A0011_8000",
+        "piid": "80HQTR20F0021",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80HQTR20F0022_8000_80HQTR17A0011_8000",
+        "piid": "80HQTR20F0022",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80HQTR20F0023_8000_80HQTR17A0011_8000",
+        "piid": "80HQTR20F0023",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80HQTR20F0024_8000_80HQTR17A0011_8000",
+        "piid": "80HQTR20F0024",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80HQTR20F0034_8000_NNH16CO60C_8000",
+        "piid": "80HQTR20F0034",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80HQTR20F0071_8000_80HQTR17A0010_8000",
+        "piid": "80HQTR20F0071",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80HQTR20F0105_8000_80HQTR18A0008_8000",
+        "piid": "80HQTR20F0105",
+        "expected_count": 6,
+        "actual_count": 6,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80HQTR20F0146_8000_80HQTR20A0012_8000",
+        "piid": "80HQTR20F0146",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80HQTR20F0239_8000_80HQTR17A0010_8000",
+        "piid": "80HQTR20F0239",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80JSC020C0019_8000_-NONE-_-NONE-",
+        "piid": "80JSC020C0019",
+        "expected_count": 11,
+        "actual_count": 11,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80JSC020F0005_8000_80JSC020D0020_8000",
+        "piid": "80JSC020F0005",
+        "expected_count": 7,
+        "actual_count": 7,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80JSC020F0139_8000_NNJ17GU31Z_8000",
+        "piid": "80JSC020F0139",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80JSC020F0162_8000_80JSC020D0020_8000",
+        "piid": "80JSC020F0162",
+        "expected_count": 7,
+        "actual_count": 7,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80JSC020F0181_8000_80JSC020D0020_8000",
+        "piid": "80JSC020F0181",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80JSC020F0318_8000_NNJ17GU31Z_8000",
+        "piid": "80JSC020F0318",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0005_8000_NNK15OL50B_8000",
+        "piid": "80KSC020F0005",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0031_8000_NNK17CA17B_8000",
+        "piid": "80KSC020F0031",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0043_8000_NNK15OL50B_8000",
+        "piid": "80KSC020F0043",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0044_8000_NNK15OL50B_8000",
+        "piid": "80KSC020F0044",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0045_8000_NNK15OL50B_8000",
+        "piid": "80KSC020F0045",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0046_8000_NNK15OL50B_8000",
+        "piid": "80KSC020F0046",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0047_8000_NNK15OL50B_8000",
+        "piid": "80KSC020F0047",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0048_8000_NNK15OL50B_8000",
+        "piid": "80KSC020F0048",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0067_8000_NNK17LA01C_8000",
+        "piid": "80KSC020F0067",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0078_8000_NNK16CA03B_8000",
+        "piid": "80KSC020F0078",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0079_8000_NNK17CA04B_8000",
+        "piid": "80KSC020F0079",
+        "expected_count": 7,
+        "actual_count": 7,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0080_8000_NNK15CA20B_8000",
+        "piid": "80KSC020F0080",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0087_8000_NNK17CA04B_8000",
+        "piid": "80KSC020F0087",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0093_8000_NNK17CA04B_8000",
+        "piid": "80KSC020F0093",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0096_8000_NNK15OL50B_8000",
+        "piid": "80KSC020F0096",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0098_8000_80KSC020D0014_8000",
+        "piid": "80KSC020F0098",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0100_8000_80KSC020D0015_8000",
+        "piid": "80KSC020F0100",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0103_8000_NNK15CA20B_8000",
+        "piid": "80KSC020F0103",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0107_8000_NNK16CA03B_8000",
+        "piid": "80KSC020F0107",
+        "expected_count": 18,
+        "actual_count": 18,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0119_8000_NNK17LA01C_8000",
+        "piid": "80KSC020F0119",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0132_8000_NNK17CA17B_8000",
+        "piid": "80KSC020F0132",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0135_8000_80KSC020A0010_8000",
+        "piid": "80KSC020F0135",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0138_8000_NNK17CA04B_8000",
+        "piid": "80KSC020F0138",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0139_8000_NNK15CA20B_8000",
+        "piid": "80KSC020F0139",
+        "expected_count": 12,
+        "actual_count": 12,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0143_8000_NNK17CA16B_8000",
+        "piid": "80KSC020F0143",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0155_8000_NNK17LA01C_8000",
+        "piid": "80KSC020F0155",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0157_8000_NNK17CA03B_8000",
+        "piid": "80KSC020F0157",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0161_8000_NNK17CA04B_8000",
+        "piid": "80KSC020F0161",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0162_8000_NNK15CA20B_8000",
+        "piid": "80KSC020F0162",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0168_8000_NNK15CA20B_8000",
+        "piid": "80KSC020F0168",
+        "expected_count": 8,
+        "actual_count": 8,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0169_8000_NNK16CA04B_8000",
+        "piid": "80KSC020F0169",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0174_8000_80KSC020D0008_8000",
+        "piid": "80KSC020F0174",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0176_8000_80KSC020D0014_8000",
+        "piid": "80KSC020F0176",
+        "expected_count": 9,
+        "actual_count": 9,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0180_8000_80KSC020D0008_8000",
+        "piid": "80KSC020F0180",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0182_8000_80KSC020D0008_8000",
+        "piid": "80KSC020F0182",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0184_8000_80KSC020D0008_8000",
+        "piid": "80KSC020F0184",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0196_8000_NNK15CA20B_8000",
+        "piid": "80KSC020F0196",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0197_8000_NNK15CA20B_8000",
+        "piid": "80KSC020F0197",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0199_8000_NNK15CA20B_8000",
+        "piid": "80KSC020F0199",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0212_8000_80KSC020D0008_8000",
+        "piid": "80KSC020F0212",
+        "expected_count": 16,
+        "actual_count": 16,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0214_8000_80KSC020D0017_8000",
+        "piid": "80KSC020F0214",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0215_8000_80KSC020D0018_8000",
+        "piid": "80KSC020F0215",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0218_8000_80KSC020D0016_8000",
+        "piid": "80KSC020F0218",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020F0220_8000_NNK15OL50B_8000",
+        "piid": "80KSC020F0220",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80KSC020P0015_8000_-NONE-_-NONE-",
+        "piid": "80KSC020P0015",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80LARC20F0076_8000_80GRC019D0005_8000",
+        "piid": "80LARC20F0076",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20C0026_8000_-NONE-_-NONE-",
+        "piid": "80MSFC20C0026",
+        "expected_count": 35,
+        "actual_count": 35,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20C0032_8000_-NONE-_-NONE-",
+        "piid": "80MSFC20C0032",
+        "expected_count": 9,
+        "actual_count": 9,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20C0039_8000_-NONE-_-NONE-",
+        "piid": "80MSFC20C0039",
+        "expected_count": 21,
+        "actual_count": 21,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0021_8000_NNM17AA11C_8000",
+        "piid": "80MSFC20F0021",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0022_8000_NNM17AA11C_8000",
+        "piid": "80MSFC20F0022",
+        "expected_count": 6,
+        "actual_count": 6,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0023_8000_NNM17AA11C_8000",
+        "piid": "80MSFC20F0023",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0024_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0024",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0028_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0028",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0040_8000_80MSFC19D0021_8000",
+        "piid": "80MSFC20F0040",
+        "expected_count": 10,
+        "actual_count": 10,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0041_8000_NNM17AA11C_8000",
+        "piid": "80MSFC20F0041",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0042_8000_80MSFC19D0021_8000",
+        "piid": "80MSFC20F0042",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0044_8000_80MSFC19D0021_8000",
+        "piid": "80MSFC20F0044",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0053_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0053",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0088_8000_80MSFC19D0021_8000",
+        "piid": "80MSFC20F0088",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0094_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0094",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0100_8000_80MSFC19D0021_8000",
+        "piid": "80MSFC20F0100",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0123_8000_80MSFC19D0021_8000",
+        "piid": "80MSFC20F0123",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0126_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0126",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0128_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0128",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0131_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0131",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0133_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0133",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0136_8000_80MSFC19D0021_8000",
+        "piid": "80MSFC20F0136",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0139_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0139",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0140_8000_80MSFC19D0021_8000",
+        "piid": "80MSFC20F0140",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0152_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0152",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0159_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0159",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0160_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0160",
+        "expected_count": 6,
+        "actual_count": 6,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0163_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0163",
+        "expected_count": 6,
+        "actual_count": 6,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0191_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0191",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0192_8000_80MSFC19D0021_8000",
+        "piid": "80MSFC20F0192",
+        "expected_count": 10,
+        "actual_count": 10,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0196_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0196",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0217_8000_NNM17AA11C_8000",
+        "piid": "80MSFC20F0217",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0227_8000_80MSFC19D0021_8000",
+        "piid": "80MSFC20F0227",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0229_8000_NNM17AA11C_8000",
+        "piid": "80MSFC20F0229",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0231_8000_80MSFC19D0021_8000",
+        "piid": "80MSFC20F0231",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0233_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0233",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0242_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0242",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0243_8000_80MSFC18D0003_8000",
+        "piid": "80MSFC20F0243",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0247_8000_NNM17AA11C_8000",
+        "piid": "80MSFC20F0247",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80MSFC20F0257_8000_80MSFC19D0021_8000",
+        "piid": "80MSFC20F0257",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20F0068_8000_GS10F0087Y_4732",
+        "piid": "80NSSC20F0068",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20F0168_8000_GS10F0497X_4732",
+        "piid": "80NSSC20F0168",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20F0451_8000_GS10F0087Y_4732",
+        "piid": "80NSSC20F0451",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20F0534_8000_GS10F0087Y_4732",
+        "piid": "80NSSC20F0534",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20F0718_8000_GS10F0497X_4732",
+        "piid": "80NSSC20F0718",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20F0742_8000_GS23F0390K_4730",
+        "piid": "80NSSC20F0742",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20F0823_8000_GS10F0497X_4732",
+        "piid": "80NSSC20F0823",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20F1263_8000_GS00F200CA_4732",
+        "piid": "80NSSC20F1263",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20F1575_8000_GS10F0087Y_4732",
+        "piid": "80NSSC20F1575",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0081_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0081",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0108_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0108",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0184_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0184",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0271_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0271",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0374_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0374",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0413_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0413",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0415_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0415",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0536_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0536",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0567_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0567",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0690_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0690",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0759_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0759",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0769_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0769",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0776_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0776",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0781_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0781",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0793_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0793",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0842_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0842",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0902_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0902",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P0953_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P0953",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1009_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1009",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1144_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1144",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1171_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1171",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1182_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1182",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1205_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1205",
+        "expected_count": 5,
+        "actual_count": 5,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1208_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1208",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1260_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1260",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1446_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1446",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1453_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1453",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1478_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1478",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1489_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1489",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1503_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1503",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1507_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1507",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1584_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1584",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1594_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1594",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1602_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1602",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1698_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1698",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1724_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1724",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1750_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1750",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1770_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1770",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1772_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1772",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1815_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1815",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1824_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1824",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1831_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1831",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1852_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1852",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1908_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1908",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1920_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1920",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1964_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1964",
+        "expected_count": 3,
+        "actual_count": 3,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1978_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1978",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P1992_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P1992",
+        "expected_count": 2,
+        "actual_count": 2,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P2258_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P2258",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P2278_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P2278",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P2289_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P2289",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80NSSC20P2330_8000_-NONE-_-NONE-",
+        "piid": "80NSSC20P2330",
+        "expected_count": 1,
+        "actual_count": 1,
+        "difference": 0,
+        "matched": true
+      },
+      {
+        "award_unique_key": "CONT_AWD_80SSC020F0007_8000_80SSC018D0028_8000",
+        "piid": "80SSC020F0007",
+        "expected_count": 4,
+        "actual_count": 4,
+        "difference": 0,
+        "matched": true
+      }
+    ],
+    "date_audit": {
+      "min_action_date": "2019-10-08",
+      "max_action_date": "2026-10-06",
+      "in_fy2020_count": 390,
+      "outside_fy2020_count": 666
+    },
+    "is_valid": true,
+    "validation_failures": []
   },
   "manual_archives_audit": {
     "manual_on": {

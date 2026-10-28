@@ -17,21 +17,25 @@ USAspending provides two primary data extraction paths:
 
 ---
 
-### Two-Stage Acquisition Architecture
+### Acquisition Architecture
 
-To ensure full modification fidelity, the download of award summaries and transaction histories is strictly separated:
-- **Stage 1 (Award Summary Cohort)**:
+To ensure full modification fidelity, data acquisition is structured into two complementary layers:
+- **Award Summary Cohort**:
   - Filters: Top-tier NASA, NAICS `541330` (`naics_codes: {"require": ["541330"]}`), procurement contract types `A, B, C, D`, and FY2020 new awards (`time_period: [{"start_date": "2019-10-01", "end_date": "2020-09-30", "date_type": "new_awards_only"}]`).
-  - Precheck: `POST /api/v2/download/count/` with singular string `spending_level: "awards"`.
-  - Search Job: `POST /api/v2/download/search/` with array `spending_level: ["awards"]`.
-  - Reconciliation: Validates count API `calculated_count` == status `total_rows` == downloaded CSV rows (221 rows).
-  - Cohort List: Extracts and deduplicates all nonblank `award_id_piid` values.
-- **Stage 2 (Transaction History Retrieval)**:
-  - Filters: Queried strictly by `award_ids` corresponding to the cohort PIIDs.
-  - **No Date Filter**: Intentionally omits `time_period`, NAICS, and agency filters so that all lifetime modifications for the cohort awards are retrieved rather than being truncated to FY2020.
-  - Precheck: `POST /api/v2/download/count/` with singular string `spending_level: "transactions"`.
-  - Search Job: `POST /api/v2/download/search/` with array `spending_level: ["transactions"]`.
-  - Batching: Deterministic batches of 100 PIIDs.
+  - Precheck & Download: `POST /api/v2/download/count/` and `POST /api/v2/download/search/`.
+  - Cohort Identity: Exactly 221 awards reconciled across count endpoint, job metadata, and downloaded CSV.
+  - Generates verified, unique, nonblank natural award identifiers (`contract_award_unique_key`) and PIIDs (`award_id_piid`).
+- **Bulk Diagnostic & Service Availability Check**:
+  - Probes small cohort sample (<= 3 awards) on `POST /api/v2/download/count/`.
+  - Captures server response for quoted award IDs (HTTP 503, preserved as service availability behavior, not schema rejection) and unquoted award IDs (HTTP 200, treated as potentially fuzzy).
+- **Authoritative Transaction History Retrieval**:
+  - Endpoints:
+    - Expected Count: `GET /api/v2/awards/count/transaction/{generated_natural_award_id}/`
+    - Lifetime Modification History: `POST /api/v2/transactions/` with `limit: 5000` and page iteration until `hasNext: false`.
+  - **No Date Filter**: Captures all lifetime modifications for cohort awards rather than truncating to FY2020.
+  - **Resumable Local Cache**: Saves per-award results to `data/raw/sample/bulk_api/tx_cache/` so transient network interruptions do not force repeated calls.
+  - **Atomic ZIP Packaging**: Aggregates all transaction rows with local provenance fields (`cohort_award_unique_key`, `cohort_award_id_piid`) into `data/raw/sample/bulk_api/PrimeTransactions_nasa_naics541330_fy2020_<timestamp>.zip`.
+  - **Mandatory Quality Validation**: Reopens ZIP from disk to verify CRC, 0 blank transaction IDs, 0 duplicate transaction IDs, 100% award linkage, per-award count reconciliation, and date span.
 
 ---
 
