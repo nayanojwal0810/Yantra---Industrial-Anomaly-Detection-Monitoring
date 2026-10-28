@@ -1,7 +1,7 @@
 # Sanket — USAspending Bulk Download Client Validation Report
 
 **Run Status**: `count_mismatch`  
-**Timestamp (UTC)**: `2026-10-28T05:04:00.054273+00:00`  
+**Timestamp (UTC)**: `2026-10-28T05:07:52.435964+00:00`  
 **Controlled Cohort**: `nasa_naics541330_fy2020` (NASA Awarding Agency, NAICS 541330 (Engineering Services), FY2020 action dates (Show New Awards Only OFF))  
 
 ## 1. Executive Summary
