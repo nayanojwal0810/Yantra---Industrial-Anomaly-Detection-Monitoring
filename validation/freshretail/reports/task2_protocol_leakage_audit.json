@@ -1,0 +1,400 @@
+{
+  "metadata": {
+    "task": "TASK 2 \u2014 Full-Data Forecast Protocol and Leakage Audit",
+    "timestamp": "2026-10-29T22:51:53.591554+00:00",
+    "start_timestamp": "2026-10-29T22:51:53.591554+00:00",
+    "end_timestamp": "2026-10-29T22:52:03.033163+00:00",
+    "duration_seconds": 9.44,
+    "git_branch": "project1/freshretail-validation",
+    "full_data_rule_enforced": true,
+    "sampling_used": false
+  },
+  "overall_status": "PASS",
+  "evaluation_reasons": [],
+  "tasks_definition": {
+    "task_a_recovery": {
+      "unit": "Hourly time series at store-product-day level (16 daytime hours [06:00, 22:00))",
+      "observed_quantity": "Partially observed sales y",
+      "censored_quantity": "True latent customer demand d during stockouts",
+      "formula": "d = y * s + d_hat * (1 - s) where s = 1 - hours_stock_status",
+      "ground_truth_method": "Synthetic MNAR masking on un-censored operational periods (stock_hour_origin == 0)",
+      "metrics": [
+        "WAPE",
+        "WPE",
+        "Decoupling Score (rho_DS)"
+      ]
+    },
+    "task_b_forecasting": {
+      "unit": "Daily store-product demand over 7-day forecast horizon (2024-06-26 to 2024-07-02)",
+      "targets": "Raw sales sum or recovered demand sum",
+      "operational_eval_filter": "stock_hour6_22_cnt == 0 (206,562 un-censored rows / 59.02% of eval)",
+      "benchmark_assumptions": "Future planned discount, calendar flags, and realized weather covariates assumed known",
+      "deployment_realism_gap": "Realized weather station data used in place of meteorological weather forecasts"
+    }
+  },
+  "field_leakage_matrix": [
+    {
+      "field_name": "city_id",
+      "data_type": "int64",
+      "documented_meaning": "Encoded city identifier (18 cities)",
+      "role_recovery": "Static spatial hierarchy context",
+      "role_forecasting": "Static spatial covariate / group context",
+      "classification": "Identifier / Static Spatial Hierarchy",
+      "available_at_origin": true,
+      "depends_on_assumption": false,
+      "leakage_risk": "None. Immutable geographic attribute of store.",
+      "supporting_source": "Paper Section 3.1; TFT config static_categoricals",
+      "recommended_treatment": "Safe static categorical feature"
+    },
+    {
+      "field_name": "store_id",
+      "data_type": "int64",
+      "documented_meaning": "Encoded store identifier (898 stores)",
+      "role_recovery": "Series grouping entity",
+      "role_forecasting": "Series grouping key / static spatial entity",
+      "classification": "Identifier / Static Entity",
+      "available_at_origin": true,
+      "depends_on_assumption": false,
+      "leakage_risk": "None. Fixed physical entity identifier.",
+      "supporting_source": "Paper Section 3.1; TFT group_ids",
+      "recommended_treatment": "Safe entity grouping key"
+    },
+    {
+      "field_name": "management_group_id",
+      "data_type": "int64",
+      "documented_meaning": "Encoded merchandising management group id (7 groups)",
+      "role_recovery": "Static product hierarchy context",
+      "role_forecasting": "Static product hierarchy covariate",
+      "classification": "Identifier / Static Product Hierarchy",
+      "available_at_origin": true,
+      "depends_on_assumption": false,
+      "leakage_risk": "None. Fixed catalog classification.",
+      "supporting_source": "Paper Section 3.1; TFT static_categoricals",
+      "recommended_treatment": "Safe static categorical feature"
+    },
+    {
+      "field_name": "first_category_id",
+      "data_type": "int64",
+      "documented_meaning": "Encoded Level-1 product category id (32 categories)",
+      "role_recovery": "Static product hierarchy context",
+      "role_forecasting": "Static product hierarchy covariate",
+      "classification": "Identifier / Static Product Hierarchy",
+      "available_at_origin": true,
+      "depends_on_assumption": false,
+      "leakage_risk": "None. Fixed category metadata.",
+      "supporting_source": "Paper Section 3.1; TFT static_categoricals",
+      "recommended_treatment": "Safe static categorical feature"
+    },
+    {
+      "field_name": "second_category_id",
+      "data_type": "int64",
+      "documented_meaning": "Encoded Level-2 product category id (84 categories)",
+      "role_recovery": "Static product hierarchy context",
+      "role_forecasting": "Static product hierarchy covariate",
+      "classification": "Identifier / Static Product Hierarchy",
+      "available_at_origin": true,
+      "depends_on_assumption": false,
+      "leakage_risk": "None. Fixed category metadata.",
+      "supporting_source": "Paper Section 3.1; TFT static_categoricals",
+      "recommended_treatment": "Safe static categorical feature"
+    },
+    {
+      "field_name": "third_category_id",
+      "data_type": "int64",
+      "documented_meaning": "Encoded Level-3 product category id (233 categories)",
+      "role_recovery": "Static product hierarchy context",
+      "role_forecasting": "Static product hierarchy covariate",
+      "classification": "Identifier / Static Product Hierarchy",
+      "available_at_origin": true,
+      "depends_on_assumption": false,
+      "leakage_risk": "None. Fixed category metadata.",
+      "supporting_source": "Paper Section 3.1; TFT static_categoricals",
+      "recommended_treatment": "Safe static categorical feature"
+    },
+    {
+      "field_name": "product_id",
+      "data_type": "int64",
+      "documented_meaning": "Encoded product SKU identifier (865 SKUs)",
+      "role_recovery": "Series grouping entity",
+      "role_forecasting": "Series grouping key / static item entity",
+      "classification": "Identifier / Static Entity",
+      "available_at_origin": true,
+      "depends_on_assumption": false,
+      "leakage_risk": "None. Fixed product catalog identifier.",
+      "supporting_source": "Paper Section 3.1; TFT group_ids",
+      "recommended_treatment": "Safe entity grouping key"
+    },
+    {
+      "field_name": "dt",
+      "data_type": "string",
+      "documented_meaning": "Calendar date (YYYY-MM-DD)",
+      "role_recovery": "Temporal sequence index",
+      "role_forecasting": "Temporal index / derives day-of-week, calendar features",
+      "classification": "Identifier / Temporal Index",
+      "available_at_origin": true,
+      "depends_on_assumption": false,
+      "leakage_risk": "None. Future dates are deterministic calendar indices.",
+      "supporting_source": "Paper Section 4.2; TFT datetime field",
+      "recommended_treatment": "Safe temporal index and calendar derivation"
+    },
+    {
+      "field_name": "sale_amount",
+      "data_type": "float64",
+      "documented_meaning": "Daily normalized sales quantity",
+      "role_recovery": "Un-censored benchmark reference (when stockout=0)",
+      "role_forecasting": "Primary prediction target; historical lags valid",
+      "classification": "Target / Observed Outcome",
+      "available_at_origin": "Historical (t<=T) only",
+      "depends_on_assumption": false,
+      "leakage_risk": "CRITICAL LEAKAGE if used as same-period predictor for t>T. Contains target.",
+      "supporting_source": "Paper Section 4.2 Eq. (3); TFT time_varying_unknown_reals",
+      "recommended_treatment": "Target variable; only strict lags (t<=T) allowed as predictors"
+    },
+    {
+      "field_name": "hours_sale",
+      "data_type": "list<float64>[24]",
+      "documented_meaning": "Hourly normalized sales sequence (24 hours)",
+      "role_recovery": "Primary partially observed input series (y)",
+      "role_forecasting": "Historical intraday trajectory (t<=T); unavailable for t>T",
+      "classification": "Target / Observed Outcome (Intraday)",
+      "available_at_origin": "Historical (t<=T) only",
+      "depends_on_assumption": false,
+      "leakage_risk": "CRITICAL LEAKAGE if future intraday sales used in forecasting.",
+      "supporting_source": "Paper Section 4.1 Eq. (1)-(3); generate_data.py",
+      "recommended_treatment": "Recovery input; lagged intraday features only for forecasting"
+    },
+    {
+      "field_name": "stock_hour6_22_cnt",
+      "data_type": "int32",
+      "documented_meaning": "Count of daytime stockout hours in [06:00, 22:00)",
+      "role_recovery": "Identifies un-censored days (cnt=0) for synthetic MNAR ground truth",
+      "role_forecasting": "Evaluation period filter (stock_hour6_22_cnt==0)",
+      "classification": "Stockout Observation / Ex-Post Realization",
+      "available_at_origin": "Historical (t<=T) only",
+      "depends_on_assumption": "Future availability is impossible without oracle supply knowledge",
+      "leakage_risk": "CRITICAL LEAKAGE if used as future covariate. Future stockouts depend on demand.",
+      "supporting_source": "Paper Section 5.1; ssa_forecasting.py line 74; exp_main.py line 388",
+      "recommended_treatment": "Scoring filter in evaluation; never use as future predictor"
+    },
+    {
+      "field_name": "hours_stock_status",
+      "data_type": "list<int64>[24]",
+      "documented_meaning": "Hourly stockout status (1=out-of-stock, 0=in-stock)",
+      "role_recovery": "Conditioning mask; inverted to s=1-status for availability mask",
+      "role_forecasting": "Historical supply context (t<=T); unavailable for t>T",
+      "classification": "Stockout Observation / Ex-Post Realization (Hourly)",
+      "available_at_origin": "Historical (t<=T) only",
+      "depends_on_assumption": "Future hourly status is post-outcome realization",
+      "leakage_risk": "CRITICAL LEAKAGE if used as future predictor. Inverts polarity from paper math.",
+      "supporting_source": "Paper Section 4.1 Eq. (1)-(2); generate_data.py line 63",
+      "recommended_treatment": "Invert to availability mask for recovery; forbid future forecasting use"
+    },
+    {
+      "field_name": "discount",
+      "data_type": "float64",
+      "documented_meaning": "Promotion discount rate (1.0 = full price, 0.9 = 10% off)",
+      "role_recovery": "Covariate conditioning for promotional uplift estimation",
+      "role_forecasting": "Future promotional covariate across prediction horizon",
+      "classification": "Exogenous Covariate / Commercial Policy",
+      "available_at_origin": true,
+      "depends_on_assumption": true,
+      "leakage_risk": "Moderate if retail discounts are dynamically adjusted mid-week rather than planned.",
+      "supporting_source": "Paper Section 4.2; TFT time_varying_known_reals",
+      "recommended_treatment": "Permitted as planned future covariate for benchmark reproduction"
+    },
+    {
+      "field_name": "holiday_flag",
+      "data_type": "int32",
+      "documented_meaning": "Statutory calendar holiday binary indicator",
+      "role_recovery": "Calendar covariate capturing festival purchase surges",
+      "role_forecasting": "Known future calendar covariate",
+      "classification": "Exogenous Covariate / Calendar Feature",
+      "available_at_origin": true,
+      "depends_on_assumption": false,
+      "leakage_risk": "None. Statutory holidays are known and published in advance.",
+      "supporting_source": "Paper Section 3.1, 4.2; TFT time_varying_known_categoricals",
+      "recommended_treatment": "Legitimate deterministic future covariate"
+    },
+    {
+      "field_name": "activity_flag",
+      "data_type": "int32",
+      "documented_meaning": "Commercial marketing activity / campaign indicator (0/1)",
+      "role_recovery": "Promotional context covariate",
+      "role_forecasting": "Known future promotional activity covariate",
+      "classification": "Exogenous Covariate / Commercial Policy",
+      "available_at_origin": true,
+      "depends_on_assumption": true,
+      "leakage_risk": "Low to moderate. Assumes marketing campaigns are planned in advance.",
+      "supporting_source": "Paper Section 3.1, 4.2; TFT time_varying_known_categoricals",
+      "recommended_treatment": "Permitted as planned future covariate"
+    },
+    {
+      "field_name": "precpt",
+      "data_type": "float64",
+      "documented_meaning": "Total daily precipitation (rainfall in mm)",
+      "role_recovery": "Environmental covariate explaining offline-to-online substitution",
+      "role_forecasting": "Benchmark future weather covariate",
+      "classification": "Exogenous Environmental Covariate",
+      "available_at_origin": "Forecast assumption only",
+      "depends_on_assumption": true,
+      "leakage_risk": "BENCHMARK-REALISM GAP. Code uses realized station measurements (oracle future weather).",
+      "supporting_source": "Paper Section 4.2; TFT time_varying_known_reals; ssa_forecasting.py",
+      "recommended_treatment": "Permit for benchmark reproduction; flag as oracle weather assumption"
+    },
+    {
+      "field_name": "avg_temperature",
+      "data_type": "float64",
+      "documented_meaning": "Average daily temperature in Celsius",
+      "role_recovery": "Environmental covariate for category perishability",
+      "role_forecasting": "Benchmark future weather covariate",
+      "classification": "Exogenous Environmental Covariate",
+      "available_at_origin": "Forecast assumption only",
+      "depends_on_assumption": true,
+      "leakage_risk": "BENCHMARK-REALISM GAP. Realized temperature substituted for weather forecast.",
+      "supporting_source": "Paper Section 4.2; TFT time_varying_known_reals",
+      "recommended_treatment": "Permit for benchmark reproduction; flag as oracle weather assumption"
+    },
+    {
+      "field_name": "avg_humidity",
+      "data_type": "float64",
+      "documented_meaning": "Average daily relative humidity percentage",
+      "role_recovery": "Environmental context",
+      "role_forecasting": "Benchmark future weather covariate",
+      "classification": "Exogenous Environmental Covariate",
+      "available_at_origin": "Forecast assumption only",
+      "depends_on_assumption": true,
+      "leakage_risk": "BENCHMARK-REALISM GAP. Realized humidity substituted for weather forecast.",
+      "supporting_source": "Paper Section 4.2; TFT time_varying_known_reals",
+      "recommended_treatment": "Permit for benchmark reproduction; flag as oracle weather assumption"
+    },
+    {
+      "field_name": "avg_wind_level",
+      "data_type": "float64",
+      "documented_meaning": "Average daily wind force scale level",
+      "role_recovery": "Environmental context",
+      "role_forecasting": "Benchmark future weather covariate",
+      "classification": "Exogenous Environmental Covariate",
+      "available_at_origin": "Forecast assumption only",
+      "depends_on_assumption": true,
+      "leakage_risk": "BENCHMARK-REALISM GAP. Realized wind level substituted for weather forecast.",
+      "supporting_source": "Paper Section 4.2; TFT time_varying_known_reals",
+      "recommended_treatment": "Permit for benchmark reproduction; flag as oracle weather assumption"
+    }
+  ],
+  "polarity_resolution": {
+    "raw_dataset_polarity": "hours_stock_status: 1 = Out-of-Stock (Stockout), 0 = In-Stock (Available)",
+    "paper_formula_polarity": "s_t: 1 = Stock Available, 0 = Stockout",
+    "inversion_relationship": "s_t = 1 - hours_stock_status_t",
+    "code_evidence": "generate_data.py line 63: hours_sale = np.where(hours_stock_status == 1, np.nan, hours_sale_origin)"
+  },
+  "invariants": {
+    "train": {
+      "total_rows_audited": 4500000,
+      "D1_hourly_sequence_validity": {
+        "hours_sale": {
+          "null_lists": 0,
+          "invalid_length_not_24": 0,
+          "null_elements": 0,
+          "non_finite_elements": 0
+        },
+        "hours_stock_status": {
+          "null_lists": 0,
+          "invalid_length_not_24": 0,
+          "null_elements": 0,
+          "invalid_values_not_0_or_1": 0
+        }
+      },
+      "D2_stockout_count_consistency": {
+        "total_rows_checked": 4500000,
+        "mismatches": 0,
+        "max_abs_diff": 0,
+        "invalid_sequences_preventing_check": 0
+      },
+      "D3_daily_vs_hourly_sales_consistency": {
+        "total_rows_checked": 4500000,
+        "tolerance": 1e-06,
+        "within_tolerance": 4500000,
+        "exceeding_tolerance": 0,
+        "max_abs_diff": 7.105427357601002e-15,
+        "max_rel_diff": 4.311545726699638e-16
+      },
+      "D4_temporal_and_grid_completeness": {
+        "total_rows": 4500000,
+        "min_date": "2024-03-28",
+        "max_date": "2024-06-25",
+        "unique_dates_count": 90,
+        "calendar_days_span": 90,
+        "has_date_gaps": false,
+        "expected_per_date_rows": 50000,
+        "min_rows_per_date": 50000,
+        "max_rows_per_date": 50000,
+        "exact_per_date_alignment": true,
+        "total_unique_series": 50000,
+        "expected_series_count": 50000,
+        "expected_days_per_series": 90,
+        "min_records_per_series": 90,
+        "max_records_per_series": 90,
+        "exact_per_series_alignment": true,
+        "duplicate_key_count": 0,
+        "is_complete_grid": true
+      }
+    },
+    "eval": {
+      "total_rows_audited": 350000,
+      "D1_hourly_sequence_validity": {
+        "hours_sale": {
+          "null_lists": 0,
+          "invalid_length_not_24": 0,
+          "null_elements": 0,
+          "non_finite_elements": 0
+        },
+        "hours_stock_status": {
+          "null_lists": 0,
+          "invalid_length_not_24": 0,
+          "null_elements": 0,
+          "invalid_values_not_0_or_1": 0
+        }
+      },
+      "D2_stockout_count_consistency": {
+        "total_rows_checked": 350000,
+        "mismatches": 0,
+        "max_abs_diff": 0,
+        "invalid_sequences_preventing_check": 0
+      },
+      "D3_daily_vs_hourly_sales_consistency": {
+        "total_rows_checked": 350000,
+        "tolerance": 1e-06,
+        "within_tolerance": 350000,
+        "exceeding_tolerance": 0,
+        "max_abs_diff": 7.105427357601002e-15,
+        "max_rel_diff": 4.1503664471968473e-16
+      },
+      "D4_temporal_and_grid_completeness": {
+        "total_rows": 350000,
+        "min_date": "2024-06-26",
+        "max_date": "2024-07-02",
+        "unique_dates_count": 7,
+        "calendar_days_span": 7,
+        "has_date_gaps": false,
+        "expected_per_date_rows": 50000,
+        "min_rows_per_date": 50000,
+        "max_rows_per_date": 50000,
+        "exact_per_date_alignment": true,
+        "total_unique_series": 50000,
+        "expected_series_count": 50000,
+        "expected_days_per_series": 7,
+        "min_records_per_series": 7,
+        "max_records_per_series": 7,
+        "exact_per_series_alignment": true,
+        "duplicate_key_count": 0,
+        "is_complete_grid": true
+      }
+    }
+  },
+  "cross_partition_alignment": {
+    "train_end_date": "2024-06-25",
+    "eval_start_date": "2024-06-26",
+    "date_overlap": false,
+    "series_count_match": true
+  }
+}
