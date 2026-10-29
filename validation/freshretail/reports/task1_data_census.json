@@ -1,0 +1,1194 @@
+{
+  "metadata": {
+    "task": "TASK 1 \u2014 FreshRetailNet-50K Data Integrity and Schema Census",
+    "timestamp": "2026-10-29T22:30:03.668945+00:00",
+    "start_timestamp": "2026-10-29T22:30:03.668945+00:00",
+    "end_timestamp": "2026-10-29T22:30:28.159004+00:00",
+    "execution_duration_seconds": 24.49,
+    "git_branch": "project1/freshretail-validation"
+  },
+  "environment": {
+    "python_version": "3.13.3",
+    "pandas_version": "3.0.3",
+    "pyarrow_version": "24.0.0",
+    "platform": "win32"
+  },
+  "dataset_metadata": {
+    "name": "FreshRetailNet-50K",
+    "official_url": "https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K",
+    "direct_download_train": "https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K/resolve/main/data/train.parquet",
+    "direct_download_eval": "https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K/resolve/main/data/eval.parquet",
+    "version": "1.0 (2025-05-08)",
+    "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+    "data_developer": "Dingdong-Inc",
+    "citation": "@article{2025freshretailnet-50k,\n  title={FreshRetailNet-50K: A Stockout-Annotated Censored Demand Dataset for Latent Demand Recovery and Forecasting in Fresh Retail},\n  author={Yangyang Wang, Jiawei Gu, Li Long, Xin Li, Li Shen, Zhouyu Fu, Xiangjun Zhou, Xu Jiang},\n  year={2025},\n  eprint={2505.16319},\n  archivePrefix={arXiv},\n  primaryClass={cs.LG},\n  url={https://arxiv.org/abs/2505.16319}\n}",
+    "documented_train_rows": 4500000,
+    "documented_eval_rows": 350000,
+    "documented_time_series_count": 50000,
+    "documented_stores_count": 898,
+    "documented_cities_count": 18,
+    "documented_skus_count": 865,
+    "documented_fields": {
+      "city_id": {
+        "documented_type": "int64",
+        "concept": "Store/Location Identifier",
+        "description": "The encoded city id"
+      },
+      "store_id": {
+        "documented_type": "int64",
+        "concept": "Store/Location Identifier",
+        "description": "The encoded store id"
+      },
+      "management_group_id": {
+        "documented_type": "int64",
+        "concept": "Merchandising Hierarchy",
+        "description": "The encoded management group id"
+      },
+      "first_category_id": {
+        "documented_type": "int64",
+        "concept": "Product Category Hierarchy",
+        "description": "The encoded first category id"
+      },
+      "second_category_id": {
+        "documented_type": "int64",
+        "concept": "Product Category Hierarchy",
+        "description": "The encoded second category id"
+      },
+      "third_category_id": {
+        "documented_type": "int64",
+        "concept": "Product Category Hierarchy",
+        "description": "The encoded third category id"
+      },
+      "product_id": {
+        "documented_type": "int64",
+        "concept": "Product Identifier",
+        "description": "The encoded product id"
+      },
+      "dt": {
+        "documented_type": "string",
+        "concept": "Date/Time Information",
+        "description": "The date (YYYY-MM-DD)"
+      },
+      "sale_amount": {
+        "documented_type": "float64",
+        "concept": "Sales/Demand Target",
+        "description": "The daily sales quantity after global normalization"
+      },
+      "hours_sale": {
+        "documented_type": "Sequence(float64)",
+        "concept": "Hourly Sales Target",
+        "description": "The hourly sales quantity after global normalization"
+      },
+      "stock_hour6_22_cnt": {
+        "documented_type": "int32",
+        "concept": "Stockout Status",
+        "description": "The number of out-of-stock hours between 6:00 and 22:00"
+      },
+      "hours_stock_status": {
+        "documented_type": "Sequence(int32)",
+        "concept": "Hourly Stockout Status",
+        "description": "The hourly out-of-stock status"
+      },
+      "discount": {
+        "documented_type": "float64",
+        "concept": "Promotion Context",
+        "description": "The discount rate (1.0 means no discount, 0.9 means 10% off)"
+      },
+      "holiday_flag": {
+        "documented_type": "int32",
+        "concept": "Calendar Context",
+        "description": "Holiday indicator"
+      },
+      "activity_flag": {
+        "documented_type": "int32",
+        "concept": "Promotion Context",
+        "description": "Activity indicator"
+      },
+      "precpt": {
+        "documented_type": "float64",
+        "concept": "Weather Context",
+        "description": "The total precipitation"
+      },
+      "avg_temperature": {
+        "documented_type": "float64",
+        "concept": "Weather Context",
+        "description": "The average temperature"
+      },
+      "avg_humidity": {
+        "documented_type": "float64",
+        "concept": "Weather Context",
+        "description": "The average humidity"
+      },
+      "avg_wind_level": {
+        "documented_type": "float64",
+        "concept": "Weather Context",
+        "description": "The average wind force"
+      }
+    },
+    "official_lfs_sha256": {
+      "train.parquet": "6706832db892bbae4969c19d87e07975d2543d2ba7d7d4756360654785de5a3d",
+      "eval.parquet": "1b118840664280c6b88bffc84c80ee1f54c05d911e354b7599e5da10995e960e"
+    }
+  },
+  "overall_status": "PASS",
+  "per_check_statuses": {
+    "file_existence": "PASS",
+    "file_integrity_and_checksums": "PASS",
+    "parquet_readability": "PASS",
+    "schema_and_required_fields": "PASS",
+    "missingness_check": "PASS",
+    "duplicate_check": "PASS",
+    "date_and_entity_coverage": "PASS",
+    "numeric_ranges_and_stockout": "PASS",
+    "cross_file_consistency": "PASS",
+    "provenance_and_attribution": "PASS"
+  },
+  "explicit_limitations": [
+    "This validation is limited strictly to local file integrity, readability, schema, basic data quality, and coverage.",
+    "This validation does NOT authorize or certify model training, hyperparameter tuning, feature engineering, or forecast evaluation.",
+    "This technical file census is not an independent legal certification of proprietary data ownership or commercial licensing rights.",
+    "Temporal continuity and absence of date overlap do not preclude domain-specific feature engineering leakages in downstream tasks."
+  ],
+  "warnings": [
+    "train.parquet contains discount values up to 1.0880 (suggesting peak surcharges / markups above 1.0)"
+  ],
+  "files": {
+    "train.parquet": {
+      "expected_path": "data\\raw\\train.parquet",
+      "actual_path": "D:\\Aarohan\\data\\raw\\train.parquet",
+      "exists": true,
+      "size_bytes": 106436287,
+      "size_mib": 101.51,
+      "sha256": "6706832db892bbae4969c19d87e07975d2543d2ba7d7d4756360654785de5a3d",
+      "official_sha256_match": true,
+      "is_valid_parquet": true,
+      "read_error": null,
+      "official_lfs_sha256": "6706832db892bbae4969c19d87e07975d2543d2ba7d7d4756360654785de5a3d",
+      "num_row_groups": 4500,
+      "total_rows": 4500000,
+      "total_columns": 19
+    },
+    "eval.parquet": {
+      "expected_path": "data\\raw\\eval.parquet",
+      "actual_path": "D:\\Aarohan\\data\\raw\\eval.parquet",
+      "exists": true,
+      "size_bytes": 8440124,
+      "size_mib": 8.05,
+      "sha256": "1b118840664280c6b88bffc84c80ee1f54c05d911e354b7599e5da10995e960e",
+      "official_sha256_match": true,
+      "is_valid_parquet": true,
+      "read_error": null,
+      "official_lfs_sha256": "1b118840664280c6b88bffc84c80ee1f54c05d911e354b7599e5da10995e960e",
+      "num_row_groups": 350,
+      "total_rows": 350000,
+      "total_columns": 19
+    }
+  },
+  "schema": {
+    "train.parquet": {
+      "num_rows": 4500000,
+      "num_columns": 19,
+      "column_names": [
+        "city_id",
+        "store_id",
+        "management_group_id",
+        "first_category_id",
+        "second_category_id",
+        "third_category_id",
+        "product_id",
+        "dt",
+        "sale_amount",
+        "hours_sale",
+        "stock_hour6_22_cnt",
+        "hours_stock_status",
+        "discount",
+        "holiday_flag",
+        "activity_flag",
+        "precpt",
+        "avg_temperature",
+        "avg_humidity",
+        "avg_wind_level"
+      ],
+      "column_types": {
+        "city_id": "int64",
+        "store_id": "int64",
+        "management_group_id": "int64",
+        "first_category_id": "int64",
+        "second_category_id": "int64",
+        "third_category_id": "int64",
+        "product_id": "int64",
+        "dt": "string",
+        "sale_amount": "double",
+        "hours_sale": "list<element: double>",
+        "stock_hour6_22_cnt": "int32",
+        "hours_stock_status": "list<element: int64>",
+        "discount": "double",
+        "holiday_flag": "int32",
+        "activity_flag": "int32",
+        "precpt": "double",
+        "avg_temperature": "double",
+        "avg_humidity": "double",
+        "avg_wind_level": "double"
+      },
+      "repeated_columns": [],
+      "has_repeated_columns": false
+    },
+    "eval.parquet": {
+      "num_rows": 350000,
+      "num_columns": 19,
+      "column_names": [
+        "city_id",
+        "store_id",
+        "management_group_id",
+        "first_category_id",
+        "second_category_id",
+        "third_category_id",
+        "product_id",
+        "dt",
+        "sale_amount",
+        "hours_sale",
+        "stock_hour6_22_cnt",
+        "hours_stock_status",
+        "discount",
+        "holiday_flag",
+        "activity_flag",
+        "precpt",
+        "avg_temperature",
+        "avg_humidity",
+        "avg_wind_level"
+      ],
+      "column_types": {
+        "city_id": "int64",
+        "store_id": "int64",
+        "management_group_id": "int64",
+        "first_category_id": "int64",
+        "second_category_id": "int64",
+        "third_category_id": "int64",
+        "product_id": "int64",
+        "dt": "string",
+        "sale_amount": "double",
+        "hours_sale": "list<element: double>",
+        "stock_hour6_22_cnt": "int32",
+        "hours_stock_status": "list<element: int64>",
+        "discount": "double",
+        "holiday_flag": "int32",
+        "activity_flag": "int32",
+        "precpt": "double",
+        "avg_temperature": "double",
+        "avg_humidity": "double",
+        "avg_wind_level": "double"
+      },
+      "repeated_columns": [],
+      "has_repeated_columns": false
+    }
+  },
+  "previews": {
+    "train.parquet": [
+      {
+        "city_id": 0,
+        "store_id": 0,
+        "management_group_id": 0,
+        "first_category_id": 5,
+        "second_category_id": 6,
+        "third_category_id": 65,
+        "product_id": 38,
+        "dt": "2024-03-28",
+        "sale_amount": 0.1,
+        "hours_sale": "[len 24: [np.float64(0.0), np.float64(0.0), np.float64(0.0)]...[np.float64(0.0), np.float64(0.0), np.float64(0.0)]]",
+        "stock_hour6_22_cnt": 0,
+        "hours_stock_status": "[len 24: [np.int64(0), np.int64(0), np.int64(0)]...[np.int64(0), np.int64(0), np.int64(0)]]",
+        "discount": 1.0,
+        "holiday_flag": 0,
+        "activity_flag": 0,
+        "precpt": 1.6999,
+        "avg_temperature": 15.48,
+        "avg_humidity": 73.54,
+        "avg_wind_level": 1.97
+      },
+      {
+        "city_id": 0,
+        "store_id": 0,
+        "management_group_id": 0,
+        "first_category_id": 5,
+        "second_category_id": 6,
+        "third_category_id": 65,
+        "product_id": 38,
+        "dt": "2024-03-29",
+        "sale_amount": 0.1,
+        "hours_sale": "[len 24: [np.float64(0.0), np.float64(0.0), np.float64(0.0)]...[np.float64(0.0), np.float64(0.0), np.float64(0.0)]]",
+        "stock_hour6_22_cnt": 1,
+        "hours_stock_status": "[len 24: [np.int64(0), np.int64(0), np.int64(0)]...[np.int64(1), np.int64(1), np.int64(1)]]",
+        "discount": 1.0,
+        "holiday_flag": 0,
+        "activity_flag": 0,
+        "precpt": 3.019,
+        "avg_temperature": 15.08,
+        "avg_humidity": 76.56,
+        "avg_wind_level": 1.71
+      },
+      {
+        "city_id": 0,
+        "store_id": 0,
+        "management_group_id": 0,
+        "first_category_id": 5,
+        "second_category_id": 6,
+        "third_category_id": 65,
+        "product_id": 38,
+        "dt": "2024-03-30",
+        "sale_amount": 0.0,
+        "hours_sale": "[len 24: [np.float64(0.0), np.float64(0.0), np.float64(0.0)]...[np.float64(0.0), np.float64(0.0), np.float64(0.0)]]",
+        "stock_hour6_22_cnt": 0,
+        "hours_stock_status": "[len 24: [np.int64(1), np.int64(1), np.int64(1)]...[np.int64(0), np.int64(0), np.int64(0)]]",
+        "discount": 1.0,
+        "holiday_flag": 1,
+        "activity_flag": 0,
+        "precpt": 2.0942,
+        "avg_temperature": 15.91,
+        "avg_humidity": 76.47,
+        "avg_wind_level": 1.73
+      },
+      {
+        "city_id": 0,
+        "store_id": 0,
+        "management_group_id": 0,
+        "first_category_id": 5,
+        "second_category_id": 6,
+        "third_category_id": 65,
+        "product_id": 38,
+        "dt": "2024-03-31",
+        "sale_amount": 0.1,
+        "hours_sale": "[len 24: [np.float64(0.0), np.float64(0.0), np.float64(0.0)]...[np.float64(0.0), np.float64(0.0), np.float64(0.0)]]",
+        "stock_hour6_22_cnt": 11,
+        "hours_stock_status": "[len 24: [np.int64(0), np.int64(0), np.int64(0)]...[np.int64(1), np.int64(1), np.int64(1)]]",
+        "discount": 1.0,
+        "holiday_flag": 1,
+        "activity_flag": 0,
+        "precpt": 1.5618,
+        "avg_temperature": 16.13,
+        "avg_humidity": 77.4,
+        "avg_wind_level": 1.76
+      },
+      {
+        "city_id": 0,
+        "store_id": 0,
+        "management_group_id": 0,
+        "first_category_id": 5,
+        "second_category_id": 6,
+        "third_category_id": 65,
+        "product_id": 38,
+        "dt": "2024-04-01",
+        "sale_amount": 0.2,
+        "hours_sale": "[len 24: [np.float64(0.0), np.float64(0.0), np.float64(0.0)]...[np.float64(0.0), np.float64(0.0), np.float64(0.0)]]",
+        "stock_hour6_22_cnt": 8,
+        "hours_stock_status": "[len 24: [np.int64(1), np.int64(1), np.int64(1)]...[np.int64(1), np.int64(1), np.int64(1)]]",
+        "discount": 1.0,
+        "holiday_flag": 0,
+        "activity_flag": 0,
+        "precpt": 3.5386,
+        "avg_temperature": 15.37,
+        "avg_humidity": 78.26,
+        "avg_wind_level": 1.25
+      }
+    ],
+    "eval.parquet": [
+      {
+        "city_id": 0,
+        "store_id": 0,
+        "management_group_id": 0,
+        "first_category_id": 5,
+        "second_category_id": 6,
+        "third_category_id": 65,
+        "product_id": 38,
+        "dt": "2024-06-26",
+        "sale_amount": 0.2,
+        "hours_sale": "[len 24: [np.float64(0.0), np.float64(0.0), np.float64(0.0)]...[np.float64(0.0), np.float64(0.0), np.float64(0.0)]]",
+        "stock_hour6_22_cnt": 2,
+        "hours_stock_status": "[len 24: [np.int64(1), np.int64(1), np.int64(1)]...[np.int64(1), np.int64(1), np.int64(1)]]",
+        "discount": 1.0,
+        "holiday_flag": 0,
+        "activity_flag": 0,
+        "precpt": 8.8076,
+        "avg_temperature": 27.42,
+        "avg_humidity": 81.7,
+        "avg_wind_level": 1.55
+      },
+      {
+        "city_id": 0,
+        "store_id": 0,
+        "management_group_id": 0,
+        "first_category_id": 5,
+        "second_category_id": 6,
+        "third_category_id": 65,
+        "product_id": 38,
+        "dt": "2024-06-27",
+        "sale_amount": 0.0,
+        "hours_sale": "[len 24: [np.float64(0.0), np.float64(0.0), np.float64(0.0)]...[np.float64(0.0), np.float64(0.0), np.float64(0.0)]]",
+        "stock_hour6_22_cnt": 0,
+        "hours_stock_status": "[len 24: [np.int64(1), np.int64(1), np.int64(1)]...[np.int64(0), np.int64(0), np.int64(0)]]",
+        "discount": 1.0,
+        "holiday_flag": 0,
+        "activity_flag": 0,
+        "precpt": 6.7032,
+        "avg_temperature": 28.91,
+        "avg_humidity": 80.34,
+        "avg_wind_level": 1.57
+      },
+      {
+        "city_id": 0,
+        "store_id": 0,
+        "management_group_id": 0,
+        "first_category_id": 5,
+        "second_category_id": 6,
+        "third_category_id": 65,
+        "product_id": 38,
+        "dt": "2024-06-28",
+        "sale_amount": 0.1,
+        "hours_sale": "[len 24: [np.float64(0.0), np.float64(0.0), np.float64(0.0)]...[np.float64(0.0), np.float64(0.0), np.float64(0.0)]]",
+        "stock_hour6_22_cnt": 0,
+        "hours_stock_status": "[len 24: [np.int64(0), np.int64(0), np.int64(0)]...[np.int64(0), np.int64(0), np.int64(0)]]",
+        "discount": 1.0,
+        "holiday_flag": 0,
+        "activity_flag": 0,
+        "precpt": 5.9756,
+        "avg_temperature": 28.03,
+        "avg_humidity": 80.37,
+        "avg_wind_level": 1.5
+      },
+      {
+        "city_id": 0,
+        "store_id": 0,
+        "management_group_id": 0,
+        "first_category_id": 5,
+        "second_category_id": 6,
+        "third_category_id": 65,
+        "product_id": 38,
+        "dt": "2024-06-29",
+        "sale_amount": 3.5,
+        "hours_sale": "[len 24: [np.float64(0.0), np.float64(0.0), np.float64(0.0)]...[np.float64(0.6), np.float64(0.0), np.float64(0.0)]]",
+        "stock_hour6_22_cnt": 0,
+        "hours_stock_status": "[len 24: [np.int64(0), np.int64(0), np.int64(0)]...[np.int64(0), np.int64(0), np.int64(0)]]",
+        "discount": 0.5,
+        "holiday_flag": 1,
+        "activity_flag": 1,
+        "precpt": 3.0101,
+        "avg_temperature": 29.68,
+        "avg_humidity": 80.35,
+        "avg_wind_level": 1.86
+      },
+      {
+        "city_id": 0,
+        "store_id": 0,
+        "management_group_id": 0,
+        "first_category_id": 5,
+        "second_category_id": 6,
+        "third_category_id": 65,
+        "product_id": 38,
+        "dt": "2024-06-30",
+        "sale_amount": 0.0,
+        "hours_sale": "[len 24: [np.float64(0.0), np.float64(0.0), np.float64(0.0)]...[np.float64(0.0), np.float64(0.0), np.float64(0.0)]]",
+        "stock_hour6_22_cnt": 0,
+        "hours_stock_status": "[len 24: [np.int64(0), np.int64(0), np.int64(0)]...[np.int64(0), np.int64(0), np.int64(0)]]",
+        "discount": 1.0,
+        "holiday_flag": 1,
+        "activity_flag": 0,
+        "precpt": 6.441,
+        "avg_temperature": 28.28,
+        "avg_humidity": 78.61,
+        "avg_wind_level": 1.4
+      }
+    ]
+  },
+  "required_field_mappings": {
+    "city_id": {
+      "concept": "Store/Location Identifier",
+      "description": "The encoded city id",
+      "documented_type": "int64",
+      "train_physical_type": "int64",
+      "eval_physical_type": "int64",
+      "present_in_both": true
+    },
+    "store_id": {
+      "concept": "Store/Location Identifier",
+      "description": "The encoded store id",
+      "documented_type": "int64",
+      "train_physical_type": "int64",
+      "eval_physical_type": "int64",
+      "present_in_both": true
+    },
+    "management_group_id": {
+      "concept": "Merchandising Hierarchy",
+      "description": "The encoded management group id",
+      "documented_type": "int64",
+      "train_physical_type": "int64",
+      "eval_physical_type": "int64",
+      "present_in_both": true
+    },
+    "first_category_id": {
+      "concept": "Product Category Hierarchy",
+      "description": "The encoded first category id",
+      "documented_type": "int64",
+      "train_physical_type": "int64",
+      "eval_physical_type": "int64",
+      "present_in_both": true
+    },
+    "second_category_id": {
+      "concept": "Product Category Hierarchy",
+      "description": "The encoded second category id",
+      "documented_type": "int64",
+      "train_physical_type": "int64",
+      "eval_physical_type": "int64",
+      "present_in_both": true
+    },
+    "third_category_id": {
+      "concept": "Product Category Hierarchy",
+      "description": "The encoded third category id",
+      "documented_type": "int64",
+      "train_physical_type": "int64",
+      "eval_physical_type": "int64",
+      "present_in_both": true
+    },
+    "product_id": {
+      "concept": "Product Identifier",
+      "description": "The encoded product id",
+      "documented_type": "int64",
+      "train_physical_type": "int64",
+      "eval_physical_type": "int64",
+      "present_in_both": true
+    },
+    "dt": {
+      "concept": "Date/Time Information",
+      "description": "The date (YYYY-MM-DD)",
+      "documented_type": "string",
+      "train_physical_type": "string",
+      "eval_physical_type": "string",
+      "present_in_both": true
+    },
+    "sale_amount": {
+      "concept": "Sales/Demand Target",
+      "description": "The daily sales quantity after global normalization",
+      "documented_type": "float64",
+      "train_physical_type": "double",
+      "eval_physical_type": "double",
+      "present_in_both": true
+    },
+    "hours_sale": {
+      "concept": "Hourly Sales Target",
+      "description": "The hourly sales quantity after global normalization",
+      "documented_type": "Sequence(float64)",
+      "train_physical_type": "list<element: double>",
+      "eval_physical_type": "list<element: double>",
+      "present_in_both": true
+    },
+    "stock_hour6_22_cnt": {
+      "concept": "Stockout Status",
+      "description": "The number of out-of-stock hours between 6:00 and 22:00",
+      "documented_type": "int32",
+      "train_physical_type": "int32",
+      "eval_physical_type": "int32",
+      "present_in_both": true
+    },
+    "hours_stock_status": {
+      "concept": "Hourly Stockout Status",
+      "description": "The hourly out-of-stock status",
+      "documented_type": "Sequence(int32)",
+      "train_physical_type": "list<element: int64>",
+      "eval_physical_type": "list<element: int64>",
+      "present_in_both": true
+    },
+    "discount": {
+      "concept": "Promotion Context",
+      "description": "The discount rate (1.0 means no discount, 0.9 means 10% off)",
+      "documented_type": "float64",
+      "train_physical_type": "double",
+      "eval_physical_type": "double",
+      "present_in_both": true
+    },
+    "holiday_flag": {
+      "concept": "Calendar Context",
+      "description": "Holiday indicator",
+      "documented_type": "int32",
+      "train_physical_type": "int32",
+      "eval_physical_type": "int32",
+      "present_in_both": true
+    },
+    "activity_flag": {
+      "concept": "Promotion Context",
+      "description": "Activity indicator",
+      "documented_type": "int32",
+      "train_physical_type": "int32",
+      "eval_physical_type": "int32",
+      "present_in_both": true
+    },
+    "precpt": {
+      "concept": "Weather Context",
+      "description": "The total precipitation",
+      "documented_type": "float64",
+      "train_physical_type": "double",
+      "eval_physical_type": "double",
+      "present_in_both": true
+    },
+    "avg_temperature": {
+      "concept": "Weather Context",
+      "description": "The average temperature",
+      "documented_type": "float64",
+      "train_physical_type": "double",
+      "eval_physical_type": "double",
+      "present_in_both": true
+    },
+    "avg_humidity": {
+      "concept": "Weather Context",
+      "description": "The average humidity",
+      "documented_type": "float64",
+      "train_physical_type": "double",
+      "eval_physical_type": "double",
+      "present_in_both": true
+    },
+    "avg_wind_level": {
+      "concept": "Weather Context",
+      "description": "The average wind force",
+      "documented_type": "float64",
+      "train_physical_type": "double",
+      "eval_physical_type": "double",
+      "present_in_both": true
+    }
+  },
+  "missingness": {
+    "train.parquet": {
+      "city_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "store_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "management_group_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "first_category_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "second_category_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "third_category_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "product_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "dt": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "sale_amount": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "hours_sale": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "stock_hour6_22_cnt": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "hours_stock_status": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "discount": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "holiday_flag": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "activity_flag": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "precpt": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "avg_temperature": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "avg_humidity": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "avg_wind_level": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      }
+    },
+    "eval.parquet": {
+      "city_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "store_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "management_group_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "first_category_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "second_category_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "third_category_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "product_id": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "dt": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "sale_amount": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "hours_sale": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "stock_hour6_22_cnt": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "hours_stock_status": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "discount": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "holiday_flag": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "activity_flag": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "precpt": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "avg_temperature": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "avg_humidity": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      },
+      "avg_wind_level": {
+        "null_count": 0,
+        "null_pct": 0.0,
+        "is_entirely_missing": false
+      }
+    }
+  },
+  "duplicates": {
+    "train.parquet": {
+      "total_rows": 4500000,
+      "documented_grain": [
+        "store_id",
+        "product_id",
+        "dt"
+      ],
+      "duplicate_grain_records": 0,
+      "duplicate_grain_pct": 0.0,
+      "exact_duplicate_rows_estimate": 0
+    },
+    "eval.parquet": {
+      "total_rows": 350000,
+      "documented_grain": [
+        "store_id",
+        "product_id",
+        "dt"
+      ],
+      "duplicate_grain_records": 0,
+      "duplicate_grain_pct": 0.0,
+      "exact_duplicate_rows_estimate": 0
+    }
+  },
+  "coverage": {
+    "train.parquet": {
+      "min_date": "2024-03-28",
+      "max_date": "2024-06-25",
+      "num_unique_dates": 90,
+      "invalid_date_records": 0,
+      "is_continuous_daily_range": true,
+      "expected_calendar_days": 90,
+      "unique_cities": 18,
+      "unique_stores": 898,
+      "unique_products": 865,
+      "unique_management_groups": 7,
+      "unique_first_categories": 32,
+      "unique_second_categories": 84,
+      "unique_third_categories": 233,
+      "unique_store_product_series": 50000
+    },
+    "eval.parquet": {
+      "min_date": "2024-06-26",
+      "max_date": "2024-07-02",
+      "num_unique_dates": 7,
+      "invalid_date_records": 0,
+      "is_continuous_daily_range": true,
+      "expected_calendar_days": 7,
+      "unique_cities": 18,
+      "unique_stores": 898,
+      "unique_products": 865,
+      "unique_management_groups": 7,
+      "unique_first_categories": 32,
+      "unique_second_categories": 84,
+      "unique_third_categories": 233,
+      "unique_store_product_series": 50000
+    }
+  },
+  "numeric_stats": {
+    "train.parquet": {
+      "sale_amount": {
+        "min": 0.0,
+        "max": 44.9,
+        "mean": 0.9986,
+        "median": 0.7,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "stock_hour6_22_cnt": {
+        "min": 0.0,
+        "max": 16.0,
+        "mean": 3.1803,
+        "median": 0.0,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "discount": {
+        "min": 0.0,
+        "max": 1.088,
+        "mean": 0.9111,
+        "median": 0.989,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "holiday_flag": {
+        "min": 0.0,
+        "max": 1.0,
+        "mean": 0.3444,
+        "median": 0.0,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "activity_flag": {
+        "min": 0.0,
+        "max": 1.0,
+        "mean": 0.3784,
+        "median": 0.0,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "precpt": {
+        "min": 0.0,
+        "max": 42.5,
+        "mean": 3.6984,
+        "median": 2.2977,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "avg_temperature": {
+        "min": 12.06,
+        "max": 30.88,
+        "mean": 22.2791,
+        "median": 22.5,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "avg_humidity": {
+        "min": 27.35,
+        "max": 100.0,
+        "mean": 74.4505,
+        "median": 76.36,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "avg_wind_level": {
+        "min": 0.97,
+        "max": 3.85,
+        "mean": 1.7245,
+        "median": 1.64,
+        "non_finite_count": 0,
+        "negative_count": 0
+      }
+    },
+    "eval.parquet": {
+      "sale_amount": {
+        "min": 0.0,
+        "max": 49.9,
+        "mean": 1.1931,
+        "median": 0.8,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "stock_hour6_22_cnt": {
+        "min": 0.0,
+        "max": 16.0,
+        "mean": 2.8972,
+        "median": 0.0,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "discount": {
+        "min": 0.0,
+        "max": 1.0,
+        "mean": 0.9217,
+        "median": 1.0,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "holiday_flag": {
+        "min": 0.0,
+        "max": 1.0,
+        "mean": 0.2857,
+        "median": 0.0,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "activity_flag": {
+        "min": 0.0,
+        "max": 1.0,
+        "mean": 0.3297,
+        "median": 0.0,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "precpt": {
+        "min": 0.4949,
+        "max": 14.8418,
+        "mean": 5.8829,
+        "median": 5.9782,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "avg_temperature": {
+        "min": 26.4,
+        "max": 32.29,
+        "mean": 29.0126,
+        "median": 28.89,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "avg_humidity": {
+        "min": 51.47,
+        "max": 86.38,
+        "mean": 78.4899,
+        "median": 80.05,
+        "non_finite_count": 0,
+        "negative_count": 0
+      },
+      "avg_wind_level": {
+        "min": 1.05,
+        "max": 3.68,
+        "mean": 1.6653,
+        "median": 1.51,
+        "non_finite_count": 0,
+        "negative_count": 0
+      }
+    }
+  },
+  "stockout_representation": {
+    "train.parquet": {
+      "stock_hour6_22_cnt_distribution": {
+        "0": 2507994,
+        "1": 152309,
+        "2": 120358,
+        "3": 142575,
+        "4": 199629,
+        "5": 242299,
+        "6": 203376,
+        "7": 142210,
+        "8": 111818,
+        "9": 102507,
+        "10": 106773,
+        "11": 108853,
+        "12": 84517,
+        "13": 54059,
+        "14": 26778,
+        "15": 12154,
+        "16": 181791
+      },
+      "rows_with_zero_daytime_stockouts": 2507994,
+      "rows_with_zero_daytime_stockouts_pct": 55.73,
+      "rows_with_positive_daytime_stockouts": 1992006,
+      "rows_with_positive_daytime_stockouts_pct": 44.27,
+      "total_hourly_stock_status_elements": 108000000,
+      "hourly_out_of_stock_count (1)": 26876404,
+      "hourly_out_of_stock_pct (1)": 24.89,
+      "hourly_in_stock_count (0)": 81123596,
+      "hourly_in_stock_pct (0)": 75.11,
+      "hourly_other_values_count": 0,
+      "daytime_operating_stockout_rate_pct": 19.88,
+      "verified_encoding_meaning": "1 = Out-of-stock (stockout), 0 = In-stock",
+      "verified_daytime_window": "stock_hour6_22_cnt exactly equals sum(hours_stock_status[6:22]) (16 daytime hours: 06:00 to 22:00)",
+      "max_slice_difference_sample": 0
+    },
+    "eval.parquet": {
+      "stock_hour6_22_cnt_distribution": {
+        "0": 206562,
+        "1": 12102,
+        "2": 8917,
+        "3": 10578,
+        "4": 14686,
+        "5": 17559,
+        "6": 14073,
+        "7": 9953,
+        "8": 7668,
+        "9": 7147,
+        "10": 7927,
+        "11": 7773,
+        "12": 5826,
+        "13": 3838,
+        "14": 1939,
+        "15": 911,
+        "16": 12541
+      },
+      "rows_with_zero_daytime_stockouts": 206562,
+      "rows_with_zero_daytime_stockouts_pct": 59.02,
+      "rows_with_positive_daytime_stockouts": 143438,
+      "rows_with_positive_daytime_stockouts_pct": 40.98,
+      "total_hourly_stock_status_elements": 8400000,
+      "hourly_out_of_stock_count (1)": 1913065,
+      "hourly_out_of_stock_pct (1)": 22.77,
+      "hourly_in_stock_count (0)": 6486935,
+      "hourly_in_stock_pct (0)": 77.23,
+      "hourly_other_values_count": 0,
+      "daytime_operating_stockout_rate_pct": 18.11,
+      "verified_encoding_meaning": "1 = Out-of-stock (stockout), 0 = In-stock",
+      "verified_daytime_window": "stock_hour6_22_cnt exactly equals sum(hours_stock_status[6:22]) (16 daytime hours: 06:00 to 22:00)",
+      "max_slice_difference_sample": 0
+    }
+  },
+  "categorical_top_frequencies": {
+    "train.parquet": {
+      "city_id": {
+        "0": 2322990,
+        "12": 460530,
+        "16": 407520,
+        "3": 238320,
+        "6": 214560
+      },
+      "management_group_id": {
+        "6": 2373300,
+        "5": 949320,
+        "2": 580230,
+        "0": 331110,
+        "3": 116640
+      },
+      "first_category_id": {
+        "4": 979920,
+        "16": 645930,
+        "20": 497970,
+        "29": 314640,
+        "8": 259650
+      }
+    },
+    "eval.parquet": {
+      "city_id": {
+        "0": 180677,
+        "12": 35819,
+        "16": 31696,
+        "3": 18536,
+        "6": 16688
+      },
+      "management_group_id": {
+        "6": 184590,
+        "5": 73836,
+        "2": 45129,
+        "0": 25753,
+        "3": 9072
+      },
+      "first_category_id": {
+        "4": 76216,
+        "16": 50239,
+        "20": 38731,
+        "29": 24472,
+        "8": 20195
+      }
+    }
+  },
+  "cross_file_consistency": {
+    "identical_columns": true,
+    "columns_only_in_train": [],
+    "columns_only_in_eval": [],
+    "type_mismatches": {},
+    "train_date_range": "2024-03-28 to 2024-06-25 (90 days)",
+    "eval_date_range": "2024-06-26 to 2024-07-02 (7 days)",
+    "date_overlap_detected": false,
+    "split_type": "Chronological forward out-of-time evaluation (Eval immediately succeeds Train)",
+    "train_unique_series": 50000,
+    "eval_unique_series": 50000,
+    "eval_series_not_in_train": 0,
+    "train_series_not_in_eval": 0,
+    "perfect_series_alignment": true
+  }
+}
