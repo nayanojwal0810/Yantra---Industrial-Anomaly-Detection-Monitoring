@@ -1,0 +1,82 @@
+{
+  "dataset_title": "Replication Data for: Non-price energy conservation information and household energy consumption in a developing country: Evidence from an RCT",
+  "dataset_persistent_id": "doi:10.7910/DVN/4FLFRE",
+  "dataset_persistent_url": "https://doi.org/10.7910/DVN/4FLFRE",
+  "dataverse_id": 11904926,
+  "version": {
+    "version_number": 1,
+    "version_minor_number": 0,
+    "version_string": "1.0",
+    "version_state": "RELEASED",
+    "create_time": "2025-08-12T04:37:01Z",
+    "release_time": "2025-08-13T20:52:16Z",
+    "deposit_date": "2025-08-12"
+  },
+  "depositor": {
+    "name": "Eskander, Shaikh",
+    "affiliation": "UAB and LSE",
+    "email": "smsu_isku@hotmail.com"
+  },
+  "authors": [
+    {
+      "name": "Ahsanuzzaman",
+      "affiliation": null,
+      "orcid": null
+    },
+    {
+      "name": "Eskander, Shaikh",
+      "affiliation": "UAB and LSE",
+      "orcid": "https://orcid.org/0000-0002-3325-5486"
+    },
+    {
+      "name": "Islam, Asad",
+      "affiliation": "Monash University",
+      "orcid": null
+    },
+    {
+      "name": "Wang, Liang Choon",
+      "affiliation": "Monash University",
+      "orcid": "https://orcid.org/0000-0001-5723-9053"
+    }
+  ],
+  "dataset_description": "Data and code for replicating the results of the paper \"Non-price energy conservation information and household energy consumption in a developing country: Evidence from an RCT\".",
+  "subject": [
+    "Social Sciences"
+  ],
+  "related_publication": {
+    "relation_type": "IsSupplementTo",
+    "citation": "Ahsanuzzaman, Eskander, S., Islam, A. and Wang, L.C., 2024. Non-price energy conservation information and household energy consumption in a developing country: Evidence from an RCT. Journal of Environmental Economics and Management, 127, p.103022.",
+    "doi": "10.1016/j.jeem.2024.103022",
+    "url": "https://www.sciencedirect.com/science/article/pii/S0095069624000962",
+    "journal": "Journal of Environmental Economics and Management",
+    "volume": "127",
+    "article_number": "103022",
+    "publication_year": 2024,
+    "paper_license": "CC BY-NC 4.0 (Creative Commons Attribution-NonCommercial 4.0 International)"
+  },
+  "license": {
+    "name": "CC0 1.0",
+    "uri": "http://creativecommons.org/publicdomain/zero/1.0",
+    "icon_uri": "https://licensebuttons.net/p/zero/1.0/88x31.png",
+    "spdx_identifier": "CC0-1.0",
+    "scheme_uri": "https://spdx.org/licenses/",
+    "language_code": "en"
+  },
+  "terms_of_use": null,
+  "access_restrictions": "None (Public Domain dedication via CC0 1.0 Universal)",
+  "file_count": 1,
+  "files": [
+    {
+      "filename": "Replication package - Ahsanuzzaman et al 2024 JEEM-1.zip",
+      "file_id": 11904927,
+      "persistent_id": "doi:10.7910/DVN/4FLFRE/436Z1A",
+      "content_type": "application/zip",
+      "filesize_bytes": 2145810,
+      "checksum": {
+        "type": "MD5",
+        "value": "7d22412f622a0845ac4e78d989ef9999"
+      }
+    }
+  ],
+  "verification_timestamp_utc": "2026-10-30T15:51:43Z"
+}

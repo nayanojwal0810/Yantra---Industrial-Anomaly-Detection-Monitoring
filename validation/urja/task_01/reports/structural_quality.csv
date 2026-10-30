@@ -1,0 +1,7 @@
+table_name,source_file,total_rows,total_columns,fully_duplicated_rows,missing_cells_total,missing_cells_pct,fully_readable,status
+db_bangladesh.dta,Replication package - Ahsanuzzaman et al 2024 JEEM/Data/db_bangladesh.dta,66,20,0,0,0.0,True,VALID
+electricity_demand.dta,Replication package - Ahsanuzzaman et al 2024 JEEM/Data/electricity_demand.dta,8,4,0,0,0.0,True,VALID
+replication_data.dta,Replication package - Ahsanuzzaman et al 2024 JEEM/Data/replication_data.dta,15882,20,0,49556,15.6013,True,VALID
+savings calculations.xlsx [Final calculations],Replication package - Ahsanuzzaman et al 2024 JEEM/Data/savings calculations.xlsx,20,4,4,21,26.25,True,VALID
+coord_bangladesh.dta,Replication package - Ahsanuzzaman et al 2024 JEEM/Data/coord_bangladesh.dta,203766,3,887,946,0.1548,True,VALID
+wdi_electricity.dta,Replication package - Ahsanuzzaman et al 2024 JEEM/Data/wdi_electricity.dta,55,9,0,150,30.303,True,VALID

@@ -1,0 +1,121 @@
+{
+  "source_identifier": "doi:10.7910/DVN/4FLFRE",
+  "source_url": "https://doi.org/10.7910/DVN/4FLFRE",
+  "dataset_version": "1.0",
+  "verification_date": "2026-10-30",
+  "licence_verification_status": "CC0 1.0 (Public Domain Dedication) confirmed from Dataverse record",
+  "intended_portfolio_use_allowed": true,
+  "files": [
+    {
+      "original_filename": "Replication package - Ahsanuzzaman et al 2024 JEEM-1.zip",
+      "local_relative_path": "data/raw/Replication package - Ahsanuzzaman et al 2024 JEEM-1.zip",
+      "original_size_bytes": 2145810,
+      "local_size_bytes": 2145810,
+      "size_match": true,
+      "detected_format": "ZIP archive (application/zip)",
+      "official_checksum": {
+        "algorithm": "MD5",
+        "value": "7d22412f622a0845ac4e78d989ef9999"
+      },
+      "local_checksums": {
+        "md5": "7d22412f622a0845ac4e78d989ef9999",
+        "sha256": "8fcedee8296a028142f1b7b747bdf83b38e6296e66e4fe2f90fbb7d32f2fbe9b"
+      },
+      "checksum_comparison_result": "MATCH",
+      "readability_status": "READABLE",
+      "contained_items_count": 11,
+      "contained_data_tables_count": 6
+    }
+  ],
+  "archive_contents": [
+    {
+      "internal_path": "Replication package - Ahsanuzzaman et al 2024 JEEM/0 README.docx",
+      "format": "Word Document (.docx)",
+      "role": "Documentation / Codebook",
+      "size_bytes": 27296,
+      "readability": "READABLE"
+    },
+    {
+      "internal_path": "Replication package - Ahsanuzzaman et al 2024 JEEM/Data/replication_data.dta",
+      "format": "Stata Dataset (.dta, v118)",
+      "role": "Primary RCT Household Survey & Billing Data",
+      "size_bytes": 765728,
+      "rows": 15882,
+      "columns": 20,
+      "readability": "READABLE"
+    },
+    {
+      "internal_path": "Replication package - Ahsanuzzaman et al 2024 JEEM/Data/db_bangladesh.dta",
+      "format": "Stata Dataset (.dta, v118)",
+      "role": "GIS Administrative Boundary Attributes (Appendix Figure A1)",
+      "size_bytes": 24641,
+      "rows": 66,
+      "columns": 20,
+      "readability": "READABLE"
+    },
+    {
+      "internal_path": "Replication package - Ahsanuzzaman et al 2024 JEEM/Data/coord_bangladesh.dta",
+      "format": "Stata Dataset (.dta, v118)",
+      "role": "GIS Geographic Polygon Coordinates (Appendix Figure A1)",
+      "size_bytes": 3466497,
+      "rows": 203766,
+      "columns": 3,
+      "readability": "READABLE"
+    },
+    {
+      "internal_path": "Replication package - Ahsanuzzaman et al 2024 JEEM/Data/electricity_demand.dta",
+      "format": "Stata Dataset (.dta, v118)",
+      "role": "Macro Projections ExxonMobil 2019 (Figure 2)",
+      "size_bytes": 3195,
+      "rows": 8,
+      "columns": 4,
+      "readability": "READABLE"
+    },
+    {
+      "internal_path": "Replication package - Ahsanuzzaman et al 2024 JEEM/Data/wdi_electricity.dta",
+      "format": "Stata Dataset (.dta, v118)",
+      "role": "World Bank World Development Indicators (Figure 1)",
+      "size_bytes": 8955,
+      "rows": 55,
+      "columns": 9,
+      "readability": "READABLE"
+    },
+    {
+      "internal_path": "Replication package - Ahsanuzzaman et al 2024 JEEM/Data/savings calculations.xlsx",
+      "format": "Excel Spreadsheet (.xlsx)",
+      "role": "Net Benefit Welfare Calculations (Appendix Table S10)",
+      "size_bytes": 10903,
+      "rows": 20,
+      "columns": 4,
+      "readability": "READABLE"
+    },
+    {
+      "internal_path": "Replication package - Ahsanuzzaman et al 2024 JEEM/Codes/01 JEEM 2024 replication codes - main text figures.do",
+      "format": "Stata Do-file (.do)",
+      "role": "Replication Script (Main Figures)",
+      "size_bytes": 40918,
+      "readability": "READABLE"
+    },
+    {
+      "internal_path": "Replication package - Ahsanuzzaman et al 2024 JEEM/Codes/02 JEEM 2024 replication codes - main text tables.do",
+      "format": "Stata Do-file (.do)",
+      "role": "Replication Script (Main Tables)",
+      "size_bytes": 28194,
+      "readability": "READABLE"
+    },
+    {
+      "internal_path": "Replication package - Ahsanuzzaman et al 2024 JEEM/Codes/03 JEEM 2024 replication codes - appendix figures.do",
+      "format": "Stata Do-file (.do)",
+      "role": "Replication Script (Appendix Figures)",
+      "size_bytes": 9697,
+      "readability": "READABLE"
+    },
+    {
+      "internal_path": "Replication package - Ahsanuzzaman et al 2024 JEEM/Codes/04 JEEM 2024 replication codes - appendix tables.do",
+      "format": "Stata Do-file (.do)",
+      "role": "Replication Script (Appendix Tables)",
+      "size_bytes": 19898,
+      "readability": "READABLE"
+    }
+  ]
+}
