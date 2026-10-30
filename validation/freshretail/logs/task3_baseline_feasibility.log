@@ -1,0 +1,18 @@
+[2026-10-30 10:00:51] [INFO] === Starting Task 3: FreshRetailNet-50K Full-Data Baseline Feasibility ===
+[2026-10-30 10:00:51] [INFO] Execution mode: Local Stage B1 execution + Colab GPU notebook generation for Stage A & B2
+[2026-10-30 10:00:51] [INFO] Working Directory: D:\Aarohan
+[2026-10-30 10:00:51] [INFO] Git Branch: project1/freshretail-validation
+[2026-10-30 10:00:58] [INFO] Local Environment: Python 3.13.3, Torch 2.13.0+cpu, CUDA=False (None (CPU only)), System RAM=7.69 GB
+[2026-10-30 10:00:58] [INFO] Official Repository: https://github.com/Dingdong-Inc/frn-50k-baseline (Commit: 8af694a09a5a427d1d50648d348c022565a781f2)
+[2026-10-30 10:00:59] [INFO] Input file verified: train.parquet (106436287 bytes, SHA-256=6706832db892bbae4969c19d87e07975d2543d2ba7d7d4756360654785de5a3d)
+[2026-10-30 10:00:59] [INFO] Input file verified: eval.parquet (8440124 bytes, SHA-256=1b118840664280c6b88bffc84c80ee1f54c05d911e354b7599e5da10995e960e)
+[2026-10-30 10:00:59] [INFO] --- Executing Stage B1: Full-Data SSA Forecasting on Raw Recorded Sales ---
+[2026-10-30 10:01:03] [INFO] Loaded full datasets in 3.94s: train=4,500,000 rows, eval=350,000 rows
+[2026-10-30 10:01:21] [INFO] Stage B1 SSA Raw Sales Forecast completed in 18.59s
+[2026-10-30 10:01:21] [INFO] Overall (psd>=0): Eligible Rows=206562, WAPE=0.3197 (31.97%), WPE=-0.1050 (-10.50%), MAE=0.3982
+[2026-10-30 10:01:21] [INFO] Low-Sale (psd<1): Eligible Rows=153208, WAPE=0.3833 (38.33%), WPE=-0.0803 (-8.03%), MAE=0.2691
+[2026-10-30 10:01:21] [INFO] High-Sale (psd>=1): Eligible Rows=53354, WAPE=0.2740 (27.40%), WPE=-0.1226 (-12.26%), MAE=0.7761
+[2026-10-30 10:01:21] [INFO] Colab notebook verified: task3_baseline_feasibility.ipynb (21268 bytes)
+[2026-10-30 10:01:21] [INFO] JSON report written to: D:\Aarohan\validation\freshretail\reports\task3_baseline_feasibility.json
+[2026-10-30 10:01:21] [INFO] Markdown report written to: D:\Aarohan\validation\freshretail\reports\task3_baseline_feasibility.md
+[2026-10-30 10:01:21] [INFO] === Task 3 Completed Successfully (Status: AWAITING EXECUTION) ===

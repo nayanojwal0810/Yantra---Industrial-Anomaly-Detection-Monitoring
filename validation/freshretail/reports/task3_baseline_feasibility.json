@@ -1,0 +1,113 @@
+{
+  "metadata": {
+    "task": "TASK 3 \u2014 Full-Data Baseline Feasibility for FreshRetailNet-50K",
+    "timestamp": "2026-10-30T04:30:51.530982+00:00",
+    "start_timestamp": "2026-10-30T04:30:51.530982+00:00",
+    "end_timestamp": "2026-10-30T04:31:21.750870+00:00",
+    "duration_seconds": 30.22,
+    "git_branch": "project1/freshretail-validation",
+    "overall_status": "AWAITING EXECUTION",
+    "status_explanation": "The notebook `validation/freshretail/colab/task3_baseline_feasibility.ipynb` is fully prepared and self-contained for Colab GPU execution. Stage B1 (SSA on raw recorded sales) was executed locally on the complete 4,850,000-row dataset, achieving an exact reproduction of the published paper metrics (31.97% WAPE, -10.50% WPE across 206,562 eligible rows). Stage A (PyTorch DLinear recovery) and Stage B2 (SSA on recovered demand) require GPU runtime to process 150,000 sequences of length 480 and await Google Colab GPU execution per specification instructions."
+  },
+  "official_provenance": {
+    "dataset_name": "FreshRetailNet-50K",
+    "dataset_url": "https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K",
+    "paper_title": "FreshRetailNet-50K: A Stockout-Annotated Censored Demand Dataset for Latent Demand Recovery and Forecasting in Fresh Retail",
+    "paper_url": "https://arxiv.org/abs/2505.16319",
+    "paper_version": "v1 (arXiv:2505.16319, May 2025)",
+    "official_repo_url": "https://github.com/Dingdong-Inc/frn-50k-baseline",
+    "official_repo_commit": "8af694a09a5a427d1d50648d348c022565a781f2"
+  },
+  "input_data": {
+    "train_rows": 4500000,
+    "eval_rows": 350000,
+    "total_rows": 4850000,
+    "series_count": 50000,
+    "evaluation_window_days": 7,
+    "eligible_eval_rows": 206562,
+    "excluded_stockout_rows": 143438,
+    "files": {
+      "train.parquet": {
+        "path": "D:\\Aarohan\\data\\raw\\train.parquet",
+        "expected_sha256": "6706832db892bbae4969c19d87e07975d2543d2ba7d7d4756360654785de5a3d",
+        "expected_rows": 4500000,
+        "expected_bytes": 106436287
+      },
+      "eval.parquet": {
+        "path": "D:\\Aarohan\\data\\raw\\eval.parquet",
+        "expected_sha256": "1b118840664280c6b88bffc84c80ee1f54c05d911e354b7599e5da10995e960e",
+        "expected_rows": 350000,
+        "expected_bytes": 8440124
+      }
+    }
+  },
+  "stage_b1_ssa_raw_sales_results": {
+    "execution_platform": "Local CPU (AMD64)",
+    "runtime_seconds": 18.59,
+    "metrics": {
+      "overall": {
+        "condition": "psd>=0",
+        "eligible_rows": 206562,
+        "wape": 0.3197,
+        "wpe": -0.105,
+        "mae": 0.3982
+      },
+      "low_sale": {
+        "condition": "psd<1",
+        "eligible_rows": 153208,
+        "wape": 0.3833,
+        "wpe": -0.0803,
+        "mae": 0.2691
+      },
+      "high_sale": {
+        "condition": "psd>=1",
+        "eligible_rows": 53354,
+        "wape": 0.274,
+        "wpe": -0.1226,
+        "mae": 0.7761
+      }
+    },
+    "comparison_with_published": {
+      "overall_wape_match": true,
+      "overall_wpe_match": true,
+      "high_sale_wpe_match": true,
+      "low_sale_wpe_match": true
+    }
+  },
+  "stage_a_and_b2_colab_status": {
+    "notebook_path": "validation/freshretail/colab/task3_baseline_feasibility.ipynb",
+    "target_stage_a1": "DLinear Controlled Missingness (missing_rate=0.3, WAPE/WPE evaluation on hidden ground truth)",
+    "target_stage_a2": "DLinear Actual Stockout Recovery (missing_rate=0.0, generation of demand.parquet)",
+    "target_stage_b2": "SSA Forecast on DLinear-Recovered Demand",
+    "published_reference_targets": {
+      "ssa_raw_sales": {
+        "overall_wape": 0.3197,
+        "overall_wpe": -0.105,
+        "low_sales_wpe": -0.0803,
+        "high_sales_wpe": -0.1226,
+        "status": "EXACT_REPRODUCTION_VERIFIED"
+      },
+      "ssa_dlinear_recovered": {
+        "overall_wape": 0.3,
+        "overall_wpe": -0.0149,
+        "low_sales_wpe": -0.0175,
+        "high_sales_wpe": -0.0112,
+        "status": "PUBLISHED_PAPER_TARGET"
+      },
+      "dlinear_controlled_recovery_a1": {
+        "configured_missing_rate": 0.3,
+        "published_wape": 0.2999,
+        "published_wpe": -0.0128,
+        "status": "PUBLISHED_PAPER_TARGET"
+      }
+    },
+    "execution_status": "AWAITING_COLAB_GPU_RUN"
+  },
+  "sanity_checks": {
+    "all_series_present": true,
+    "evaluation_records_covered": 350000,
+    "eligible_rows_calculated_dynamically": true,
+    "metrics_finite_and_valid": true,
+    "identical_eligibility_filter": true
+  }
+}
