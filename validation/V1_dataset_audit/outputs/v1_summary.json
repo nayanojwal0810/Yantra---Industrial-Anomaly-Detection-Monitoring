@@ -1,6 +1,6 @@
 {
-  "audit_version": "V1.1",
-  "audit_timestamp_utc": "2026-10-30T20:13:34.164620+00:00",
+  "audit_version": "V1.2",
+  "audit_timestamp_utc": "2026-10-30T20:30:22.930664+00:00",
   "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
   "pandas_version": "3.0.3",
   "numpy_version": "2.4.6",
@@ -51,10 +51,18 @@
     "missing_assignments": 0
   },
   "primary_outcomes": {
+    "endline_completed_surveys": {
+      "observed_final_status_1": 2183,
+      "published_reported": 2183,
+      "notes": "Completed endline surveys reported in publication and coded as final_status == 1."
+    },
     "raw_gsed_dscore": {
       "observed": 2154,
       "missing": 307,
-      "missing_pct": 12.47
+      "missing_pct": 12.47,
+      "aggregate_gap_vs_completed_surveys": 29,
+      "missing_reason_note": "No raw GSED outcome recorded; specific reason not established by this count alone.",
+      "survey_gap_note": "Aggregate gap of 29 between completed endline surveys (2,183) and recorded raw GSED scores (2,154). Do not assume the 29 are all missing GSED assessments until their participant-level status is verified."
     },
     "age_adjusted_gsed_daz": {
       "observed": 2148,
@@ -81,13 +89,18 @@
   "participant_reconciliation": {
     "reported_enrolled": 2461,
     "observed_enrolled": 2461,
+    "published_completed_surveys": 2183,
+    "observed_completed_surveys": 2183,
+    "observed_raw_gsed_recorded": 2154,
+    "aggregate_gap_surveys_vs_gsed": 29,
+    "gap_explanation": "Aggregate gap of 29 between completed endline surveys (2,183) and recorded raw GSED scores (2,154). Do not assume the 29 are all missing GSED assessments until verified at participant level.",
     "reported_exclusions": 332,
     "observed_gsed_Z_exclusions": 312,
     "reported_primary_sample": 2149,
     "observed_gsed_Z_sample": 2149,
     "apparent_discrepancy_reported": "2461 - 332 = 2129 != 2149",
     "reconciliation_status": "EXCLUSION_DISCREPANCY_UNRESOLVED",
-    "reconciliation_resolution": "The observed sample with valid standardized primary outcome gsed_Z is exactly 2,149, matching the published Table 2 primary analysis sample. The actual exclusions from 2,461 to 2,149 are 312 participants (307 raw outcome non-responses + 5 singleton age-group drops). The published figure of 332 exclusions leaves an unexplained 20-participant discrepancy (332 vs 312) that cannot be resolved from the released data or code."
+    "reconciliation_resolution": "The observed sample with valid standardized primary outcome gsed_Z is exactly 2,149, matching the published Table 2 primary analysis sample. The actual exclusions from 2,461 to 2,149 are 312 participants (307 raw outcome missing + 5 singleton age-group drops). The published figure of 332 exclusions leaves an unexplained 20-participant discrepancy (332 vs 312) that cannot be resolved from the released data or code."
   },
   "intervention_tracking_audit": {
     "number_session": {
@@ -98,6 +111,9 @@
     "weeks_active_and_program_time": {
       "total_non_missing": 1178,
       "non_missing_in_afini_arm": 1174,
+      "afini_zero_active_weeks": 168,
+      "published_unlinked_count": 166,
+      "afini_engagement_note": "168 Afini-assigned participants have zero recorded active weeks; published paper reports 166 participants unable to be linked to the platform. Do not treat these categories as equivalent without participant-level evidence.",
       "non_missing_in_control_arm": 4,
       "control_participant_ids": [
         288,
@@ -105,7 +121,7 @@
         1399,
         2326
       ],
-      "consistency_note": "Consistent with published documentation noting four control households erroneously accessing the intervention and with the Stata replication script compliance definition coding control participants with non-missing weeks_active as non-compliant."
+      "control_tracking_note": "Consistent with published documentation noting four control households erroneously accessing the intervention and with the Stata replication script compliance definition coding control participants with non-missing weeks_active as non-compliant."
     }
   },
   "csv_dta_equivalence_audit": {

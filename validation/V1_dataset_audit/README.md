@@ -1,4 +1,4 @@
-# Task V1 / V1.1: Dataset Forensic Audit & Targeted Audit Closure
+# Task V1 / V1.1 / V1.2: Dataset Forensic Audit & Targeted Audit Closure
 
 **Project:** Niyati  
 **Dataset Source:** Dryad ([doi:10.5061/dryad.nzs7h4551](https://doi.org/10.5061/dryad.nzs7h4551))  
@@ -10,10 +10,22 @@
 
 ## 1. Executive Summary
 
-This report documents the forensic audit of the downloaded dataset package for Task V1 and the targeted closure of three key investigation areas in Task V1.1:
-1. **Primary Outcome Derivation & Missingness:** Reconstructed the standardized GSED primary outcome calculation (`gsed_Z`) from the original Stata replication script (`Trial_Analysis_Replication_File_26Feb2026.do`). The derived primary outcome yields exactly 2,149 valid observations (matching the published Table 2 primary analysis sample) and 312 missing observations. These 312 missing observations decompose into 307 raw outcome non-responses and 5 observations in singleton 10-day age groups with undefined group variance. The published figure of 332 exclusions leaves an unexplained 20-participant discrepancy ($332 - 312 = 20$) that cannot be resolved from the released data or code and is labeled **UNRESOLVED**.
-2. **Intervention Tracking by Treatment Arm:** Cross-tabulated `number_session`, `weeks_active`, and `program_time` against assigned treatment arms (`arm_itt`). Home visit tracking (`number_session`) is recorded solely within the Home Visits arm ($n=317$). Digital platform tracking (`weeks_active`, `program_time`) is recorded for all 1,174 Afini-assigned participants and additionally for 4 Control-assigned participants (IDs: 288, 925, 1399, 2326; positive activity values). This finding is consistent with published text reporting four control households erroneously accessing intervention services and with the Stata replication script's compliance definition.
-3. **CSV vs. DTA Equivalence:** Verified that `digitalECD_26Feb2026.dta` and `digitalECD_26Feb2026.csv` share an identical set of 2,461 participant IDs and 40 variables. Applying Stata value labels to categoricals and ISO normalization to dates demonstrates 100% content equivalence (0 substantive mismatches across all 2,461 records and 40 variables).
+This report documents the forensic audit of the downloaded dataset package for Task V1, the targeted closure of three key investigation areas in Task V1.1, and the final audit documentation clarifications in Task V1.2:
+1. **Primary Outcome Derivation & Missingness:**
+   - The published study reports **2,183 completed endline surveys** (`final_status == 1`).
+   - The released data contains **2,461 enrolled participants**, **2,154 recorded raw GSED scores** (`el_gsed_dscore`), **307 missing raw GSED scores**, and **2,149 valid derived GSED Z-scores** (`gsed_Z`).
+   - There is an **additional aggregate gap of 29** between completed endline surveys (2,183) and recorded raw GSED scores (2,154). Do not assume the 29 are all missing GSED assessments until their participant-level status is verified.
+   - For the 307 missing raw outcomes, neutral wording is applied: *"No raw GSED outcome recorded; specific reason not established by this count alone."* (Unsupported descriptions that all 307 were lost to follow-up, refusal, migration, or child death are removed).
+   - Reconstructed the standardized GSED primary outcome calculation (`gsed_Z`) from the original Stata replication script (`Trial_Analysis_Replication_File_26Feb2026.do`). The derived primary outcome yields exactly **2,149 valid observations** (matching the published Table 2 primary analysis sample) and **312 missing observations**. These 312 missing observations decompose into 307 raw outcome non-responses and 5 observations in singleton 10-day age groups with undefined group variance.
+   - The published text figure of **332 exclusions** leaves an unexplained 20-participant discrepancy ($332 - 312 = 20$) that cannot be resolved from the released data or replication code and is labeled **UNRESOLVED**.
+2. **Intervention Tracking by Treatment Arm:**
+   - Cross-tabulated `number_session`, `weeks_active`, and `program_time` against assigned treatment arms (`arm_itt`).
+   - Home visit tracking (`number_session`) is recorded solely within the Home Visits arm ($n=317$).
+   - Digital platform tracking (`weeks_active`, `program_time`) is recorded for all 1,174 Afini-assigned participants and additionally for 4 Control-assigned participants (IDs: 288, 925, 1399, 2326; positive activity values). This finding is consistent with published text reporting four control households accessing intervention services and with the Stata replication script's compliance definition.
+   - Within the Afini arm, **168 Afini-assigned participants have zero recorded active weeks**. In comparison, the published paper reports **166 participants unable to be linked to the platform**. *Do not treat these categories as equivalent without participant-level evidence.*
+3. **CSV vs. DTA Equivalence:**
+   - Verified that `digitalECD_26Feb2026.dta` and `digitalECD_26Feb2026.csv` share an identical set of 2,461 participant IDs and 40 variables.
+   - Applying Stata value labels to categoricals and ISO normalization to dates demonstrates 100% content equivalence (0 substantive mismatches across all 2,461 records and 40 variables).
 
 ---
 
@@ -100,16 +112,17 @@ Cross-tabulation of intervention tracking variables against treatment assignment
 | | **Total** | **2,461** | **2,144** | **317** | **23** | **294** | **0.0** | **41.0** | Structural tracking for Home Visits arm ($n=317$). |
 | **`weeks_active`** | Control (1) | 970 | 966 | 4 | 0 | 4 | 3.0 | 42.0 | 4 non-missing positive records (IDs: 288, 925, 1399, 2326; values: 22, 42, 29, 3 weeks). |
 | | Home visits (2) | 317 | 317 | 0 | 0 | 0 | — | — | 100% missing; no digital tracking recorded for HV arm. |
-| | Afini (3) | 1,174 | 0 | 1,174 | 168 | 1,006 | 0.0 | 129.0 | 100% non-missing in Afini group (168 zero, 1,006 positive weeks). |
+| | Afini (3) | 1,174 | 0 | 1,174 | 168 | 1,006 | 0.0 | 129.0 | 100% non-missing in Afini group (168 zero, 1,006 positive weeks). Published paper reports 166 participants unable to be linked to platform; do not treat these categories as equivalent without participant-level evidence. |
 | | **Total** | **2,461** | **1,283** | **1,178** | **168** | **1,010** | **0.0** | **129.0** | Recorded for Afini arm ($n=1,174$) plus 4 Control records. |
 | **`program_time`** | Control (1) | 970 | 966 | 4 | 0 | 4 | 6.0 | 67.0 | 4 non-missing positive records (IDs: 288, 925, 1399, 2326; values: 35, 67, 51, 6 weeks). |
 | | Home visits (2) | 317 | 317 | 0 | 0 | 0 | — | — | 100% missing; no digital tracking recorded for HV arm. |
-| | Afini (3) | 1,174 | 0 | 1,174 | 168 | 1,006 | 0.0 | 175.0 | 100% non-missing in Afini group (168 zero, 1,006 positive weeks). |
+| | Afini (3) | 1,174 | 0 | 1,174 | 168 | 1,006 | 0.0 | 175.0 | 100% non-missing in Afini group (168 zero, 1,006 positive weeks). Published paper reports 166 participants unable to be linked to platform; do not treat these categories as equivalent without participant-level evidence. |
 | | **Total** | **2,461** | **1,283** | **1,178** | **168** | **1,010** | **0.0** | **175.0** | Recorded for Afini arm ($n=1,174$) plus 4 Control records. |
 
-### Context of the Four Control Tracking Records:
-- The presence of tracking data for 4 Control-assigned participants is consistent with published study text noting that four control households erroneously received/accessed intervention services.
-- This is further confirmed by the original Stata replication script (`Trial_Analysis_Replication_File_26Feb2026.do`), which explicitly defines control compliance as:
+### Digital Engagement & Tracking Observations:
+- **Zero Active Weeks vs. Platform Linkage:** Within the Afini assignment group ($n=1,174$), **168 participants have zero recorded active weeks** (`weeks_active == 0`). In comparison, the published paper reports that **166 participants were unable to be linked to the platform**. *Do not treat these categories as equivalent without participant-level evidence.*
+- **Four Control Tracking Records:** Four Control-assigned participants (IDs: 288, 925, 1399, 2326) have positive platform tracking (`weeks_active` values: 22, 42, 29, 3; `program_time` values: 35, 67, 51, 6). This observation is consistent with published study text noting that four control households erroneously received/accessed intervention services.
+- **Stata Replication Code Alignment:** This is further confirmed by the original Stata replication script (`Trial_Analysis_Replication_File_26Feb2026.do`), which explicitly defines control compliance as:
   ```stata
   replace compliant = 1 if arm_itt ==1 
   replace compliant = 0 if arm_itt ==1 & number_session > 0 & number_session !=. 
@@ -128,7 +141,9 @@ Missingness across all 40 variables:
    - Baseline covariates: 3 (0.12%) missing in `bl_int_date`, `bl_childage`, `bl_z_overall`; up to 351 (14.26%) in `bl_fa_educ_level`.
    - Secondary outcomes: 304 to 397 missing (12.35% to 16.13%).
    - Primary outcome missingness:
-     - Raw GSED d-score (`el_gsed_dscore`): 307 missing (12.47%).
+     - Endline Survey Completion: 2,183 completed endline surveys (`final_status == 1`) reported in the published study and observed in data.
+     - Raw GSED d-score (`el_gsed_dscore`): 2,154 recorded raw scores, 307 missing (12.47%). *No raw GSED outcome recorded; specific reason not established by this count alone.*
+     - Aggregate survey-to-outcome gap: Aggregate gap of 29 between completed endline surveys (2,183) and recorded raw GSED scores (2,154). Do not assume the 29 are all missing GSED assessments until their participant-level status is verified.
      - Age-adjusted GSED (`el_gsed_daz`): 313 missing (12.72%).
      - Derived standardized GSED (`gsed_Z`): 312 missing (12.68%).
 3. **Substantial missingness (>20.00%, 3 variables):**
@@ -162,21 +177,26 @@ gen gsed_Z = (el_gsed_dscore-gsed_mean)/gsed_sd
 
 | Step | Metric Name | Count | Pct of Enrolled | Definition / Mechanism | Verification Status |
 | :---: | :--- | :---: | :---: | :--- | :---: |
-| 1 | **Total Enrolled Base** | 2,461 | 100.0% | Total participants randomized across all three arms. | **VERIFIED** |
-| 2 | **Raw Assessed Participants** | 2,154 | 87.53% | Participants with non-missing raw GSED d-score (`el_gsed_dscore`). | **VERIFIED** |
-| 3 | **Raw Outcome Non-Response** | 307 | 12.47% | Participants unassessed at endline (loss to follow-up, refusal, migration, death). | **VERIFIED** |
+| 1 | **Total Enrolled Participants** | 2,461 | 100.0% | Total participants randomized across all three study arms (Control=970, Home visits=317, Afini=1174). | **VERIFIED** |
+| 2A | **Completed Endline Surveys (`final_status == 1`)** | 2,183 | 88.70% | Caregiver-child dyads completing the endline survey. Published study reports 2,183 completed endline surveys. | **VERIFIED** |
+| 2B | **Recorded Raw GSED Scores (`el_gsed_dscore`)** | 2,154 | 87.53% | Participants with a recorded numerical endline GSED raw developmental score. | **VERIFIED** |
+| 2C | **Aggregate Gap: Surveys vs. Raw GSED** | 29 | 1.18% | Aggregate gap between completed endline surveys (2,183) and recorded raw GSED scores (2,154). Do not assume the 29 are all missing GSED assessments until their participant-level status is verified. | **DOCUMENTED GAP** |
+| 3 | **Missing Raw GSED d-score (`el_gsed_dscore`)** | 307 | 12.47% | No raw GSED outcome recorded; specific reason not established by this count alone. | **VERIFIED** |
 | 4 | **Missing Assessment Age** | 0 | 0.0% | Raw score observed but missing assessment age (`el_gsed_age`). Complete for all 2,154. | **VERIFIED** |
-| 5 | **Total 10-Day Age Groups** | 58 | — | Distinct age brackets populated by assessed participants (brackets 73 to 146). | **VERIFIED** |
-| 6 | **Singleton Age Groups (n=1)** | 5 | — | Age brackets containing exactly one assessed child (brackets 73, 126, 131, 137, 146). | **VERIFIED** |
-| 7 | **Undefined Standardization Variance** | 5 | 0.20% | Observations in singleton brackets where Stata sample standard deviation `sd()` is undefined ($n=1$). Participant IDs: 442, 773, 934, 1159, 1866. | **VERIFIED** |
-| 8 | **Additional Sample Restrictions** | 0 | 0.0% | Any explicit drop, keep, or filter conditions in replication DO file prior to primary regression. | **VERIFIED** |
+| 5 | **Total 10-Day Age Groups** | 58 | — | Distinct 10-day age groups populated by assessed participants (brackets range from 73 to 146). | **VERIFIED** |
+| 6 | **Singleton Age Groups (n=1)** | 5 | — | Ten-day age brackets containing exactly one assessed participant (brackets 73, 126, 131, 137, 146). | **VERIFIED** |
+| 7 | **Undefined Standardization Variance** | 5 | 0.20% | Assessed children in singleton age brackets where sample standard deviation `sd()` is undefined in Stata ($n=1$). Participant IDs: 442, 773, 934, 1159, 1866. | **VERIFIED** |
+| 8 | **Additional Sample Restrictions** | 0 | 0.0% | Any explicit drop, keep, or sample filtering commands applied in Stata DO script prior to primary regression. | **VERIFIED** |
 | 9 | **Recreated Analysis Sample (`gsed_Z`)** | **2,149** | 87.32% | Valid derived standardized GSED scores ($2,154 - 5 = 2,149$). Exactly matches published Table 2 sample. | **VERIFIED** |
-| 10 | **Total Actual Exclusions** | **312** | 12.68% | Mutually exclusive sum: 307 raw non-response + 5 undefined variance drops ($2,461 - 312 = 2,149$). | **VERIFIED** |
+| 10 | **Total Recreated Outcome Exclusions** | **312** | 12.68% | Mutually exclusive sum: 307 raw outcome non-response + 5 undefined variance drops ($2,461 - 312 = 2,149$). | **VERIFIED** |
 | 11 | **Published Exclusion Figure** | **332** | 13.49% | Reported exclusions due to missing outcome in published study text. Leaves a 20-case discrepancy against actual data ($2,461 - 332 = 2,129 \neq 2,149$). | **UNRESOLVED** |
 
 ### Reconciliation Finding:
+- The released dataset contains 2,461 enrolled participants, 2,154 recorded raw GSED scores, 307 missing raw GSED scores, and 2,149 valid derived GSED Z-scores.
+- The published study reports 2,183 completed endline surveys. There is an additional aggregate gap of 29 between completed endline surveys (2,183) and recorded raw GSED scores (2,154). Do not assume the 29 are all missing GSED assessments until their participant-level status is verified.
+- For the 307 participants with missing raw GSED scores, neutral wording is applied: *"No raw GSED outcome recorded; specific reason not established by this count alone."*
 - The derived standardized score `gsed_Z` yields exactly **2,149** non-missing observations, perfectly matching the primary analysis sample reported in Table 2 of the publication.
-- The 312 missing values in `gsed_Z` are strictly accounted for by 307 raw unassessed children plus 5 children dropped due to undefined standard deviation in singleton age brackets.
+- The 312 missing values in `gsed_Z` are strictly accounted for by 307 raw unassessed children plus 5 children dropped due to undefined standard deviation in singleton age brackets ($307 + 5 = 312$).
 - The published text figure of 332 exclusions differs by 20 participants from the actual 312 exclusions observed in the dataset. Because neither the released data nor the replication script specifies an additional 20 exclusions, this discrepancy remains **UNRESOLVED**.
 
 Details are cataloged in [gsed_outcome_reconciliation.csv](file:///d:/Niyati/validation/V1_dataset_audit/outputs/gsed_outcome_reconciliation.csv) and [participant_count_reconciliation.csv](file:///d:/Niyati/validation/V1_dataset_audit/outputs/participant_count_reconciliation.csv).
@@ -210,7 +230,7 @@ All output files are located in `validation/V1_dataset_audit/outputs/`:
 - `duplicate_checks.csv`: Row deduplication and candidate identifier assessments.
 - `treatment_group_counts.csv`: Treatment assignment frequencies and percentages.
 - `participant_count_reconciliation.csv`: Arithmetic reconciliation of reported vs observed counts.
-- `gsed_outcome_reconciliation.csv`: Detailed mutually exclusive GSED outcome derivation and missingness source breakdown (V1.1).
-- `intervention_tracking_by_arm.csv`: Cross-tabulation of tracking variables by treatment assignment (V1.1).
+- `gsed_outcome_reconciliation.csv`: Detailed mutually exclusive GSED outcome derivation and missingness source breakdown (V1.1 / V1.2).
+- `intervention_tracking_by_arm.csv`: Cross-tabulation of tracking variables by treatment assignment (V1.1 / V1.2).
 - `csv_dta_equivalence.csv`: Participant- and variable-level CSV vs. DTA equivalence audit (V1.1).
-- `v1_summary.json`: Machine-readable summary of all audit metrics and findings.
+- `v1_summary.json`: Machine-readable summary of all audit metrics and findings (V1.2).

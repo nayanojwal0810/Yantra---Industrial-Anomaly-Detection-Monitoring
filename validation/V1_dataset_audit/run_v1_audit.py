@@ -625,7 +625,7 @@ def reconcile_participant_counts(df_dta: pd.DataFrame) -> List[Dict[str, Any]]:
 
 
 # -----------------------------------------------------------------------------
-# Investigation A (Task V1.1): Primary Outcome Reconciliation & Re-derivation
+# Investigation A (Task V1.1 / V1.2): Primary Outcome Reconciliation & Re-derivation
 # -----------------------------------------------------------------------------
 def audit_gsed_outcome_reconciliation(df_dta: pd.DataFrame) -> List[Dict[str, Any]]:
     """
@@ -636,14 +636,17 @@ def audit_gsed_outcome_reconciliation(df_dta: pd.DataFrame) -> List[Dict[str, An
       gen gsed_Z = (el_gsed_dscore-gsed_mean)/gsed_sd
 
     Generates mutually exclusive count reconciliation distinguishing:
-      1. Raw outcome non-response
-      2. Undefined derived standardized values (singleton age brackets)
-      3. Valid primary analysis sample
-      4. Published exclusion discrepancy (labeled UNRESOLVED)
+      1. Completed endline surveys vs recorded raw GSED scores (aggregate gap of 29)
+      2. Raw outcome non-response (307 missing; specific reason not established by count alone)
+      3. Undefined derived standardized values (5 singleton age brackets)
+      4. Valid primary analysis sample (2,149)
+      5. Published exclusion discrepancy of 332 (labeled UNRESOLVED)
     """
     total_enrolled = len(df_dta)
+    endline_surveys = int((df_dta["final_status"] == 1).sum())
     raw_obs = int(df_dta["el_gsed_dscore"].notna().sum())
     raw_miss = int(df_dta["el_gsed_dscore"].isna().sum())
+    survey_gsed_gap = endline_surveys - raw_obs
 
     age_miss_with_raw_obs = int(((df_dta["el_gsed_dscore"].notna()) & (df_dta["el_gsed_age"].isna())).sum())
 
@@ -679,15 +682,37 @@ def audit_gsed_outcome_reconciliation(df_dta: pd.DataFrame) -> List[Dict[str, An
             "notes": "Matches raw observations in both digitalECD_26Feb2026.dta and digitalECD_26Feb2026.csv.",
         },
         {
-            "step_id": "REC-02",
+            "step_id": "REC-02A",
+            "category": "Survey Follow-up Status",
+            "metric_name": "Completed Endline Surveys (final_status == 1)",
+            "participant_count": endline_surveys,
+            "pct_of_enrolled": round((endline_surveys / total_enrolled) * 100, 2),
+            "definition_and_mechanism": "Caregiver-child dyads completing the endline survey (coded final_status == 1). Published study reports 2,183 completed endline surveys.",
+            "mutually_exclusive_classification": "Completed Survey Dispositions",
+            "verification_status": "VERIFIED",
+            "notes": "Matches published endline survey count of 2,183 exactly.",
+        },
+        {
+            "step_id": "REC-02B",
             "category": "Raw Outcome Assessment",
-            "metric_name": "Non-missing Raw GSED d-score (el_gsed_dscore)",
+            "metric_name": "Recorded Raw GSED Scores (el_gsed_dscore)",
             "participant_count": raw_obs,
             "pct_of_enrolled": round((raw_obs / total_enrolled) * 100, 2),
-            "definition_and_mechanism": "Participants with an administered and recorded endline GSED raw developmental assessment score.",
-            "mutually_exclusive_classification": "Assessed Participants",
+            "definition_and_mechanism": "Participants with a recorded numerical endline GSED raw developmental score.",
+            "mutually_exclusive_classification": "Recorded Raw Outcome Sample",
             "verification_status": "VERIFIED",
-            "notes": "Directly observed in raw dataset.",
+            "notes": "Observed in raw data file (n = 2,154).",
+        },
+        {
+            "step_id": "REC-02C",
+            "category": "Survey vs. Outcome Gap",
+            "metric_name": "Aggregate Gap: Completed Surveys vs Recorded Raw GSED",
+            "participant_count": survey_gsed_gap,
+            "pct_of_enrolled": round((survey_gsed_gap / total_enrolled) * 100, 2),
+            "definition_and_mechanism": "Aggregate gap between completed endline surveys (2,183) and recorded raw GSED scores (2,154). Do not assume the 29 are all missing GSED assessments until their participant-level status is verified.",
+            "mutually_exclusive_classification": "Survey-to-Outcome Discrepancy",
+            "verification_status": "DOCUMENTED_GAP",
+            "notes": "Documented aggregate difference of 29 cases between survey completion and outcome recording.",
         },
         {
             "step_id": "REC-03",
@@ -695,10 +720,10 @@ def audit_gsed_outcome_reconciliation(df_dta: pd.DataFrame) -> List[Dict[str, An
             "metric_name": "Missing Raw GSED d-score (el_gsed_dscore)",
             "participant_count": raw_miss,
             "pct_of_enrolled": round((raw_miss / total_enrolled) * 100, 2),
-            "definition_and_mechanism": "Participants missing the endline GSED developmental assessment due to loss to follow-up, refusal, migration, or child death.",
+            "definition_and_mechanism": "No raw GSED outcome recorded; specific reason not established by this count alone.",
             "mutually_exclusive_classification": "Raw Outcome Non-response",
             "verification_status": "VERIFIED",
-            "notes": "First source of outcome exclusion: 307 participants unassessed.",
+            "notes": "First source of outcome exclusion: 307 participants without a recorded raw GSED score.",
         },
         {
             "step_id": "REC-04",
@@ -794,12 +819,13 @@ def audit_gsed_outcome_reconciliation(df_dta: pd.DataFrame) -> List[Dict[str, An
 
 
 # -----------------------------------------------------------------------------
-# Investigation B (Task V1.1): Intervention Tracking by Treatment Arm
+# Investigation B (Task V1.1 / V1.2): Intervention Tracking by Treatment Arm
 # -----------------------------------------------------------------------------
 def audit_intervention_tracking_by_arm(df_dta: pd.DataFrame) -> List[Dict[str, Any]]:
     """
     Cross-tabulates intervention tracking variables (number_session, weeks_active, program_time)
     by treatment assignment (arm_itt), distinguishing assigned treatment from actual recorded intervention activity.
+    Dynamically extracts positive activity participant IDs and values for control participants.
     """
     tracking_vars = [
         ("number_session", "Number of home visit intervention sessions received"),
@@ -829,11 +855,18 @@ def audit_intervention_tracking_by_arm(df_dta: pd.DataFrame) -> List[Dict[str, A
                     note = "100% missing as expected; no home visit sessions recorded outside Home Visits assignment group."
             else:
                 if arm_val == 3.0:
-                    note = f"Afini tracking: 100% non-missing in Afini group ({n_zero} zero, {n_pos} positive, range {vmin} to {vmax})."
-                elif arm_val == 1.0:
                     note = (
-                        f"Four non-missing positive tracking records observed in Control arm (Participant IDs: 288, 925, 1399, 2326; "
-                        f"{var_name} values: {[round(float(v),1) for v in s[s.notna()].tolist()]}). "
+                        f"Afini tracking: 100% non-missing in Afini group ({n_zero} zero active weeks, {n_pos} positive active weeks, range {vmin} to {vmax}). "
+                        "Published paper reports 166 participants unable to be linked to the platform; "
+                        "do not treat the 168 zero active weeks and the 166 unlinked participants as equivalent without participant-level evidence."
+                    )
+                elif arm_val == 1.0:
+                    ctrl_pos = sub[sub[var_name].notna() & (sub[var_name] > 0)]
+                    ctrl_ids = [int(x) for x in ctrl_pos["ID"].tolist()]
+                    ctrl_vals = [round(float(v), 1) for v in ctrl_pos[var_name].tolist()]
+                    note = (
+                        f"Four non-missing positive tracking records observed in Control arm (Participant IDs: {ctrl_ids}; "
+                        f"{var_name} values: {ctrl_vals}). "
                         "Consistent with published documentation noting four control households erroneously accessing the intervention, "
                         "and with Stata replication code coding control participants with non-missing weeks_active as non-compliant."
                     )
@@ -1075,8 +1108,21 @@ def run_v1_forensic_audit() -> None:
 
     # 11. Machine-Readable Summary JSON
     print("\n[Step 11] Building comprehensive v1_summary.json...")
+    # Dynamically derive singleton IDs and control tracking IDs
+    gsed_age_bracket_dyn = np.floor(df_dta["el_gsed_age"] / 10.0)
+    grp_temp = df_dta.loc[df_dta["el_gsed_dscore"].notna()].groupby(gsed_age_bracket_dyn)["el_gsed_dscore"].count()
+    singleton_brackets_dyn = grp_temp[grp_temp == 1].index.tolist()
+    singleton_ids_dyn = [int(x) for x in df_dta.loc[gsed_age_bracket_dyn.isin(singleton_brackets_dyn) & df_dta["el_gsed_dscore"].notna(), "ID"].tolist()]
+
+    ctrl_tracking_dyn = df_dta[(df_dta["arm_itt"] == 1.0) & (df_dta["weeks_active"].notna()) & (df_dta["weeks_active"] > 0)]
+    ctrl_ids_dyn = [int(x) for x in ctrl_tracking_dyn["ID"].tolist()]
+
+    endline_surveys_count = int((df_dta["final_status"] == 1).sum())
+    raw_gsed_count = int(df_dta["el_gsed_dscore"].notna().sum())
+    survey_gsed_gap_count = endline_surveys_count - raw_gsed_count
+
     v1_summary = {
-        "audit_version": "V1.1",
+        "audit_version": "V1.2",
         "audit_timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "python_version": sys.version,
         "pandas_version": pd.__version__,
@@ -1116,10 +1162,18 @@ def run_v1_forensic_audit() -> None:
             "missing_assignments": 0,
         },
         "primary_outcomes": {
+            "endline_completed_surveys": {
+                "observed_final_status_1": endline_surveys_count,
+                "published_reported": 2183,
+                "notes": "Completed endline surveys reported in publication and coded as final_status == 1.",
+            },
             "raw_gsed_dscore": {
-                "observed": int(df_dta["el_gsed_dscore"].notna().sum()),
+                "observed": raw_gsed_count,
                 "missing": int(df_dta["el_gsed_dscore"].isna().sum()),
                 "missing_pct": round((df_dta["el_gsed_dscore"].isna().sum() / len(df_dta)) * 100, 2),
+                "aggregate_gap_vs_completed_surveys": survey_gsed_gap_count,
+                "missing_reason_note": "No raw GSED outcome recorded; specific reason not established by this count alone.",
+                "survey_gap_note": "Aggregate gap of 29 between completed endline surveys (2,183) and recorded raw GSED scores (2,154). Do not assume the 29 are all missing GSED assessments until their participant-level status is verified.",
             },
             "age_adjusted_gsed_daz": {
                 "observed": int(df_dta["el_gsed_daz"].notna().sum()),
@@ -1132,14 +1186,19 @@ def run_v1_forensic_audit() -> None:
                 "missing_pct": round((312 / len(df_dta)) * 100, 2),
                 "breakdown": {
                     "raw_unassessed_missing": 307,
-                    "singleton_age_bracket_undefined_sd": 5,
-                    "singleton_participant_ids": [442, 773, 934, 1159, 1866],
+                    "singleton_age_bracket_undefined_sd": len(singleton_ids_dyn),
+                    "singleton_participant_ids": singleton_ids_dyn,
                 },
             },
         },
         "participant_reconciliation": {
             "reported_enrolled": 2461,
             "observed_enrolled": 2461,
+            "published_completed_surveys": 2183,
+            "observed_completed_surveys": endline_surveys_count,
+            "observed_raw_gsed_recorded": raw_gsed_count,
+            "aggregate_gap_surveys_vs_gsed": survey_gsed_gap_count,
+            "gap_explanation": "Aggregate gap of 29 between completed endline surveys (2,183) and recorded raw GSED scores (2,154). Do not assume the 29 are all missing GSED assessments until verified at participant level.",
             "reported_exclusions": 332,
             "observed_gsed_Z_exclusions": 312,
             "reported_primary_sample": 2149,
@@ -1149,22 +1208,25 @@ def run_v1_forensic_audit() -> None:
             "reconciliation_resolution": (
                 "The observed sample with valid standardized primary outcome gsed_Z is exactly 2,149, "
                 "matching the published Table 2 primary analysis sample. "
-                "The actual exclusions from 2,461 to 2,149 are 312 participants (307 raw outcome non-responses + 5 singleton age-group drops). "
+                "The actual exclusions from 2,461 to 2,149 are 312 participants (307 raw outcome missing + 5 singleton age-group drops). "
                 "The published figure of 332 exclusions leaves an unexplained 20-participant discrepancy (332 vs 312) that cannot be resolved from the released data or code."
             ),
         },
         "intervention_tracking_audit": {
             "number_session": {
-                "total_non_missing": 317,
-                "non_missing_in_home_visits_arm": 317,
-                "non_missing_outside_home_visits_arm": 0,
+                "total_non_missing": int(df_dta["number_session"].notna().sum()),
+                "non_missing_in_home_visits_arm": int(df_dta.loc[df_dta["arm_itt"] == 2.0, "number_session"].notna().sum()),
+                "non_missing_outside_home_visits_arm": int(df_dta.loc[df_dta["arm_itt"] != 2.0, "number_session"].notna().sum()),
             },
             "weeks_active_and_program_time": {
-                "total_non_missing": 1178,
-                "non_missing_in_afini_arm": 1174,
-                "non_missing_in_control_arm": 4,
-                "control_participant_ids": [288, 925, 1399, 2326],
-                "consistency_note": (
+                "total_non_missing": int(df_dta["weeks_active"].notna().sum()),
+                "non_missing_in_afini_arm": int(df_dta.loc[df_dta["arm_itt"] == 3.0, "weeks_active"].notna().sum()),
+                "afini_zero_active_weeks": int((df_dta.loc[df_dta["arm_itt"] == 3.0, "weeks_active"] == 0).sum()),
+                "published_unlinked_count": 166,
+                "afini_engagement_note": "168 Afini-assigned participants have zero recorded active weeks; published paper reports 166 participants unable to be linked to the platform. Do not treat these categories as equivalent without participant-level evidence.",
+                "non_missing_in_control_arm": int(df_dta.loc[df_dta["arm_itt"] == 1.0, "weeks_active"].notna().sum()),
+                "control_participant_ids": ctrl_ids_dyn,
+                "control_tracking_note": (
                     "Consistent with published documentation noting four control households erroneously accessing the intervention "
                     "and with the Stata replication script compliance definition coding control participants with non-missing weeks_active as non-compliant."
                 ),
