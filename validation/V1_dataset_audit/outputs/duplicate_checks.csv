@@ -1,0 +1,5 @@
+check_id,scope,target_variable,total_evaluated,unique_count,duplicate_count,missing_count,is_unique,status,notes
+DUP-01,Entire Observation (All 40 Variables),All Columns,2461,2461,0,0,True,PASS,Zero exact row duplicates detected in the dataset.
+DUP-02,Participant Unique Identifier,ID,2461,2461,0,0,True,PASS,ID is strictly unique (range 1 to 2461) and contains zero missing values.
+DUP-03,Cluster Randomization Grouping,cluster,2461,159,2302,0,False,EXPECTED_MULTIPLE,"159 unique clusters (IDs range 1 to 164). Cluster size: min=1, max=42, mean=15.48 participants."
+DUP-04,Household Endline Follow-up Status,final_status,2461,5,2456,0,False,EXPECTED_MULTIPLE,Follow-up disposition across 5 discrete categories; 0 missing values.

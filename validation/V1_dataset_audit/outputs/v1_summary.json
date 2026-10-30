@@ -1,0 +1,107 @@
+{
+  "audit_version": "V1",
+  "audit_timestamp_utc": "2026-10-30T19:47:44.239588+00:00",
+  "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
+  "pandas_version": "3.0.3",
+  "numpy_version": "2.4.6",
+  "dataset_metadata": {
+    "source_doi": "10.5061/dryad.nzs7h4551",
+    "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",
+    "primary_archive": "doi_10_5061_dryad_nzs7h4551__v20260226.zip",
+    "primary_archive_sha256": "dd962c2934877e75aaf1cd536500ada87d9ae1feae81ca9423eae5712b0daaea",
+    "primary_dataset_file": "digitalECD_26Feb2026.dta",
+    "backup_dataset_file": "digitalECD_26Feb2026.csv"
+  },
+  "sample_dimensions": {
+    "total_enrolled_observations": 2461,
+    "total_variables": 40,
+    "memory_usage_dta_bytes": 588311,
+    "memory_usage_csv_bytes": 1049295
+  },
+  "key_identifiers": {
+    "participant_id_variable": "ID",
+    "participant_id_unique": true,
+    "participant_id_missing": 0,
+    "cluster_variable": "cluster",
+    "total_clusters": 159,
+    "cluster_range": [
+      1,
+      164
+    ]
+  },
+  "treatment_assignment": {
+    "variable_name": "arm_itt",
+    "arms": {
+      "Control": {
+        "code": "1",
+        "count": 970,
+        "percentage": 39.41
+      },
+      "Home visits": {
+        "code": "2",
+        "count": 317,
+        "percentage": 12.88
+      },
+      "Afini": {
+        "code": "3",
+        "count": 1174,
+        "percentage": 47.7
+      }
+    },
+    "missing_assignments": 0
+  },
+  "primary_outcomes": {
+    "raw_gsed_dscore": {
+      "observed": 2154,
+      "missing": 307,
+      "missing_pct": 12.47
+    },
+    "age_adjusted_gsed_daz": {
+      "observed": 2148,
+      "missing": 313,
+      "missing_pct": 12.72
+    },
+    "derived_gsed_Z": {
+      "observed": 2149,
+      "missing": 312,
+      "missing_pct": 12.68,
+      "notes": "Normalized within 10-day age groups; 5 single-observation bins drop due to undefined sd."
+    }
+  },
+  "participant_reconciliation": {
+    "reported_enrolled": 2461,
+    "observed_enrolled": 2461,
+    "reported_exclusions": 332,
+    "observed_gsed_Z_exclusions": 312,
+    "reported_primary_sample": 2149,
+    "observed_gsed_Z_sample": 2149,
+    "apparent_discrepancy_reported": "2461 - 332 = 2129 != 2149",
+    "reconciliation_resolution": "The primary analysis sample in the data is exactly 2,149. The actual exclusions from 2,461 to 2,149 are 312 participants (307 raw unassessed + 5 single-age-bin cases). The reported exclusion figure of 332 is an arithmetic discrepancy of 20 participants."
+  },
+  "data_quality_flags": [
+    {
+      "variable": "el_afinidata4",
+      "issue": "Sentinel code -77 present in 2 observations",
+      "severity": "LOW / DOCUMENTED",
+      "action": "Preserve as documented; represents 'Don't know / refuse' per Stata value labels."
+    },
+    {
+      "variable": "number_session",
+      "issue": "Missing in 2,144 observations (87.12%)",
+      "severity": "STRUCTURAL",
+      "action": "Expected intervention tracking variable specific to Home Visits arm (n=317)."
+    },
+    {
+      "variable": "weeks_active / program_time",
+      "issue": "Missing in 1,283 observations (52.13%)",
+      "severity": "STRUCTURAL",
+      "action": "Expected intervention tracking variables specific to Afini digital arm (n=1174)."
+    }
+  ],
+  "pending_items_for_v2": [
+    "Formal cluster-level randomization integrity and cluster size balance check.",
+    "Baseline covariate balance across the three treatment arms.",
+    "Detailed attrition differential analysis across treatment arms.",
+    "Full verification of multiple imputation model specification from replication do-file."
+  ]
+}

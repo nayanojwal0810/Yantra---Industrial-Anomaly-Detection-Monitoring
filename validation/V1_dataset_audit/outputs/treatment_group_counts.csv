@@ -1,0 +1,4 @@
+raw_category_code,category_label,category_description,observation_count,percentage_of_total,missing_assignment_count
+1,Control,Control group,970,39.41,0
+2,Home visits,Traditional home visits,317,12.88,0
+3,Afini,Digital intervention (Afini platform),1174,47.7,0

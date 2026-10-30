@@ -1,0 +1,41 @@
+variable_name,variable_label,variable_role,dta_dtype,csv_dtype,missing_count,missing_pct,unique_values,min_value,max_value,sentinel_codes
+ID,Unique ID,Participant Identifier,float32,int64,0,0.0,2461,1.0,2461.0,None detected
+arm_itt,treatment assignment ITT 3 RCT groups,Treatment Assignment,float64,str,0,0.0,3,1.0,3.0,None detected
+cluster,Cluster ID,Cluster Identifier,float64,int64,0,0.0,159,1.0,164.0,None detected
+child_female,Sexo de ,Demographic (Child Sex),int8,str,0,0.0,2,0.0,1.0,None detected
+final_status,final status of family,Household Follow-up Status,float32,str,0,0.0,5,1.0,5.0,None detected
+provincia,Province,Geographic (Province),int8,str,0,0.0,3,1.0,10.0,None detected
+distrito,District (1-12),Geographic (District),int8,int64,0,0.0,10,1.0,11.0,None detected
+el_childage,Child age in months after birthday corrections,Endline Child Age,float32,float64,296,12.03,22,24.0,48.0,None detected
+el_date_gsed,Date of endline GSED assessment,Endline Assessment Date,datetime64[s],str,307,12.47,374,2023-09-08,2025-03-17,None detected
+el_gsed_age,"age in days at gsed assessment, corrected",Endline GSED Age (days),float32,float64,307,12.47,419,739.0,1468.0,None detected
+el_gsed_dscore,gsed d-score raw,Primary Outcome (GSED Raw d-score),float64,float64,307,12.47,1210,15.15,86.64,None detected
+el_gsed_daz,gsed d-score age-adjusted,Primary Outcome (GSED Age-Adjusted DAZ),float64,float64,313,12.72,1552,-5.946,2.637,None detected
+el_credi_age,age for credi in months,Secondary Outcome Age,float64,float64,397,16.13,13,24.0,36.0,None detected
+el_overall,overall credi score raw,Secondary Outcome (CREDI Raw Score),float64,float64,397,16.13,1424,49.966,55.057,None detected
+el_z_overall,overall credi score age-adjusted,Secondary Outcome (CREDI Age-Adjusted z-score),float64,float64,397,16.13,1946,-3.0855,2.0252,None detected
+el_afinidata1,"On a normal day, how much time a day do you use the internet on your cell p",Secondary Outcome (Daily Internet/Screen Time),float64,float64,321,13.04,36,0.0,720.0,None detected
+el_afinidata4,Do you know/have you ever heard of the Afini platform?,Secondary Outcome (Afini Platform Awareness),float64,str,321,13.04,3,-77.0,1.0,Code -77 present: 'Don't know / refuse' (documented in codebook)
+el_mics_tot,total mics stim activities: yes/no total out of 6 activities (0-6),Secondary Outcome (Stimulation Activities Total),float64,float64,335,13.61,7,0.0,6.0,None detected
+el_parent_beliefs,parenting beliefs mean of 15 items,Secondary Outcome (Parenting Beliefs Score),float64,float64,338,13.73,36,1.3333,3.0,None detected
+el_dass_anxiety_cutoff,DASS anxiety cutoff scores,Secondary Outcome (Maternal Anxiety),float64,str,392,15.93,5,0.0,4.0,None detected
+el_dass_depression_cutoff,DASS depression cutoff scores,Secondary Outcome (Maternal Depression),float64,str,392,15.93,5,0.0,4.0,None detected
+el_dass_stress_cutoff,DASS stress cutoff scores,Secondary Outcome (Maternal Stress),float64,str,392,15.93,5,0.0,4.0,None detected
+el_omci_emo,OMCI emotional domain score,Secondary Outcome (OMCI Emotional Interaction),float64,float64,304,12.35,13,1.3333,5.6667,None detected
+el_omci_learn,OMCI learning domain score,Secondary Outcome (OMCI Learning Interaction),float64,float64,304,12.35,20,0.0,5.0,None detected
+bl_int_date,Date of baseline interview,Baseline Interview Date,datetime64[s],str,3,0.12,370,2021-09-13,2023-03-03,None detected
+bl_childage,Childage (completed months) clean,Baseline Child Age,float32,float64,3,0.12,7,3.0,9.0,None detected
+bl_qses_index,ses index quintiles,Baseline SES Index Quintile,float64,float64,12,0.49,5,1.0,5.0,None detected
+bl_mo_age,mother's age in yrs',Baseline Maternal Age,float32,float64,42,1.71,35,14.0,49.0,None detected
+bl_mo_educ_level,mother's highest level of education attained,Baseline Maternal Education,float32,str,45,1.83,6,0.0,5.0,None detected
+bl_fa_age,father's age in yrs',Baseline Paternal Age,float32,float64,311,12.64,47,13.0,76.0,None detected
+bl_fa_educ_level,father's highest level of education attained,Baseline Paternal Education,float32,str,351,14.26,6,0.0,5.0,None detected
+bl_child_sib_tot,number of siblings in hh,Baseline Siblings Count,float32,int64,0,0.0,9,0.0,8.0,None detected
+bl_hhadults,Number of adults in household,Baseline Adults in Household,float64,float64,6,0.24,10,0.0,11.0,None detected
+bl_f_b,Interviewer: Does father live in household?,Baseline Father Living in Household,float64,str,7,0.28,2,0.0,1.0,None detected
+bl_low_bweight,=1 if birth weight <2500gr,Baseline Low Birth Weight Indicator,float32,float64,47,1.91,2,0.0,1.0,None detected
+bl_z_overall,Z_OVERALL,Baseline Child Development z-score,float64,float64,3,0.12,1933,-3.371,2.2651,None detected
+bl_mics_tot,yes/no total out of 6 activities (0-6),Baseline Stimulation Activities,float32,float64,218,8.86,7,0.0,6.0,None detected
+number_session,# of intervention sessions received,Intervention Tracking (Home Visits Arm),float32,float64,2144,87.12,41,0.0,41.0,None detected
+weeks_active,total number of active weeks,Intervention Tracking (Afini Arm),float32,float64,1283,52.13,113,0.0,129.0,None detected
+program_time,weeks between first and last active week,Intervention Tracking (Afini Arm),float32,float64,1283,52.13,173,0.0,175.0,None detected
