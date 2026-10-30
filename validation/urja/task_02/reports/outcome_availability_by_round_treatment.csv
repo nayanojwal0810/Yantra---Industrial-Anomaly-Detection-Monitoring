@@ -1,0 +1,85 @@
+outcome_variable,round,treatment_group,total_observations,observed_count,missing_count,observed_pct,missing_pct
+runit,Round 0,Control group (T0),586,0,586,0.0,100.0
+runit,Round 0,Neighbor comparison treatment (T1),605,0,605,0.0,100.0
+runit,Round 0,Suburb comparison treatment (T2),602,0,602,0.0,100.0
+runit,Round 0,Knowledge / information treatment (T3),601,0,601,0.0,100.0
+runit,Round 1,Control group (T0),550,550,0,100.0,0.0
+runit,Round 1,Neighbor comparison treatment (T1),567,567,0,100.0,0.0
+runit,Round 1,Suburb comparison treatment (T2),568,568,0,100.0,0.0
+runit,Round 1,Knowledge / information treatment (T3),563,563,0,100.0,0.0
+runit,Round 2,Control group (T0),550,550,0,100.0,0.0
+runit,Round 2,Neighbor comparison treatment (T1),567,567,0,100.0,0.0
+runit,Round 2,Suburb comparison treatment (T2),568,568,0,100.0,0.0
+runit,Round 2,Knowledge / information treatment (T3),563,563,0,100.0,0.0
+runit,Round 3,Control group (T0),550,549,1,99.82,0.18
+runit,Round 3,Neighbor comparison treatment (T1),567,567,0,100.0,0.0
+runit,Round 3,Suburb comparison treatment (T2),568,567,1,99.82,0.18
+runit,Round 3,Knowledge / information treatment (T3),563,563,0,100.0,0.0
+runit,Round 4,Control group (T0),550,548,2,99.64,0.36
+runit,Round 4,Neighbor comparison treatment (T1),567,561,6,98.94,1.06
+runit,Round 4,Suburb comparison treatment (T2),568,563,5,99.12,0.88
+runit,Round 4,Knowledge / information treatment (T3),563,554,9,98.4,1.6
+runit,Round 5,Control group (T0),550,293,257,53.27,46.73
+runit,Round 5,Neighbor comparison treatment (T1),567,294,273,51.85,48.15
+runit,Round 5,Suburb comparison treatment (T2),568,290,278,51.06,48.94
+runit,Round 5,Knowledge / information treatment (T3),563,294,269,52.22,47.78
+runit,Round 6,Control group (T0),550,526,24,95.64,4.36
+runit,Round 6,Neighbor comparison treatment (T1),567,554,13,97.71,2.29
+runit,Round 6,Suburb comparison treatment (T2),568,558,10,98.24,1.76
+runit,Round 6,Knowledge / information treatment (T3),563,543,20,96.45,3.55
+rbill,Round 0,Control group (T0),586,0,586,0.0,100.0
+rbill,Round 0,Neighbor comparison treatment (T1),605,0,605,0.0,100.0
+rbill,Round 0,Suburb comparison treatment (T2),602,0,602,0.0,100.0
+rbill,Round 0,Knowledge / information treatment (T3),601,0,601,0.0,100.0
+rbill,Round 1,Control group (T0),550,550,0,100.0,0.0
+rbill,Round 1,Neighbor comparison treatment (T1),567,567,0,100.0,0.0
+rbill,Round 1,Suburb comparison treatment (T2),568,568,0,100.0,0.0
+rbill,Round 1,Knowledge / information treatment (T3),563,563,0,100.0,0.0
+rbill,Round 2,Control group (T0),550,550,0,100.0,0.0
+rbill,Round 2,Neighbor comparison treatment (T1),567,567,0,100.0,0.0
+rbill,Round 2,Suburb comparison treatment (T2),568,568,0,100.0,0.0
+rbill,Round 2,Knowledge / information treatment (T3),563,563,0,100.0,0.0
+rbill,Round 3,Control group (T0),550,549,1,99.82,0.18
+rbill,Round 3,Neighbor comparison treatment (T1),567,567,0,100.0,0.0
+rbill,Round 3,Suburb comparison treatment (T2),568,567,1,99.82,0.18
+rbill,Round 3,Knowledge / information treatment (T3),563,563,0,100.0,0.0
+rbill,Round 4,Control group (T0),550,548,2,99.64,0.36
+rbill,Round 4,Neighbor comparison treatment (T1),567,561,6,98.94,1.06
+rbill,Round 4,Suburb comparison treatment (T2),568,563,5,99.12,0.88
+rbill,Round 4,Knowledge / information treatment (T3),563,554,9,98.4,1.6
+rbill,Round 5,Control group (T0),550,215,335,39.09,60.91
+rbill,Round 5,Neighbor comparison treatment (T1),567,224,343,39.51,60.49
+rbill,Round 5,Suburb comparison treatment (T2),568,211,357,37.15,62.85
+rbill,Round 5,Knowledge / information treatment (T3),563,217,346,38.54,61.46
+rbill,Round 6,Control group (T0),550,526,24,95.64,4.36
+rbill,Round 6,Neighbor comparison treatment (T1),567,554,13,97.71,2.29
+rbill,Round 6,Suburb comparison treatment (T2),568,558,10,98.24,1.76
+rbill,Round 6,Knowledge / information treatment (T3),563,543,20,96.45,3.55
+sbill,Round 0,Control group (T0),586,586,0,100.0,0.0
+sbill,Round 0,Neighbor comparison treatment (T1),605,605,0,100.0,0.0
+sbill,Round 0,Suburb comparison treatment (T2),602,602,0,100.0,0.0
+sbill,Round 0,Knowledge / information treatment (T3),601,601,0,100.0,0.0
+sbill,Round 1,Control group (T0),550,550,0,100.0,0.0
+sbill,Round 1,Neighbor comparison treatment (T1),567,567,0,100.0,0.0
+sbill,Round 1,Suburb comparison treatment (T2),568,568,0,100.0,0.0
+sbill,Round 1,Knowledge / information treatment (T3),563,563,0,100.0,0.0
+sbill,Round 2,Control group (T0),550,0,550,0.0,100.0
+sbill,Round 2,Neighbor comparison treatment (T1),567,0,567,0.0,100.0
+sbill,Round 2,Suburb comparison treatment (T2),568,0,568,0.0,100.0
+sbill,Round 2,Knowledge / information treatment (T3),563,0,563,0.0,100.0
+sbill,Round 3,Control group (T0),550,0,550,0.0,100.0
+sbill,Round 3,Neighbor comparison treatment (T1),567,0,567,0.0,100.0
+sbill,Round 3,Suburb comparison treatment (T2),568,0,568,0.0,100.0
+sbill,Round 3,Knowledge / information treatment (T3),563,0,563,0.0,100.0
+sbill,Round 4,Control group (T0),550,0,550,0.0,100.0
+sbill,Round 4,Neighbor comparison treatment (T1),567,0,567,0.0,100.0
+sbill,Round 4,Suburb comparison treatment (T2),568,0,568,0.0,100.0
+sbill,Round 4,Knowledge / information treatment (T3),563,0,563,0.0,100.0
+sbill,Round 5,Control group (T0),550,0,550,0.0,100.0
+sbill,Round 5,Neighbor comparison treatment (T1),567,0,567,0.0,100.0
+sbill,Round 5,Suburb comparison treatment (T2),568,0,568,0.0,100.0
+sbill,Round 5,Knowledge / information treatment (T3),563,0,563,0.0,100.0
+sbill,Round 6,Control group (T0),550,0,550,0.0,100.0
+sbill,Round 6,Neighbor comparison treatment (T1),567,0,567,0.0,100.0
+sbill,Round 6,Suburb comparison treatment (T2),568,0,568,0.0,100.0
+sbill,Round 6,Knowledge / information treatment (T3),563,0,563,0.0,100.0

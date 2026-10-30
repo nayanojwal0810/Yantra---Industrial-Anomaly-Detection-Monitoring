@@ -1,0 +1,6 @@
+outcome_variable,evaluation_period,target_universe,target_sample_size,at_least_one_observed,zero_observed,observed_all_intended_rounds,missing_one_or_more_intended_rounds,coverage_all_intended_pct
+sbill,Pre-baseline & Baseline (Rounds 0 & 1),All Recruited Households,2394,2394,0,2248,146,93.9
+runit,Main Intervention Period (Rounds 1 to 4),Retained Panel Households,2248,2248,0,2224,24,98.93
+runit,"Full Longitudinal Evaluation (Rounds 1, 2, 3, 4, 6)",Retained Panel Households,2248,2248,0,2160,88,96.09
+rbill,Main Intervention Period (Rounds 1 to 4),Retained Panel Households,2248,2248,0,2224,24,98.93
+rbill,"Full Longitudinal Evaluation (Rounds 1, 2, 3, 4, 6)",Retained Panel Households,2248,2248,0,2160,88,96.09

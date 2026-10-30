@@ -1,0 +1,6 @@
+metric_type,treatment_group,unique_households,total_observations,baseline_r0_households,baseline_r1_households,attrited_households,attrition_rate_pct,share_of_total_households_pct
+treatment_group_summary,Control group (T0),586,3886,586,550,36,6.14,24.48
+treatment_group_summary,Knowledge / information treatment (T3),601,3979,601,563,38,6.32,25.1
+treatment_group_summary,Neighbor comparison treatment (T1),605,4007,605,567,38,6.28,25.27
+treatment_group_summary,Suburb comparison treatment (T2),602,4010,602,568,34,5.65,25.15
+design_structural_summary,ALL_GROUPS_COMBINED,2394,15882,2394,2248,0,0.0,100.0

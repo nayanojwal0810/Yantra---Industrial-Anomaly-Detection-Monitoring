@@ -1,0 +1,15 @@
+check_category,metric_name,metric_value,status
+Key Uniqueness,total_records,15882,PASS
+Key Uniqueness,unique_households,2394,PASS
+Key Uniqueness,missing_household_ids,0,PASS
+Key Uniqueness,missing_round_ids,0,PASS
+Key Uniqueness,duplicate_hid_round_pairs,0,PASS
+Panel Structure,households_with_7_rounds,2248,VERIFIED
+Panel Structure,households_with_1_round_attrited,146,VERIFIED
+Panel Structure,households_with_partial_rounds_2_to_6,0,PASS
+Attribute Consistency,inconsistent_treatment_within_household,0,PASS
+Attribute Consistency,inconsistent_neighborhood_within_household,0,PASS
+Attribute Consistency,inconsistent_suburb_within_household,0,PASS
+Attribute Consistency,inconsistent_city_within_household,0,PASS
+Attribute Consistency,inconsistent_attrition_indicator_within_household,0,PASS
+Attribute Consistency,inconsistent_followup_indicator_within_household_r5_r6,0,PASS
