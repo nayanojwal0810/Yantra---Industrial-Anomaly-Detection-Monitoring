@@ -37,5 +37,5 @@ bl_low_bweight,=1 if birth weight <2500gr,Baseline Low Birth Weight Indicator,fl
 bl_z_overall,Z_OVERALL,Baseline Child Development z-score,float64,float64,3,0.12,1933,-3.371,2.2651,None detected
 bl_mics_tot,yes/no total out of 6 activities (0-6),Baseline Stimulation Activities,float32,float64,218,8.86,7,0.0,6.0,None detected
 number_session,# of intervention sessions received,Intervention Tracking (Home Visits Arm),float32,float64,2144,87.12,41,0.0,41.0,None detected
-weeks_active,total number of active weeks,Intervention Tracking (Afini Arm),float32,float64,1283,52.13,113,0.0,129.0,None detected
-program_time,weeks between first and last active week,Intervention Tracking (Afini Arm),float32,float64,1283,52.13,173,0.0,175.0,None detected
+weeks_active,total number of active weeks,Intervention Tracking (Afini Platform Activity),float32,float64,1283,52.13,113,0.0,129.0,None detected
+program_time,weeks between first and last active week,Intervention Tracking (Afini Platform Activity),float32,float64,1283,52.13,173,0.0,175.0,None detected

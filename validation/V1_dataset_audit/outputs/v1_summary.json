@@ -1,6 +1,6 @@
 {
-  "audit_version": "V1",
-  "audit_timestamp_utc": "2026-10-30T19:47:44.239588+00:00",
+  "audit_version": "V1.1",
+  "audit_timestamp_utc": "2026-10-30T20:13:34.164620+00:00",
   "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
   "pandas_version": "3.0.3",
   "numpy_version": "2.4.6",
@@ -65,7 +65,17 @@
       "observed": 2149,
       "missing": 312,
       "missing_pct": 12.68,
-      "notes": "Normalized within 10-day age groups; 5 single-observation bins drop due to undefined sd."
+      "breakdown": {
+        "raw_unassessed_missing": 307,
+        "singleton_age_bracket_undefined_sd": 5,
+        "singleton_participant_ids": [
+          442,
+          773,
+          934,
+          1159,
+          1866
+        ]
+      }
     }
   },
   "participant_reconciliation": {
@@ -76,7 +86,35 @@
     "reported_primary_sample": 2149,
     "observed_gsed_Z_sample": 2149,
     "apparent_discrepancy_reported": "2461 - 332 = 2129 != 2149",
-    "reconciliation_resolution": "The primary analysis sample in the data is exactly 2,149. The actual exclusions from 2,461 to 2,149 are 312 participants (307 raw unassessed + 5 single-age-bin cases). The reported exclusion figure of 332 is an arithmetic discrepancy of 20 participants."
+    "reconciliation_status": "EXCLUSION_DISCREPANCY_UNRESOLVED",
+    "reconciliation_resolution": "The observed sample with valid standardized primary outcome gsed_Z is exactly 2,149, matching the published Table 2 primary analysis sample. The actual exclusions from 2,461 to 2,149 are 312 participants (307 raw outcome non-responses + 5 singleton age-group drops). The published figure of 332 exclusions leaves an unexplained 20-participant discrepancy (332 vs 312) that cannot be resolved from the released data or code."
+  },
+  "intervention_tracking_audit": {
+    "number_session": {
+      "total_non_missing": 317,
+      "non_missing_in_home_visits_arm": 317,
+      "non_missing_outside_home_visits_arm": 0
+    },
+    "weeks_active_and_program_time": {
+      "total_non_missing": 1178,
+      "non_missing_in_afini_arm": 1174,
+      "non_missing_in_control_arm": 4,
+      "control_participant_ids": [
+        288,
+        925,
+        1399,
+        2326
+      ],
+      "consistency_note": "Consistent with published documentation noting four control households erroneously accessing the intervention and with the Stata replication script compliance definition coding control participants with non-missing weeks_active as non-compliant."
+    }
+  },
+  "csv_dta_equivalence_audit": {
+    "participant_id_completeness_and_match": true,
+    "variable_set_match": true,
+    "missingness_match_across_all_variables": true,
+    "content_mismatches_count": 0,
+    "overall_equivalence_status": "CONTENT_EQUIVALENT",
+    "notes": "CSV and DTA are 100% content-equivalent across all 2,461 participant records and 40 variables. Differences are strictly representational (native Stata encodings and value labels vs. text exports)."
   },
   "data_quality_flags": [
     {
@@ -89,13 +127,13 @@
       "variable": "number_session",
       "issue": "Missing in 2,144 observations (87.12%)",
       "severity": "STRUCTURAL",
-      "action": "Expected intervention tracking variable specific to Home Visits arm (n=317)."
+      "action": "Recorded solely for Home Visits arm participants (n=317)."
     },
     {
       "variable": "weeks_active / program_time",
-      "issue": "Missing in 1,283 observations (52.13%)",
-      "severity": "STRUCTURAL",
-      "action": "Expected intervention tracking variables specific to Afini digital arm (n=1174)."
+      "issue": "Non-missing in 1,178 observations (1,174 Afini arm + 4 Control arm)",
+      "severity": "DOCUMENTED_DISPOSITION",
+      "action": "Consistent with published reports of 4 control households accessing intervention and Stata script compliance coding."
     }
   ],
   "pending_items_for_v2": [

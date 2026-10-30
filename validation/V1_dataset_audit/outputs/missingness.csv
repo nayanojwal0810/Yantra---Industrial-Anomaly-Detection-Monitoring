@@ -37,8 +37,8 @@ COLUMN_LEVEL,bl_low_bweight,ALL,2461,2414,47,1.91,"[Moderate (<=20.0%)] General 
 COLUMN_LEVEL,bl_z_overall,ALL,2461,2458,3,0.12,"[Moderate (<=20.0%)] General survey non-response, baseline omission, or endline attrition."
 COLUMN_LEVEL,bl_mics_tot,ALL,2461,2243,218,8.86,"[Moderate (<=20.0%)] General survey non-response, baseline omission, or endline attrition."
 COLUMN_LEVEL,number_session,ALL,2461,317,2144,87.12,[Substantial (>20.0%)] Intervention tracking structural missingness; applicable solely to Home Visits arm (n=317).
-COLUMN_LEVEL,weeks_active,ALL,2461,1178,1283,52.13,[Substantial (>20.0%)] Intervention tracking structural missingness; applicable solely to Afini digital arm (n=1174).
-COLUMN_LEVEL,program_time,ALL,2461,1178,1283,52.13,[Substantial (>20.0%)] Intervention tracking structural missingness; applicable solely to Afini digital arm (n=1174).
+COLUMN_LEVEL,weeks_active,ALL,2461,1178,1283,52.13,"[Substantial (>20.0%)] Intervention tracking structural missingness; recorded for all 1,174 Afini-assigned participants and 4 Control-assigned participants (n=1,178 non-missing total)."
+COLUMN_LEVEL,program_time,ALL,2461,1178,1283,52.13,"[Substantial (>20.0%)] Intervention tracking structural missingness; recorded for all 1,174 Afini-assigned participants and 4 Control-assigned participants (n=1,178 non-missing total)."
 PRIMARY_OUTCOME_BY_ARM,el_gsed_dscore,Overall,2461,2154,307,12.47,Raw GSED d-score across all participants.
 PRIMARY_OUTCOME_BY_ARM,el_gsed_dscore,Control,970,864,106,10.93,Raw GSED d-score within treatment arm 1 (Control).
 PRIMARY_OUTCOME_BY_ARM,el_gsed_dscore,Home visits,317,299,18,5.68,Raw GSED d-score within treatment arm 2 (Home visits).

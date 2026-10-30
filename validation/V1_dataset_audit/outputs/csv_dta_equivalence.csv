@@ -1,0 +1,41 @@
+variable_name,dta_storage_type,csv_storage_type,comparison_method,missingness_mismatches,content_mismatches,max_absolute_difference,equivalence_status,equivalence_notes
+ID,float32,int64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+arm_itt,float64,str,Categorical with Stata Value Labels,0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores integer codes with value label metadata; CSV exports text labels directly. Content matches 100%.
+cluster,float64,int64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+child_female,int8,str,Categorical with Stata Value Labels,0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores integer codes with value label metadata; CSV exports text labels directly. Content matches 100%.
+final_status,float32,str,Categorical with Stata Value Labels,0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores integer codes with value label metadata; CSV exports text labels directly. Content matches 100%.
+provincia,int8,str,Categorical with Stata Value Labels,0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores integer codes with value label metadata; CSV exports text labels directly. Content matches 100%.
+distrito,int8,int64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+el_childage,float32,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+el_date_gsed,datetime64[s],str,Date Normalized to ISO-8601 (YYYY-MM-DD),0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores Stata elapsed days; CSV stores date strings (e.g. 31oct2023). Dates match 100% after normalization.
+el_gsed_age,float32,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+el_gsed_dscore,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+el_gsed_daz,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+el_credi_age,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+el_overall,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+el_z_overall,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,1.1102230246251565e-16,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 1.11e-16).
+el_afinidata1,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+el_afinidata4,float64,str,Categorical with Stata Value Labels,0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores integer codes with value label metadata; CSV exports text labels directly. Content matches 100%.
+el_mics_tot,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+el_parent_beliefs,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,4.440892098500626e-16,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 4.44e-16).
+el_dass_anxiety_cutoff,float64,str,Categorical with Stata Value Labels,0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores integer codes with value label metadata; CSV exports text labels directly. Content matches 100%.
+el_dass_depression_cutoff,float64,str,Categorical with Stata Value Labels,0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores integer codes with value label metadata; CSV exports text labels directly. Content matches 100%.
+el_dass_stress_cutoff,float64,str,Categorical with Stata Value Labels,0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores integer codes with value label metadata; CSV exports text labels directly. Content matches 100%.
+el_omci_emo,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,4.440892098500626e-16,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 4.44e-16).
+el_omci_learn,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+bl_int_date,datetime64[s],str,Date Normalized to ISO-8601 (YYYY-MM-DD),0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores Stata elapsed days; CSV stores date strings (e.g. 31oct2023). Dates match 100% after normalization.
+bl_childage,float32,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+bl_qses_index,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+bl_mo_age,float32,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+bl_mo_educ_level,float32,str,Categorical with Stata Value Labels,0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores integer codes with value label metadata; CSV exports text labels directly. Content matches 100%.
+bl_fa_age,float32,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+bl_fa_educ_level,float32,str,Categorical with Stata Value Labels,0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores integer codes with value label metadata; CSV exports text labels directly. Content matches 100%.
+bl_child_sib_tot,float32,int64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+bl_hhadults,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+bl_f_b,float64,str,Categorical with Stata Value Labels,0,0,0.0,REPRESENTATION_ONLY_DIFFERENCE,DTA stores integer codes with value label metadata; CSV exports text labels directly. Content matches 100%.
+bl_low_bweight,float32,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+bl_z_overall,float64,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,1.1102230246251565e-16,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 1.11e-16).
+bl_mics_tot,float32,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+number_session,float32,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+weeks_active,float32,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
+program_time,float32,float64,"Numeric Comparison (rtol=1e-5, atol=1e-5)",0,0,0.0,IDENTICAL_CONTENT,Values identical within numeric tolerance (max absolute difference = 0.00e+00).
