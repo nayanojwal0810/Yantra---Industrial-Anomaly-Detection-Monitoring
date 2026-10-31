@@ -1,6 +1,6 @@
 {
-  "task_version": "V3.2",
-  "timestamp_utc": "2026-10-31T06:32:15.335991+00:00",
+  "task_version": "V3.3",
+  "timestamp_utc": "2026-10-31T06:57:04.130646+00:00",
   "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
   "pandas_version": "3.0.3",
   "numpy_version": "2.4.6",
@@ -72,7 +72,7 @@
     }
   },
   "adjusted_model_results": {
-    "task_version": "V3.2",
+    "task_version": "V3.3",
     "specification": "mi estimate, post: reg gsed_Z hv afini $covariates, cluster(cluster)",
     "n_obs": 2149,
     "n_clusters": 159,
@@ -197,6 +197,10 @@
           "support_violation_count": 1,
           "support_violation_pct": 0.13,
           "support_valid": false,
+          "negative_count": 1,
+          "negative_pct": 0.13,
+          "fractional_count": "N/A",
+          "fractional_pct": "N/A",
           "observed_range": [
             3.0,
             9.0
@@ -217,6 +221,10 @@
           "support_violation_count": 0,
           "support_violation_pct": 0.0,
           "support_valid": true,
+          "negative_count": "N/A (signed score)",
+          "negative_pct": "N/A",
+          "fractional_count": "N/A",
+          "fractional_pct": "N/A",
           "observed_range": [
             -3.371,
             2.2651
@@ -237,6 +245,10 @@
           "support_violation_count": 65,
           "support_violation_pct": 0.62,
           "support_valid": false,
+          "negative_count": 0,
+          "negative_pct": 0.0,
+          "fractional_count": "N/A",
+          "fractional_pct": "N/A",
           "observed_range": [
             14.0,
             49.0
@@ -254,17 +266,21 @@
             -1.1901,
             6.1526
           ],
-          "support_violation_count": 10,
-          "support_violation_pct": 0.67,
+          "support_violation_count": 1500,
+          "support_violation_pct": 100.0,
           "support_valid": false,
+          "negative_count": 10,
+          "negative_pct": 0.67,
+          "fractional_count": 1500,
+          "fractional_pct": 100.0,
           "observed_range": [
             0.0,
             11.0
           ],
           "outside_observed_range_count": 10,
           "outside_observed_range_pct": 0.67,
-          "fractional_count_if_applicable": "1500 (100.0%)",
-          "diagnostic_status": "SUPPORT_VIOLATION_DETECTED (10 negative draws [0.67%]; 1500 (100.0%) non-integer)"
+          "fractional_count_if_applicable": "1,500 (100.0%)",
+          "diagnostic_status": "SUPPORT_VIOLATION_DETECTED (all 1,500 draws violate integer-count support; 10 negative, 1,500 non-integer)"
         },
         "bl_fa_age": {
           "support_definition": "Conservative human paternal age: [12.0, 80.0] years",
@@ -277,6 +293,10 @@
           "support_violation_count": 405,
           "support_violation_pct": 0.52,
           "support_valid": false,
+          "negative_count": 2,
+          "negative_pct": 0.0026,
+          "fractional_count": "N/A",
+          "fractional_pct": "N/A",
           "observed_range": [
             13.0,
             76.0

@@ -632,7 +632,7 @@ def estimate_adjusted_itt_model(df: pd.DataFrame, m_imputations: int = 250, seed
         elif v == "bl_mo_age":
             models_dict[v]["notes"] = "Continuous mother age in completed years. Unbounded OLS predictive draws per Stata regress specification; values not clipped; 65 draws < 12.0y (0.62%) produced."
         elif v == "bl_hhadults":
-            models_dict[v]["notes"] = "Household adult count. Unbounded OLS predictive draws per Stata regress specification; values not rounded or clipped; 10 negative draws (0.67%) and 100% fractional values produced."
+            models_dict[v]["notes"] = "Household adult count. Unbounded OLS predictive draws per Stata regress specification; values not rounded or clipped; all 1,500 draws (100.0%) violate integer-count support (10 negative draws [0.67%], 1,500 fractional values [100.0%])."
         elif v == "bl_fa_age":
             models_dict[v]["notes"] = "Continuous father age in completed years. Predictor bl_f_b omitted due to zero variance (=1) in non-missing subset. Unbounded OLS predictive draws; values not clipped; 405 draws < 12.0y (0.52%), including 2 negative draws, produced." 
 
@@ -902,7 +902,6 @@ def estimate_adjusted_itt_model(df: pd.DataFrame, m_imputations: int = 250, seed
     # Imputation diagnostics table per imputed variable (outputs/imputation_diagnostics.csv)
     cont_diagnostics_dict = {}
     imp_diag_rows = []
-    any_cont_support_violation = False
 
     for v in imp_cols:
         obs_s = work_df[v].dropna()
@@ -923,6 +922,8 @@ def estimate_adjusted_itt_model(df: pd.DataFrame, m_imputations: int = 250, seed
             support_def = "N/A (discrete)"
             violation_count = 0
             violation_pct = 0.0
+            neg_count_str = "N/A"
+            neg_pct_str = "N/A"
             outside_obs_count = 0
             outside_obs_pct = 0.0
             fractional_val = "N/A"
@@ -944,22 +945,74 @@ def estimate_adjusted_itt_model(df: pd.DataFrame, m_imputations: int = 250, seed
             lower_b = spec["lower_bound"]
             upper_b = spec["upper_bound"]
 
-            violations = int(np.sum((imp_arr < lower_b) | (imp_arr > upper_b)))
-            violation_count = violations
-            violation_pct = round(float(violations / n_draws * 100.0), 2)
-            if violations > 0:
-                any_cont_support_violation = True
+            # Calculate support violations:
+            if spec["is_count"]:
+                # Non-negative integer count: [0, inf)
+                # Union of invalid draws: (value < 0) OR (value is not integer)
+                is_neg = (imp_arr < 0.0)
+                is_non_int = (np.abs(imp_arr - np.round(imp_arr)) > 1e-6)
+                is_support_violation = is_neg | is_non_int
+                violation_count = int(np.sum(is_support_violation))
+                violation_pct = round(float(violation_count / n_draws * 100.0), 2)
+                
+                neg_count = int(np.sum(is_neg))
+                neg_pct = round(float(neg_count / n_draws * 100.0), 2)
+                neg_count_str = str(neg_count)
+                neg_pct_str = str(neg_pct)
+
+                frac_cnt = int(np.sum(is_non_int))
+                frac_pct = round(float(frac_cnt / n_draws * 100.0), 1)
+                fractional_val = f"{frac_cnt:,} ({frac_pct:.1f}%)"
+            else:
+                if v == "bl_z_overall":
+                    # Standardized score has unbounded support (-inf, inf)
+                    is_support_violation = np.zeros(n_draws, dtype=bool)
+                    violation_count = 0
+                    violation_pct = 0.0
+                    neg_count_str = "N/A (signed score)"
+                    neg_pct_str = "N/A"
+                    neg_count = 0
+                    neg_pct = 0.0
+                elif v == "bl_childage":
+                    # Non-negative completed months: [0.0, inf)
+                    is_neg = (imp_arr < 0.0)
+                    is_support_violation = is_neg
+                    violation_count = int(np.sum(is_support_violation))
+                    violation_pct = round(float(violation_count / n_draws * 100.0), 2)
+                    neg_count = violation_count
+                    neg_pct = violation_pct
+                    neg_count_str = str(neg_count)
+                    neg_pct_str = str(neg_pct)
+                elif v in ("bl_mo_age", "bl_fa_age"):
+                    # Plausible human age [lower_b, upper_b]
+                    is_under = (imp_arr < lower_b)
+                    is_over = (imp_arr > upper_b)
+                    is_support_violation = is_under | is_over
+                    violation_count = int(np.sum(is_support_violation))
+                    violation_pct = round(float(violation_count / n_draws * 100.0), 2)
+                    
+                    strictly_neg = int(np.sum(imp_arr < 0.0))
+                    neg_pct_val = round(float(strictly_neg / n_draws * 100.0), 4)
+                    neg_count = strictly_neg
+                    neg_pct = neg_pct_val
+                    neg_count_str = str(neg_count)
+                    neg_pct_str = str(neg_pct_val)
+                else:
+                    is_support_violation = (imp_arr < lower_b) | (imp_arr > upper_b)
+                    violation_count = int(np.sum(is_support_violation))
+                    violation_pct = round(float(violation_count / n_draws * 100.0), 2)
+                    neg_count = int(np.sum(imp_arr < 0.0))
+                    neg_pct = round(float(neg_count / n_draws * 100.0), 2)
+                    neg_count_str = str(neg_count)
+                    neg_pct_str = str(neg_pct)
+
+                frac_cnt = 0
+                frac_pct = 0.0
+                fractional_val = "N/A"
 
             outside_obs = int(np.sum((imp_arr < obs_min) | (imp_arr > obs_max)))
             outside_obs_count = outside_obs
             outside_obs_pct = round(float(outside_obs / n_draws * 100.0), 2)
-
-            if spec["is_count"]:
-                frac_cnt = int(np.sum(np.abs(imp_arr - np.round(imp_arr)) > 1e-6))
-                frac_pct = round(float(frac_cnt / n_draws * 100.0), 1)
-                fractional_val = f"{frac_cnt} ({frac_pct:.1f}%)"
-            else:
-                fractional_val = "N/A"
 
             # Diagnostic status string
             if v == "bl_childage":
@@ -969,12 +1022,11 @@ def estimate_adjusted_itt_model(df: pd.DataFrame, m_imputations: int = 250, seed
             elif v == "bl_mo_age":
                 diag_status = f"SUPPORT_VIOLATION_DETECTED ({violation_count} draws < 12.0y [{violation_pct}%]; min {imp_min:.2f}y)"
             elif v == "bl_hhadults":
-                diag_status = f"SUPPORT_VIOLATION_DETECTED ({violation_count} negative draws [{violation_pct}%]; {fractional_val} non-integer)"
+                diag_status = f"SUPPORT_VIOLATION_DETECTED (all {violation_count:,} draws violate integer-count support; {neg_count} negative, {frac_cnt:,} non-integer)"
             elif v == "bl_fa_age":
-                strictly_neg = int(np.sum(imp_arr < 0.0))
-                diag_status = f"SUPPORT_VIOLATION_DETECTED ({violation_count} draws < 12.0y [{violation_pct}%], {strictly_neg} negative; min {imp_min:.2f}y)"
+                diag_status = f"SUPPORT_VIOLATION_DETECTED ({violation_count} draws < 12.0y [{violation_pct}%], {neg_count} negative; min {imp_min:.2f}y)"
             else:
-                diag_status = "SUPPORT_VIOLATION_DETECTED" if violations > 0 else "VALID"
+                diag_status = "SUPPORT_VIOLATION_DETECTED" if violation_count > 0 else "VALID"
 
             cont_diagnostics_dict[v] = {
                 "support_definition": support_def,
@@ -984,6 +1036,10 @@ def estimate_adjusted_itt_model(df: pd.DataFrame, m_imputations: int = 250, seed
                 "support_violation_count": violation_count,
                 "support_violation_pct": violation_pct,
                 "support_valid": (violation_count == 0),
+                "negative_count": neg_count if v != "bl_z_overall" else "N/A (signed score)",
+                "negative_pct": neg_pct if v != "bl_z_overall" else "N/A",
+                "fractional_count": frac_cnt if spec["is_count"] else "N/A",
+                "fractional_pct": frac_pct if spec["is_count"] else "N/A",
                 "observed_range": [round(obs_min, 4), round(obs_max, 4)],
                 "outside_observed_range_count": outside_obs_count,
                 "outside_observed_range_pct": outside_obs_pct,
@@ -1007,14 +1063,45 @@ def estimate_adjusted_itt_model(df: pd.DataFrame, m_imputations: int = 250, seed
             "continuous_support_definition": support_def,
             "support_violation_count": violation_count,
             "support_violation_pct": violation_pct,
+            "negative_count": neg_count_str,
+            "negative_pct": neg_pct_str,
+            "fractional_count_if_count": fractional_val,
             "outside_observed_range_count": outside_obs_count,
             "outside_observed_range_pct": outside_obs_pct,
-            "fractional_count_if_count": fractional_val,
             "diagnostic_status": diag_status,
             "imputed_mean": round(float(imp_arr.mean()), 4),
             "imputed_sd": round(float(imp_arr.std(ddof=1)), 4),
             "methodological_notes": models_dict[v]["notes"]
         })
+
+    # Derive validation statuses dynamically from actual data and model objects
+    # 1. all_conditional_models_converged
+    all_conditional_models_converged = bool(all(info["converged"] for info in models_dict.values())) and (len(models_dict) == 10)
+
+    # 2. all_imputed_values_finite
+    all_finite_by_var = {v: bool(np.isfinite(np.array(imputed_values_store[v])).all()) for v in imp_cols}
+    all_imputed_values_finite = bool(all(all_finite_by_var.values())) and (len(all_finite_by_var) == 10)
+
+    # 3. discrete_categories_valid
+    bin_draws = np.array(imputed_values_store["bl_low_bweight"])
+    bin_valid = bool(set(np.unique(bin_draws)).issubset({0.0, 1.0}))
+    ord_valid_list = [bool(set(np.unique(np.array(imputed_values_store[v]))).issubset(set(models_dict[v]["cats"]))) for v in ord_vars]
+    discrete_categories_valid = bool(bin_valid and all(ord_valid_list)) and (len(ord_valid_list) == 4)
+
+    # 4. continuous_support_valid
+    continuous_support_valid = bool(all(diag["support_valid"] for diag in cont_diagnostics_dict.values())) and (len(cont_diagnostics_dict) == 5)
+
+    # 5. overall_imputation_diagnostic_status
+    if not all_conditional_models_converged:
+        overall_imputation_diagnostic_status = "MODEL_CONVERGENCE_FAILURE"
+    elif not all_imputed_values_finite:
+        overall_imputation_diagnostic_status = "NON_FINITE_VALUES_DETECTED"
+    elif not discrete_categories_valid:
+        overall_imputation_diagnostic_status = "DISCRETE_CATEGORY_VIOLATIONS_DETECTED"
+    elif not continuous_support_valid:
+        overall_imputation_diagnostic_status = "SUPPORT_VIOLATIONS_PRESENT_IN_UNBOUNDED_LINEAR_DRAWS"
+    else:
+        overall_imputation_diagnostic_status = "ALL_IMPUTATIONS_VALID_WITHIN_SUPPORT"
 
     # Table 2 Adjusted summary dictionary
     hv_row = param_df.loc["hv"]
@@ -1027,11 +1114,11 @@ def estimate_adjusted_itt_model(df: pd.DataFrame, m_imputations: int = 250, seed
         "m_imputations": m_imputations,
         "seed_used": seed,
         "covariates_count": 15,
-        "all_conditional_models_converged": True,
-        "all_imputed_values_finite": True,
-        "discrete_categories_valid": True,
-        "continuous_support_valid": not any_cont_support_violation,
-        "overall_imputation_diagnostic_status": "SUPPORT_VIOLATIONS_PRESENT_IN_UNBOUNDED_LINEAR_DRAWS" if any_cont_support_violation else "ALL_VALUES_WITHIN_SUPPORT",
+        "all_conditional_models_converged": all_conditional_models_converged,
+        "all_imputed_values_finite": all_imputed_values_finite,
+        "discrete_categories_valid": discrete_categories_valid,
+        "continuous_support_valid": continuous_support_valid,
+        "overall_imputation_diagnostic_status": overall_imputation_diagnostic_status,
         "continuous_diagnostics_summary": cont_diagnostics_dict,
         "hv": {
             "coef": float(hv_row["pooled_coef"]),
@@ -1444,7 +1531,7 @@ def run_v3_itt_replication() -> None:
     ) else ("CLOSE_DIFFERENCE" if "CLOSE" in (adj_hv_status + adj_afini_status) else "REVIEW")
 
     v3_summary = {
-        "task_version": "V3.2",
+        "task_version": "V3.3",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "python_version": sys.version,
         "pandas_version": pd.__version__,
@@ -1504,7 +1591,7 @@ def run_v3_itt_replication() -> None:
             }
         },
         "adjusted_model_results": {
-            "task_version": "V3.2",
+            "task_version": "V3.3",
             "specification": "mi estimate, post: reg gsed_Z hv afini $covariates, cluster(cluster)",
             "n_obs": adj_results["n_obs"],
             "n_clusters": adj_results["n_clusters"],
@@ -1591,7 +1678,7 @@ def run_v3_itt_replication() -> None:
     print(f" -> Generated {summary_json_path.name}.")
 
     print("\n" + "=" * 70)
-    print("TASK V3.2 AUDIT & ITT REPLICATION COMPLETED SUCCESSFULLY!")
+    print("TASK V3.3 AUDIT & ITT REPLICATION COMPLETED SUCCESSFULLY!")
     print(f"All outputs generated in: {OUTPUT_DIR}")
     print("=" * 70)
 

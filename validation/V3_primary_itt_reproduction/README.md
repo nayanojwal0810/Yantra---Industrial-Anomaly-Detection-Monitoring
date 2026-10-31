@@ -1,4 +1,4 @@
-# Task V3: Primary ITT Reproduction & Imputation Diagnostics Audit (V3.2)
+# Task V3: Primary ITT Reproduction & Imputation Diagnostics Audit (V3.3)
 
 **Project:** Niyati  
 **Study Title:** Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial  
@@ -15,7 +15,7 @@ This report documents the independent forensic audit, outcome re-derivation, and
 
 Using the authoritative raw data archive (`doi_10_5061_dryad_nzs7h4551__v20260226.zip`) and the authors' original Stata replication script (`Trial_Analysis_Replication_File_26Feb2026.do`), both the **unadjusted** and **adjusted** ITT models for the primary standardized Global Scale for Early Development (GSED) outcome were independently evaluated in Python.
 
-### Core Replication Verdict & Diagnostic Status (Task V3.2):
+### Core Replication Verdict & Diagnostic Status (Task V3.3):
 
 1. **Primary Outcome Re-derivation:** The primary outcome `gsed_Z` was reconstructed from raw child age (`el_gsed_age`) and raw GSED D-score (`el_gsed_dscore`) using exact 10-day age banding and sample standardization ($ddof=1$). The derivation yields exactly **2,149 valid outcome observations** and **312 exclusions** (307 missing raw scores + 5 singleton age-band cases), replicating Task V1/V2 counts with zero discrepancy.
 2. **Unadjusted Table 2 Model (Exact Display Replication):** Independently reproduced from the released data with cluster-robust standard errors and finite-cluster degrees of freedom ($df = G - 1 = 158$). Both point estimates and 95% confidence intervals match published figures to the exact two-decimal display precision (`MATCH_AT_PUBLISHED_PRECISION`).
@@ -23,16 +23,16 @@ Using the authoritative raw data archive (`doi_10_5061_dryad_nzs7h4551__v2026022
    - Implemented via variable-specific conditional models following the original Stata do-file: 5 continuous (`regress`), 1 binary (`logit`), and 4 ordinal (`ologit`), with $M = 250$ imputations and seed `20260226`.
    - Pooled using Rubin's combination rules and Barnard-Rubin (1999) small-sample adjusted degrees of freedom ($\nu_{\text{com}} = 158$).
    - At published display precision, numerical estimates reproduce Table 2 (`0.17 [0.03 to 0.30]` and `0.11 [0.02 to 0.19]`). Because the authors' random seed was unspecified and Python's internal random draws differ from Stata's internal algorithms, this model is classified as **`APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION`**.
-4. **Imputation Diagnostic Validation (Task V3.2 Corrections):**
-   - **Conditioning Predictor Reporting:** Predictor lists are reported truthfully from the actual fitted models (`models_dict[v]["preds"]`). For the two father-specific models (`bl_fa_age` and `bl_fa_educ_level`), father presence `bl_f_b` was dropped because it is constant ($=1$) in the observed estimation sample. For the other 8 models, all four regular predictors (`bl_child_sib_tot`, `cluster`, `child_female`, `bl_f_b`) were active.
-   - **Discrete vs. Continuous Support Separation:** Discrete category validation is separated from continuous support checks. Discrete variables strictly preserve their observed categories (`discrete_categories_valid: True`). However, continuous variables generated via unbounded linear regression predictive draws exhibit implausible values:
+4. **Data-Derived Validation Statuses & Corrected Count Support (Task V3.3):**
+   - **Data-Derived Validation Statuses:** Removed all hardcoded validation booleans from the adjusted-model summary. All validation fields (`all_conditional_models_converged`, `all_imputed_values_finite`, `discrete_categories_valid`, `continuous_support_valid`, and `overall_imputation_diagnostic_status`) are dynamically evaluated from the actual fitted model objects and completed imputation arrays.
+   - **Integer-Count Support for `bl_hhadults`:** The declared support is non-negative integer count $[0, \infty) \cap \mathbb{Z}$. A draw violates support if it is negative **or** non-integer. Counting the union $(\text{value} < 0) \cup (\text{value} \notin \mathbb{Z})$ without double-counting reveals that **1,500 of 1,500 draws (100.00%) violate support**, because 100% of the OLS draws are continuous fractional values. Separately, 10 draws (0.67%) are strictly negative, and 1,500 draws (100.0%) are fractional.
+   - **Continuous Support Summary Across Other Variables:**
      - `bl_childage`: 1 negative value ($-0.04$ months; $0.13\%$).
      - `bl_mo_age`: 65 draws below conservative human maternal age of 12.0 years ($0.62\%$, min $3.32$ years).
      - `bl_fa_age`: 405 draws below conservative human paternal age of 12.0 years ($0.52\%$), including 2 strictly negative values (min $-0.59$ years).
-     - `bl_hhadults`: 10 negative adult counts ($0.67\%$, min $-1.19$) and 100% (1,500/1,500) fractional non-integer values.
      - `bl_z_overall`: 0 violations ($0.0\%$, 100% finite, within $[-1.71, 2.08]$).
    - **Diagnostic Verdict:** `continuous_support_valid: False` and `overall_imputation_diagnostic_status: "SUPPORT_VIOLATIONS_PRESENT_IN_UNBOUNDED_LINEAR_DRAWS"`.
-   - **Protocol Non-Constraint:** In strict adherence to the study protocol and Stata's `regress` specification, values were **not clipped, truncated, or rounded**. These support violations represent a structural limitation of unbounded linear imputation for future sensitivity analysis.
+   - **Protocol Non-Constraint:** In strict adherence to the study protocol and Stata's `regress` specification, values were **not clipped, truncated, or rounded**.
 5. **Preserved Discrepancy:** The aggregate 20-case gap between the published Table 2 note (reporting 332 exclusions) and the actual data/code (312 exclusions) is formally preserved as **UNRESOLVED**, without forcing assumptions or altering data.
 
 ### Table 2 Primary ITT Replication Summary:
@@ -110,7 +110,7 @@ The authors' primary analytical code resides in `Trial_Analysis_Replication_File
 ### Key Forensic Findings:
 - **Missing Random Seed:** Crucially, `Trial_Analysis_Replication_File_26Feb2026.do` **does not contain a `set seed` statement** before calling `mi impute chained`. Stata's chained imputation therefore relied on the default initial pseudo-random generator state.
 - **Imputation Predictors:** Treatment arms (`hv`, `afini`) and primary outcome (`gsed_Z`) were **not included** in the imputation right-hand-side equations. Only `bl_child_sib_tot`, `cluster`, `child_female`, and `bl_f_b` were registered as regular predictors.
-- **Collinearity Omission:** In the non-missing subsamples for father's age and father's education, `bl_f_b` has zero variance ($=1$). Stata automatically drops collinear predictors; Python mimics this omission.
+- **Collinearity Omission:** In the non-missing subsamples for father's age and father's education, `bl_f_b` has zero variance ($=1$). Stata automatically drops collinear predictors; Python mirrors this omission.
 - **Cluster Variable in Imputation:** The cluster identifier (`cluster`, 1 to 164) was entered as a continuous linear predictor, rather than as cluster fixed effects or multilevel random intercepts.
 
 ---
@@ -236,17 +236,18 @@ Pooled regression parameter diagnostics are detailed in [pooled_parameter_diagno
 
 ---
 
-## 8. Continuous-Imputation Diagnostics & Support Validation (Task V3.2 Correction)
+## 8. Continuous-Imputation Diagnostics & Support Validation (Task V3.2 & V3.3 Corrections)
 
-In Task V3.2, independent forensic inspection of the imputation diagnostics resolved two inaccuracies present in earlier audit cycles:
+In Tasks V3.2 and V3.3, independent forensic inspection of the imputation diagnostics resolved three critical issues:
 1. Hardcoded reporting of all four regular conditioning predictors for every conditional model.
 2. Blanket claims that continuous imputed variables fell within expected support (`True (continuous values within expected support)`).
+3. Incorrect under-reporting of support violations for `bl_hhadults`, where only negative draws were counted instead of the union of negative and non-integer draws.
 
 Complete variable-specific diagnostics are cataloged in [imputation_diagnostics.csv](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/imputation_diagnostics.csv).
 
 ### 8.1 Actual Conditioning Predictors by Variable
 
-The actual predictors used to estimate each variable's conditional model are tracked from `models_dict[v]["preds"]`:
+The actual predictors used to estimate each variable's conditional model are tracked dynamically from `models_dict[v]["preds"]`:
 
 | Imputed Variable | Model Family | Registered Regular Predictors | Actual Fitted Predictors | Reason for Difference |
 | :--- | :--- | :--- | :--- | :--- |
@@ -275,24 +276,26 @@ Because the normal distribution has support across the entire real line $(-\inft
 1. The conditional mean $X_{im}\beta^*$ lies near a domain boundary (e.g. child age near 0 months, household adult counts near 0, young maternal age).
 2. The residual error variance $\sigma^{*2}$ is large relative to the distance to the boundary.
 
-### 8.3 Catalog of Detected Continuous Support Violations
+### 8.3 Catalog of Detected Continuous Support Violations (Corrected for Integer Counts)
 
-To evaluate the empirical extent of this phenomenon across all $M = 250$ completed datasets, variable-specific plausibility definitions were established (avoiding the circular error of treating observed sample min/max as population limits):
+The support definition for `bl_hhadults` is non-negative integer count $[0, \infty) \cap \mathbb{Z}$. A draw violates support if it is negative **or** non-integer:
+$$\text{Support Violation} = (\text{value} < 0) \cup (\text{value} \notin \mathbb{Z})$$
+Counting the union without double-counting reveals that **1,500 of 1,500 draws (100.00%) violate support**, because every single linear regression draw is a fractional float. Separately, 10 draws (0.67%) are strictly negative, and 1,500 draws (100.0%) are fractional.
 
-| Variable | Description | Support Definition | Total Draws | Generated Range | Support Violations | Violation % | Observed Sample Range | Outside Observed Range | Outside Obs % | Diagnostic Verdict |
-| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| `bl_childage` | Child age (months) | $[0.0, \infty)$ | 750 | [-0.04, 11.91] | 1 | 0.13% | [3.0, 9.0] | 98 | 13.07% | `SUPPORT_VIOLATION_DETECTED` (1 negative draw) |
-| `bl_z_overall` | Baseline GSED Z-score | $(-\infty, \infty)$ | 750 | [-1.71, 2.08] | 0 | 0.00% | [-3.37, 2.27] | 0 | 0.00% | `VALID` (all finite, within real domain) |
-| `bl_mo_age` | Mother age (years) | $[12.0, 65.0]$ | 10,500 | [3.32, 57.03] | 65 | 0.62% | [14.0, 49.0] | 195 | 1.86% | `SUPPORT_VIOLATION_DETECTED` (65 draws < 12.0y; min 3.32y) |
-| `bl_hhadults` | Household adults | $[0.0, \infty)$ & integer | 1,500 | [-1.19, 6.15] | 10 | 0.67% | [0.0, 11.0] | 10 | 0.67% | `SUPPORT_VIOLATION_DETECTED` (10 negative draws; 100% fractional) |
-| `bl_fa_age` | Father age (years) | $[12.0, 80.0]$ | 77,750 | [-0.59, 71.25] | 405 | 0.52% | [13.0, 76.0] | 611 | 0.79% | `SUPPORT_VIOLATION_DETECTED` (405 draws < 12.0y; 2 strictly negative) |
+| Variable | Description | Declared Support | Total Draws | Generated Range | Total Support Violations | Violation % | Negative Draws | Non-Integer Draws | Observed Range | Outside Obs Count | Outside Obs % | Diagnostic Verdict |
+| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| `bl_childage` | Child age (months) | $[0.0, \infty)$ | 750 | [-0.04, 11.91] | 1 | 0.13% | 1 (0.13%) | N/A | [3.0, 9.0] | 98 | 13.07% | `SUPPORT_VIOLATION_DETECTED` (1 negative draw) |
+| `bl_z_overall` | Baseline GSED Z-score | $(-\infty, \infty)$ | 750 | [-1.71, 2.08] | 0 | 0.00% | N/A (signed) | N/A | [-3.37, 2.27] | 0 | 0.00% | `VALID` (continuous score within finite real domain) |
+| `bl_mo_age` | Mother age (years) | $[12.0, 65.0]$ | 10,500 | [3.32, 57.03] | 65 | 0.62% | 0 (0.00%) | N/A | [14.0, 49.0] | 195 | 1.86% | `SUPPORT_VIOLATION_DETECTED` (65 draws < 12.0y; min 3.32y) |
+| `bl_hhadults` | Household adults | $[0.0, \infty) \cap \mathbb{Z}$ | 1,500 | [-1.19, 6.15] | **1,500** | **100.00%** | **10 (0.67%)** | **1,500 (100.0%)** | [0.0, 11.0] | 10 | 0.67% | `SUPPORT_VIOLATION_DETECTED` (all 1,500 draws violate integer-count support; 10 negative, 1,500 non-integer) |
+| `bl_fa_age` | Father age (years) | $[12.0, 80.0]$ | 77,750 | [-0.59, 71.25] | 405 | 0.52% | 2 (0.0026%) | N/A | [13.0, 76.0] | 611 | 0.79% | `SUPPORT_VIOLATION_DETECTED` (405 draws < 12.0y; 2 strictly negative) |
 
 ### 8.4 Rationale for Non-Constraint (Protocol Preservation Rule)
 
-In Task V3.2, strict execution rules prohibited:
+In strict adherence to the study protocol and Stata's `regress` specification, execution rules prohibited:
 - Truncating or clipping negative values to zero;
 - Rounding fractional household adult counts to integers;
-- Replacing continuous OLS with Poisson, log-linear, or predictive mean matching (PMM);
+- Replacing continuous OLS with Poisson, negative binomial, or predictive mean matching (PMM);
 - Modifying observed sample values.
 
 **Reasoning:**
@@ -300,14 +303,14 @@ In Task V3.2, strict execution rules prohibited:
 2. **Methodological Truthfulness:** Truthful forensic validation requires documenting what the specified model actually generates, rather than silently sanitizing the output to appear plausible.
 3. **Reproducibility:** Constraining the draws would alter the pooled adjusted regression estimates and prevent verification of numerical reproducibility.
 
-### 8.5 Implication for Table 2 Numerical Reconciliation
+### 8.5 Data-Derived Validation Statuses
 
-In `v3_summary.json` and diagnostic reporting:
-- The discrete variables strictly preserve valid categories: `discrete_categories_valid: True`.
-- All generated continuous draws are mathematically finite: `all_imputed_values_finite: True`.
-- The continuous support check is explicitly false: `continuous_support_valid: False`.
-- Overall diagnostic classification: `SUPPORT_VIOLATIONS_PRESENT_IN_UNBOUNDED_LINEAR_DRAWS`.
-- Numerical comparison status remains: `APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION`.
+All validation booleans in `summary_adjusted` and `v3_summary.json` are computed dynamically from actual execution data:
+- `all_conditional_models_converged`: derived from `models_dict[v]["converged"]` across all 10 fitted models (`True`).
+- `all_imputed_values_finite`: derived from `np.isfinite()` evaluated across all generated imputation arrays (`True`).
+- `discrete_categories_valid`: derived from strict set-inclusion tests on binary and ordinal draws (`True`).
+- `continuous_support_valid`: derived from the union of support violations across all continuous variables (`False`).
+- `overall_imputation_diagnostic_status`: dynamically assigned based on the validation hierarchy (`SUPPORT_VIOLATIONS_PRESENT_IN_UNBOUNDED_LINEAR_DRAWS`).
 
 *Key Takeaway:* The adjusted ITT model reproduces published estimates to two decimal places (`0.17` and `0.11`), but this numerical agreement must not be confused with a claim that every imputed value is substantively or biologically plausible.
 
@@ -354,7 +357,7 @@ In accordance with forensic accounting standards and Task V1/V2 findings:
 
 1. **Unspecified Random Seed in Stata Code:** Crucially, `Trial_Analysis_Replication_File_26Feb2026.do` contains no `set seed` command prior to `mi impute chained`. Consequently, Stata's exact pseudo-random sequence cannot be reproduced bit-for-bit in Python.
 2. **Approximation vs. Exact Replication:** While Python multiple imputation using variable-specific conditional models and $M = 250$ matches published display numbers at two decimals, a numerical match at two decimals is **not proof of identical imputation or model specification**. Python's `statsmodels` optimization routines and random number generators differ internally from Stata's compiled C routines.
-3. **Decoupled Diagnostics:** In Task V3.2, variable-level imputation diagnostics ([imputation_diagnostics.csv](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/imputation_diagnostics.csv)) report actual conditioning predictors, discrete category preservation, continuous support violations, and outside-observed-range frequencies, completely separated from regression parameter pooling diagnostics ([pooled_parameter_diagnostics.csv](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv)).
+3. **Decoupled Diagnostics:** In Task V3.3, variable-level imputation diagnostics ([imputation_diagnostics.csv](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/imputation_diagnostics.csv)) report actual conditioning predictors, discrete category preservation, continuous support violations (with negative and fractional sub-counts), and outside-observed-range frequencies, completely separated from regression parameter pooling diagnostics ([pooled_parameter_diagnostics.csv](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv)).
 4. **Finite-Sample Degrees of Freedom:** Replicating the published confidence intervals requires applying cluster-robust degrees of freedom ($df = 158$ for unadjusted OLS, and Barnard-Rubin adjusted $df \approx 155.8\text{--}155.9$ for multiple imputation). Assuming large-sample standard normal critical values ($z = 1.96$) yields slightly narrower confidence intervals.
 
 ---
@@ -377,7 +380,7 @@ All files are located in `validation/V3_primary_itt_reproduction/outputs/`:
 - [`primary_outcome_reconciliation.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/primary_outcome_reconciliation.csv): Primary GSED Z-score derivation reconciliation against V1 audited counts.
 - [`analysis_sample_reconciliation.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/analysis_sample_reconciliation.csv): Sample size and cluster retention counts by arm.
 - [`itt_results_table2_reproduction.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/itt_results_table2_reproduction.csv): Direct comparison of unadjusted and adjusted ITT estimates against published Table 2.
-- [`imputation_diagnostics.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/imputation_diagnostics.csv): Multiple imputation diagnostics per imputed baseline covariate (actual predictors, convergence, discrete validity, continuous support definitions, violation counts, outside-observed counts, imputed mean/SD).
+- [`imputation_diagnostics.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/imputation_diagnostics.csv): Multiple imputation diagnostics per imputed baseline covariate (actual predictors, convergence, discrete validity, continuous support definitions, union violation counts, negative counts, fractional counts, outside-observed counts, imputed mean/SD).
 - [`pooled_parameter_diagnostics.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv): Pooled regression parameter diagnostics across completed datasets (within/between/total variance, FMI, Barnard-Rubin df, SE, 95% CI).
 - [`model_diagnostics.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/model_diagnostics.csv): Outcome distribution, residual standard deviation, and intraclass correlation (ICC).
-- [`v3_summary.json`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/v3_summary.json): Complete machine-readable summary of Task V3.2 results.
+- [`v3_summary.json`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/v3_summary.json): Complete machine-readable summary of Task V3.3 results with data-derived validation statuses.
