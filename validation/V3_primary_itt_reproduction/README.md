@@ -1,4 +1,4 @@
-# Task V3: Primary Outcome & ITT Results Reproduction
+# Task V3: Primary ITT Reproduction & Imputation Specification Audit (V3.1)
 
 **Project:** Niyati  
 **Study Title:** Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial  
@@ -13,12 +13,20 @@
 This report documents the independent forensic audit, outcome re-derivation, and econometric replication of the primary intention-to-treat (ITT) models published in **Table 2** of the results paper:
 > *Fink et al., "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial."*
 
-Using only the authoritative raw data archive (`doi_10_5061_dryad_nzs7h4551__v20260226.zip`) and the authors' original Stata replication script (`Trial_Analysis_Replication_File_26Feb2026.do`), both the **unadjusted** and **adjusted** ITT models for the primary standardized Global Scale for Early Development (GSED) outcome were independently reconstructed in Python.
+Using the authoritative raw data archive (`doi_10_5061_dryad_nzs7h4551__v20260226.zip`) and the authors' original Stata replication script (`Trial_Analysis_Replication_File_26Feb2026.do`), both the **unadjusted** and **adjusted** ITT models for the primary standardized Global Scale for Early Development (GSED) outcome were independently evaluated in Python.
 
-### Core Replication Verdict:
+### Core Replication Verdict & Distinction:
+
 1. **Primary Outcome Re-derivation:** The primary outcome `gsed_Z` was reconstructed from raw child age (`el_gsed_age`) and raw GSED D-score (`el_gsed_dscore`) using exact 10-day age banding and sample standardization ($ddof=1$). The derivation yields exactly **2,149 valid outcome observations** and **312 exclusions** (307 missing raw scores + 5 singleton age-band cases), replicating Task V1/V2 counts with zero discrepancy.
-2. **Unadjusted Table 2 Model:** Successfully replicated at published display precision (`MATCH_AT_PUBLISHED_PRECISION`). Both point estimates and 95% confidence intervals match published values to the exact two-decimal precision.
-3. **Adjusted Table 2 Model:** Successfully replicated at published display precision (`MATCH_AT_PUBLISHED_PRECISION`) using chained equations multiple imputation (MICE) and Rubin's combination rules across $M=50$ imputations. Both point estimates and 95% confidence intervals match published values to the exact two-decimal precision.
+2. **Unadjusted Table 2 Model (Exact Display Replication):** Independently reproduced from the released data with cluster-robust standard errors and finite-cluster degrees of freedom ($df = G - 1 = 158$). Both point estimates and 95% confidence intervals match published figures to the exact two-decimal display precision (`MATCH_AT_PUBLISHED_PRECISION`).
+3. **Adjusted Table 2 Model (Methodological MI Approximation):** In Task V3.1, the imputation algorithm was corrected to adhere strictly to the authors' variable-specific conditional specification:
+   - 5 continuous variables via linear regression with parameter sampling uncertainty and residual uncertainty.
+   - 1 binary variable (`bl_low_bweight`) via logistic regression with Bernoulli draws (strictly 0 or 1).
+   - 4 ordinal variables via ordered logistic regression (`OrderedModel`) with draws from predicted categorical distributions.
+   - Conditioning predictors strictly limited to the four regular predictors: `bl_child_sib_tot`, `cluster`, `child_female`, and `bl_f_b`.
+   - Number of imputations set to $M = 250$ (matching Stata's `add(250)`).
+   - Pooled using Rubin's combination rules and Barnard-Rubin (1999) small-sample adjusted degrees of freedom ($\nu_{\text{com}} = 158$).
+   - At published display precision, numerical results match Table 2 (`0.17 [0.03 to 0.30]` and `0.11 [0.02 to 0.19]`). However, because the authors' random seed was unspecified and Python's internal random draws differ from Stata's internal algorithms, this model is classified as **`APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION`** and cannot be claimed as an exact bit-for-bit Stata replication.
 4. **Preserved Discrepancy:** The aggregate 20-case gap between the published Table 2 note (reporting 332 exclusions) and the actual data/code (312 exclusions) is formally preserved as **UNRESOLVED**, without forcing assumptions or altering data.
 
 ### Table 2 Primary ITT Replication Summary:
@@ -27,10 +35,10 @@ Using only the authoritative raw data archive (`doi_10_5061_dryad_nzs7h4551__v20
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
 | **Unadjusted Model** | Home Visits vs. Control | **0.17** | 0.1669 | **0.17** | **0.04 to 0.30** | **0.04 to 0.30** | 0.00 | `MATCH_AT_PUBLISHED_PRECISION` |
 | | Digital (Afini) vs. Control | **0.14** | 0.1394 | **0.14** | **0.05 to 0.23** | **0.05 to 0.23** | 0.00 | `MATCH_AT_PUBLISHED_PRECISION` |
-| **Adjusted Model (MI)**| Home Visits vs. Control | **0.17** | 0.1654 | **0.17** | **0.03 to 0.30** | **0.03 to 0.30** | 0.00 | `MATCH_AT_PUBLISHED_PRECISION` |
-| | Digital (Afini) vs. Control | **0.11** | 0.1056 | **0.11** | **0.02 to 0.19** | **0.02 to 0.19** | 0.00 | `MATCH_AT_PUBLISHED_PRECISION` |
+| **Adjusted Model (MI)**| Home Visits vs. Control | **0.17** | 0.1663 | **0.17** | **0.03 to 0.30** | **0.03 to 0.30** | 0.00 | `APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION` |
+| | Digital (Afini) vs. Control | **0.11** | 0.1066 | **0.11** | **0.02 to 0.19** | **0.02 to 0.19** | 0.00 | `APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION` |
 
-*Notes:* Estimation sample is $N = 2,149$ participants across 159 clusters for all models. Standard errors are clustered at the community level (`cluster`). Degrees of freedom: $df = G - 1 = 158$ for unadjusted OLS; Barnard-Rubin adjusted $df \approx 155.9$ for multiple imputation.
+*Notes:* Estimation sample is $N = 2,149$ participants across 159 clusters for all models. Standard errors are clustered at the community level (`cluster`). Degrees of freedom: $df = G - 1 = 158$ for unadjusted OLS; Barnard-Rubin adjusted $df \approx 155.8\text{--}155.9$ for multiple imputation.
 
 ---
 
@@ -197,22 +205,29 @@ $$\text{gsed\_Z}_{ij} = \beta_0 + \beta_{\text{HV}} \cdot \text{hv}_{ij} + \beta
 ### Why Multiple Imputation is Mandatory:
 A complete-case regression (dropping any child with missing baseline covariates) discards **521 participants**, reducing the sample to $N = 1,628$ and losing 7 entire clusters ($G = 152$). Crucially, complete-case analysis produces severe collinearity between father presence (`bl_f_b`) and father age (`bl_fa_age`). Multiple imputation preserves the full $N = 2,149$ sample across all 159 clusters.
 
-### Multiple Imputation Implementation:
-- **Algorithm:** Multivariate Imputation by Chained Equations (MICE) using `IterativeImputer` with `BayesianRidge` drawing from the posterior distribution.
-- **Imputed Covariates (10):** `bl_childage` (3 missing), `bl_low_bweight` (47 missing), `bl_z_overall` (3 missing), `bl_mo_age` (42 missing), `bl_mics_tot` (218 missing), `bl_hhadults` (6 missing), `bl_qses_index` (12 missing), `bl_fa_age` (311 missing), `bl_fa_educ_level` (351 missing), `bl_mo_educ_level` (45 missing).
-- **Conditioning Predictors (4):** `bl_child_sib_tot`, `cluster`, `child_female`, `bl_f_b`.
-- **Passive Transformations:** Indicators `mom_sec`, `mom_higher`, `dad_sec`, and `dad_higher` were generated post-imputation matching Stata lines 423–427.
-- **Replications & Seed:** $M = 50$ imputations with random seed `20260226`.
-- **Pooling (Rubin's Rules):** Parameter estimates $\bar{Q}$ and variance $T = \bar{U} + (1 + 1/M)B$ combined via Rubin's rules; small-sample degrees of freedom derived via Barnard-Rubin (1999) adjusted degrees of freedom ($\nu_{\text{adj}} \approx 155.9$).
+### Multiple Imputation Specification (Corrected in V3.1):
+In accordance with Task V3.1 instructions, the multiple-imputation algorithm was updated from a default continuous `IterativeImputer` to variable-specific conditional models following the original Stata do-file:
+- **Conditioning Predictors (4):** Strictly the 4 regular predictors: `bl_child_sib_tot`, `cluster`, `child_female`, and `bl_f_b`. Other imputed variables, treatment arms (`hv`, `afini`), and outcome (`gsed_Z`) are **not** included on the right-hand side of imputation models.
+- **Pre-Imputation Recode:** Retained `bl_f_b = 0 if bl_f_b is missing and bl_fa_age is missing`. Verified 0 missing values across all 4 regular predictors before imputation.
+- **Conditional Model Families:**
+  1. **Continuous variables (5):** `bl_childage`, `bl_z_overall`, `bl_mo_age`, `bl_hhadults`, `bl_fa_age` fitted via OLS with Bayesian parameter draws $\beta^* \sim \mathcal{N}(\hat{\beta}, \sigma^{*2}(X'X)^{-1})$ and residual variance draws $\sigma^{*2} = \text{SSR} / \chi^2(\nu)$.
+  2. **Binary variable (1):** `bl_low_bweight` fitted via binary logistic regression (`sm.Logit`), drawing parameters $\beta^* \sim \mathcal{N}(\hat{\beta}, \Sigma)$ and generating missing values as Bernoulli draws ($y^* \in \{0, 1\}$).
+  3. **Ordinal variables (4):** `bl_mics_tot` (categories 0–6), `bl_qses_index` (1–5), `bl_fa_educ_level` (0–5), `bl_mo_educ_level` (0–5) fitted via ordered logistic regression (`statsmodels.miscmodels.ordinal_model.OrderedModel`), drawing parameters $\theta^* \sim \mathcal{N}(\hat{\theta}, \Sigma)$ and sampling categories from predicted categorical distributions.
+- **Collinearity Handling in Estimation:** In the father-specific variables `bl_fa_age` and `bl_fa_educ_level`, `bl_f_b` has variance 0 ($=1$) in the non-missing subset. Matching Stata's automatic collinearity omission, `bl_f_b` is omitted during the estimation step for those two models.
+- **Number of Imputations:** $M = 250$ imputations (matching Stata's `add(250)`), using fixed documented seed `20260226`.
+- **Passive Transformations:** Indicators `mom_sec = (bl_mo_educ_level == 4)`, `mom_higher = (bl_mo_educ_level == 5)`, `dad_sec = (bl_fa_educ_level == 4)`, and `dad_higher = (bl_fa_educ_level == 5)` derived post-imputation.
+- **Validation Checks:** All 250 imputed datasets were verified: 0 missing values, original observed values untouched, binary strictly 0/1, ordinal strictly within valid categories, passive indicators matching education levels, $N = 2,149$ valid outcomes and 159 clusters retained in each regression.
+- **Pooling (Rubin's Rules):** Point estimates $\bar{Q}$, within variance $\bar{U}$, between variance $B$, and total variance $T = \bar{U} + (1 + 1/M)B$ combined via Rubin's rules; small-sample degrees of freedom derived via Barnard-Rubin (1999) adjusted degrees of freedom ($\nu_{\text{com}} = 158$, $\nu_{\text{adj}} \approx 155.8\text{--}155.9$).
 
-Diagnostic metrics are detailed in [imputation_diagnostics.csv](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/imputation_diagnostics.csv).
+Imputation diagnostics per variable are detailed in [imputation_diagnostics.csv](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/imputation_diagnostics.csv).  
+Pooled regression parameter diagnostics are detailed in [pooled_parameter_diagnostics.csv](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv).
 
-### Adjusted Model Estimates:
+### Adjusted Model Estimates ($M = 250$):
 
-| Coefficient | Point Estimate (Raw) | Display Coef | Pooled SE | Adjusted $df$ | $p$-value | 95% Confidence Interval | Published Table 2 | Status |
+| Coefficient | Point Estimate (Raw) | Display Coef | Pooled SE | Barnard-Rubin $df$ | $p$-value | 95% Confidence Interval | Published Table 2 | Status |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Home Visits ($\beta_{\text{HV}}$)** | **0.1654** | **0.17** | 0.0691 | 155.9 | 0.0179 | **[0.0289, 0.3020] $\rightarrow$ 0.03 to 0.30** | **0.17 (0.03 to 0.30)** | `MATCH_AT_PUBLISHED_PRECISION` |
-| **Digital / Afini ($\beta_{\text{Afini}}$)**| **0.1056** | **0.11** | 0.0446 | 155.9 | 0.0192 | **[0.0174, 0.1937] $\rightarrow$ 0.02 to 0.19** | **0.11 (0.02 to 0.19)** | `MATCH_AT_PUBLISHED_PRECISION` |
+| **Home Visits ($\beta_{\text{HV}}$)** | **0.1663** | **0.17** | 0.0689 | 155.9 | 0.0170 | **[0.0302, 0.3024] $\rightarrow$ 0.03 to 0.30** | **0.17 (0.03 to 0.30)** | `APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION` |
+| **Digital / Afini ($\beta_{\text{Afini}}$)**| **0.1066** | **0.11** | 0.0447 | 155.8 | 0.0182 | **[0.0184, 0.1948] $\rightarrow$ 0.02 to 0.19** | **0.11 (0.02 to 0.19)** | `APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION` |
 
 ---
 
@@ -224,10 +239,12 @@ A direct item-by-item comparison against Table 2 of the published paper is catal
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
 | **Unadjusted** | Home Visits vs. Control | 0.17 | 0.17 | 0.04 to 0.30 | 0.04 to 0.30 | 0.00 | 0.00 | `MATCH_AT_PUBLISHED_PRECISION` |
 | **Unadjusted** | Digital vs. Control | 0.14 | 0.14 | 0.05 to 0.23 | 0.05 to 0.23 | 0.00 | 0.00 | `MATCH_AT_PUBLISHED_PRECISION` |
-| **Adjusted** | Home Visits vs. Control | 0.17 | 0.17 | 0.03 to 0.30 | 0.03 to 0.30 | 0.00 | 0.00 | `MATCH_AT_PUBLISHED_PRECISION` |
-| **Adjusted** | Digital vs. Control | 0.11 | 0.11 | 0.02 to 0.19 | 0.02 to 0.19 | 0.00 | 0.00 | `MATCH_AT_PUBLISHED_PRECISION` |
+| **Adjusted** | Home Visits vs. Control | 0.17 | 0.17 | 0.03 to 0.30 | 0.03 to 0.30 | 0.00 | 0.00 | `APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION` |
+| **Adjusted** | Digital vs. Control | 0.11 | 0.11 | 0.02 to 0.19 | 0.02 to 0.19 | 0.00 | 0.00 | `APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION` |
 
-**Verdict:** 4 out of 4 estimates and 4 out of 4 confidence intervals achieve `MATCH_AT_PUBLISHED_PRECISION`.
+**Replication Assessment:**
+- The unadjusted model is independently reproduced and matches published figures exactly at two-decimal display precision (`MATCH_AT_PUBLISHED_PRECISION`).
+- The adjusted model reproduces the published numbers at two decimals (`0.17 [0.03 to 0.30]` and `0.11 [0.02 to 0.19]`). Because the Python implementation is a conditional multiple-imputation approximation to Stata's unspecified random state, it is classified as `APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION`.
 
 ---
 
@@ -245,9 +262,10 @@ In accordance with forensic accounting standards and Task V1/V2 findings:
 
 ## 10. Methodological Nuances & Limitations
 
-1. **Absence of Random Seed in Author Code:** Because the original Stata do-file omitted a random seed before `mi impute chained`, an exact bit-for-bit replication of Stata's imputed values across $M=250$ chains is not possible. However, the Python MICE implementation demonstrates that point estimates and standard errors are stable to two decimal places, fully matching published numbers.
-2. **Conditional Model Families:** Stata used ordered logit (`ologit`) for ordinal scales and binary logit (`logit`) for low birth weight. The Python implementation uses Bayesian ridge regression for conditional draws with discrete rounding/thresholding. The resulting pooled coefficients demonstrate that findings are robust to the specific chained-equation family.
-3. **Finite-Sample Degrees of Freedom:** Replicating the published confidence intervals requires applying cluster-robust degrees of freedom ($df = 158$ for unadjusted OLS, and Barnard-Rubin adjusted $df \approx 155.9$ for multiple imputation). Assuming large-sample standard normal critical values ($z = 1.96$) yields slightly narrower confidence intervals.
+1. **Unspecified Random Seed in Stata Code:** Crucially, `Trial_Analysis_Replication_File_26Feb2026.do` contains no `set seed` command prior to `mi impute chained`. Consequently, Stata's exact random pseudo-random sequence cannot be reproduced bit-for-bit in Python.
+2. **Approximation vs. Exact Replication:** While the Python multiple imputation using variable-specific conditional models and $M = 250$ matches the published display numbers at two decimals, a numerical match at two decimals is **not proof of identical imputation or model specification**. Python's `statsmodels` optimization routines and random number generators differ internally from Stata's compiled C routines.
+3. **Imputation Diagnostics vs. Regression Diagnostics:** In Task V3.1, imputation variable diagnostics ([imputation_diagnostics.csv](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/imputation_diagnostics.csv)) were cleanly decoupled from regression parameter pooling diagnostics ([pooled_parameter_diagnostics.csv](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv)). Imputation diagnostics document model families, predictors, missingness, and category validity per variable, while regression diagnostics document within/between variance components, FMI, and Barnard-Rubin degrees of freedom per regression coefficient.
+4. **Finite-Sample Degrees of Freedom:** Replicating the published confidence intervals requires applying cluster-robust degrees of freedom ($df = 158$ for unadjusted OLS, and Barnard-Rubin adjusted $df \approx 155.8\text{--}155.9$ for multiple imputation). Assuming large-sample standard normal critical values ($z = 1.96$) yields slightly narrower confidence intervals.
 
 ---
 
@@ -269,6 +287,7 @@ All files are located in `validation/V3_primary_itt_reproduction/outputs/`:
 - [`primary_outcome_reconciliation.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/primary_outcome_reconciliation.csv): Primary GSED Z-score derivation reconciliation against V1 audited counts.
 - [`analysis_sample_reconciliation.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/analysis_sample_reconciliation.csv): Sample size and cluster retention counts by arm.
 - [`itt_results_table2_reproduction.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/itt_results_table2_reproduction.csv): Direct comparison of unadjusted and adjusted ITT estimates against published Table 2.
-- [`imputation_diagnostics.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/imputation_diagnostics.csv): Multiple imputation diagnostics and Rubin combination variance components.
+- [`imputation_diagnostics.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/imputation_diagnostics.csv): Multiple imputation diagnostics per imputed baseline covariate (families, predictors, convergence, category validity, imputed mean/SD).
+- [`pooled_parameter_diagnostics.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv): Pooled regression parameter diagnostics across completed datasets (within/between/total variance, FMI, Barnard-Rubin df, SE, 95% CI).
 - [`model_diagnostics.csv`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/model_diagnostics.csv): Outcome distribution, residual standard deviation, and intraclass correlation (ICC).
-- [`v3_summary.json`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/v3_summary.json): Complete machine-readable summary of Task V3 results.
+- [`v3_summary.json`](file:///d:/Niyati/validation/V3_primary_itt_reproduction/outputs/v3_summary.json): Complete machine-readable summary of Task V3.1 results.

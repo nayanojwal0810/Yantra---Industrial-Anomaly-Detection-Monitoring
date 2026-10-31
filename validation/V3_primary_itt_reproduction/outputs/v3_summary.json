@@ -1,6 +1,6 @@
 {
-  "task_version": "V3.0",
-  "timestamp_utc": "2026-10-31T05:45:19.847699+00:00",
+  "task_version": "V3.1",
+  "timestamp_utc": "2026-10-31T06:13:02.331016+00:00",
   "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
   "pandas_version": "3.0.3",
   "numpy_version": "2.4.6",
@@ -55,6 +55,7 @@
     "n_clusters": 159,
     "df_cluster": 158,
     "r_squared": 0.005320850956953338,
+    "model_reproduction_status": "MATCH_AT_PUBLISHED_PRECISION",
     "hv_vs_control": {
       "published_coef": 0.17,
       "python_coef": 0.1669,
@@ -74,22 +75,69 @@
     "specification": "mi estimate, post: reg gsed_Z hv afini $covariates, cluster(cluster)",
     "n_obs": 2149,
     "n_clusters": 159,
-    "m_imputations": 50,
+    "m_imputations": 250,
     "seed_used": 20260226,
     "covariates_count": 15,
+    "model_reproduction_status": "APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION",
+    "imputation_methodology_status": "CONDITIONAL_MI_APPROXIMATION_WITH_4_REGULAR_PREDICTORS",
+    "M": 250,
+    "seed": 20260226,
+    "conditioning_predictors": [
+      "bl_child_sib_tot",
+      "cluster",
+      "child_female",
+      "bl_f_b"
+    ],
+    "conditional_model_families": {
+      "continuous_variables": {
+        "stata_family": "regress (linear regression)",
+        "python_method": "OLS with parameter sampling and residual variance draws",
+        "variables": [
+          "bl_childage",
+          "bl_z_overall",
+          "bl_mo_age",
+          "bl_hhadults",
+          "bl_fa_age"
+        ]
+      },
+      "binary_variables": {
+        "stata_family": "logit (binary logistic regression)",
+        "python_method": "Logit MLE with parameter sampling and Bernoulli draws",
+        "variables": [
+          "bl_low_bweight"
+        ]
+      },
+      "ordinal_variables": {
+        "stata_family": "ologit (ordered logistic regression)",
+        "python_method": "OrderedModel MLE with parameter sampling and categorical draws",
+        "variables": [
+          "bl_mics_tot",
+          "bl_qses_index",
+          "bl_fa_educ_level",
+          "bl_mo_educ_level"
+        ]
+      }
+    },
+    "deviations_from_stata": [
+      "Authors' exact random seed not reported in replication do-file or publication; fixed Python seed 20260226 utilized for reproducibility.",
+      "Stata mi impute chained internal Gibbs/MICE sampling algorithm differs in numerical pseudo-random sequences from Python statsmodels draws.",
+      "Predictor bl_f_b is constant (=1) in the observed estimation subsample for bl_fa_age and bl_fa_educ_level; omitted from the estimation step for those two variables matching standard econometric collinearity handling in Stata."
+    ],
+    "all_model_fits_converged": true,
+    "all_imputed_values_valid": true,
     "hv_vs_control": {
       "published_coef": 0.17,
-      "python_coef": 0.1654,
+      "python_coef": 0.1663,
       "published_ci": "0.03 to 0.30",
       "python_ci": "0.03 to 0.30",
-      "match_status": "MATCH_AT_PUBLISHED_PRECISION"
+      "match_status": "APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION"
     },
     "digital_vs_control": {
       "published_coef": 0.11,
-      "python_coef": 0.1056,
+      "python_coef": 0.1066,
       "published_ci": "0.02 to 0.19",
       "python_ci": "0.02 to 0.19",
-      "match_status": "MATCH_AT_PUBLISHED_PRECISION"
+      "match_status": "APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION"
     }
   },
   "intraclass_correlation": {
