@@ -1,0 +1,20 @@
+Execution Environment Record
+============================
+Project: Niramaya
+Task: Task 05 - Analytical Viability and Business Usefulness
+Execution Timestamp (UTC): 2026-10-31 15:29:32 UTC
+Execution Timestamp (Local): 2026-10-31 20:59:32 India Standard Time
+Python Version: 3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]
+Python Executable: C:\Program Files\Python313\python.exe
+Operating System: Windows-11-10.0.26200-SP0
+OS System: Windows 11 (10.0.26200)
+Machine Architecture: AMD64
+Execution Command: validation/niramaya/task_05_analytical_viability/audit_analytical_viability.py --hrrp-file ../data/raw/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv --hgi-file ../data/raw/Hospital_General_Information.csv --output-dir validation/niramaya/task_05_analytical_viability/output
+Raw HRRP Dataset Path: D:\Niramaya\data\raw\FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv
+Raw HRRP SHA-256: 7e7915dd2751a1e59ac46dbc9194fb781e820962a04d47c31344ea2bb30c91f6
+Raw HRRP File Size: 2,068,464 bytes
+Raw HGI Dataset Path: D:\Niramaya\data\raw\Hospital_General_Information.csv
+Raw HGI SHA-256: f874f09fef895a1ccf5bb7392dcbb2be05c9860339261b093fe00f0c1b013480
+Raw HGI File Size: 1,450,767 bytes
+Output Directory Path: D:\Niramaya\validation-repo\validation\niramaya\task_05_analytical_viability\output
+Standard Library Modules: os, sys, csv, json, math, platform, hashlib, argparse, datetime, collections, decimal
