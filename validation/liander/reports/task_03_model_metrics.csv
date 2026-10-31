@@ -1,0 +1,19 @@
+feeder_id,model_name,split,mae_kw,rmse_kw,wape_pct,bias_kw,n_observations,high_demand_mae_kw,high_demand_wape_pct,high_demand_n_obs,best_iteration,training_time_sec
+OS Leiden Noord,Weekly Seasonal Naive,test,116.6801,161.9082,5.5368,-19.0028,7200,149.0391,5.4776,2560,,0.0
+OS Leiden Noord,Weekly Seasonal Naive,validation,130.7901,191.9347,7.457,-35.0139,4320,,,0,,0.0
+OS Leiden Noord,LightGBM Without Weather,test,325.1616,410.7235,15.4298,-315.4066,7200,541.7018,19.9089,2560,87.0,0.355
+OS Leiden Noord,LightGBM Without Weather,validation,141.8783,198.6367,8.0892,-104.5331,4320,,,0,87.0,0.355
+OS Leiden Noord,LightGBM With Weather,test,200.5032,252.1108,9.5144,-188.1121,7200,343.1023,12.6099,2560,105.0,0.346
+OS Leiden Noord,LightGBM With Weather,validation,103.316,141.1666,5.8905,-59.7099,4320,,,0,105.0,0.346
+OS Waarderpolder,Weekly Seasonal Naive,test,97.1697,142.3845,13.9597,6.6424,7200,124.9655,10.1027,1593,,0.0
+OS Waarderpolder,Weekly Seasonal Naive,validation,89.8827,145.9437,16.1808,-23.8102,4320,,,0,,0.0
+OS Waarderpolder,LightGBM Without Weather,test,193.5308,265.1633,27.8032,-155.0255,7200,444.388,35.9259,1593,75.0,0.251
+OS Waarderpolder,LightGBM Without Weather,validation,105.232,158.6514,18.944,-69.6698,4320,,,0,75.0,0.251
+OS Waarderpolder,LightGBM With Weather,test,122.1374,168.0916,17.5466,-75.7812,7200,251.3322,20.3186,1593,78.0,0.335
+OS Waarderpolder,LightGBM With Weather,validation,87.1172,127.588,15.6829,-45.9164,4320,,,0,78.0,0.335
+OS Weesp,Weekly Seasonal Naive,test,222.5565,328.6121,12.1584,-24.9315,7200,263.2798,10.6786,2491,,0.0
+OS Weesp,Weekly Seasonal Naive,validation,300.929,471.6005,23.9611,-84.7207,4320,,,0,,0.0
+OS Weesp,LightGBM Without Weather,test,588.6116,753.2283,32.1563,-574.6082,7200,1050.3002,42.6001,2491,20.0,0.176
+OS Weesp,LightGBM Without Weather,validation,331.8659,449.1838,26.4244,-158.214,4320,,,0,20.0,0.176
+OS Weesp,LightGBM With Weather,test,232.6887,337.0359,12.712,-184.2488,7200,379.2095,15.3807,2491,202.0,0.599
+OS Weesp,LightGBM With Weather,validation,196.0151,284.4058,15.6075,-55.6317,4320,,,0,202.0,0.599

@@ -1,0 +1,10 @@
+feeder_id,split,date_range,n_complete_days,n_samples,missing_features_count,non_finite_features_count,weather_cutoff_violations,historical_load_cutoff_violations,target_label_alignment_errors,duplicate_samples,date_overlap_violations
+OS Leiden Noord,train,2024-01-21 to 2024-08-31,224,21504,0,0,0,0,0,0,0
+OS Leiden Noord,validation,2024-09-01 to 2024-10-15,45,4320,0,0,0,0,0,0,0
+OS Leiden Noord,test,2024-10-16 to 2024-12-31,75,7200,0,0,0,0,0,0,0
+OS Waarderpolder,train,2024-01-21 to 2024-08-31,224,21504,0,0,0,0,0,0,0
+OS Waarderpolder,validation,2024-09-01 to 2024-10-15,45,4320,0,0,0,0,0,0,0
+OS Waarderpolder,test,2024-10-16 to 2024-12-31,75,7200,0,0,0,0,0,0,0
+OS Weesp,train,2024-01-21 to 2024-08-31,224,21504,0,0,0,0,0,0,0
+OS Weesp,validation,2024-09-01 to 2024-10-15,45,4320,0,0,0,0,0,0,0
+OS Weesp,test,2024-10-16 to 2024-12-31,75,7200,0,0,0,0,0,0,0

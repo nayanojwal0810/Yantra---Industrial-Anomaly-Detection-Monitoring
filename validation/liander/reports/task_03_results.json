@@ -1,0 +1,2546 @@
+{
+  "execution_timestamp_utc": "2026-10-31T18:21:45.244991+00:00",
+  "total_execution_time_sec": 6.93,
+  "package_versions": {
+    "lightgbm": "4.7.0",
+    "pandas": "3.0.3",
+    "numpy": "2.4.6",
+    "pyarrow": "24.0.0"
+  },
+  "protocol": {
+    "issue_time_formula": "D - 1 day + 06:00:00 UTC",
+    "target_intervals_per_day": 96,
+    "horizon_hours_range": [
+      18.0,
+      41.75
+    ],
+    "timezone": "UTC"
+  },
+  "split_definitions": {
+    "train": {
+      "start": "2024-01-21",
+      "end": "2024-08-31",
+      "expected_days": 224,
+      "expected_rows": 21504
+    },
+    "validation": {
+      "start": "2024-09-01",
+      "end": "2024-10-15",
+      "expected_days": 45,
+      "expected_rows": 4320
+    },
+    "test": {
+      "start": "2024-10-16",
+      "end": "2024-12-31",
+      "expected_days": 75,
+      "expected_rows": 7200
+    }
+  },
+  "feature_definitions": {
+    "target_variable": "load (Watts)",
+    "features_no_weather": [
+      "load_lag_7d",
+      "time_slot",
+      "hour",
+      "day_of_week",
+      "is_weekend",
+      "month",
+      "day_of_year",
+      "hour_sin",
+      "hour_cos",
+      "dow_sin",
+      "dow_cos",
+      "doy_sin",
+      "doy_cos",
+      "forecast_horizon_hours"
+    ],
+    "features_with_weather": [
+      "load_lag_7d",
+      "time_slot",
+      "hour",
+      "day_of_week",
+      "is_weekend",
+      "month",
+      "day_of_year",
+      "hour_sin",
+      "hour_cos",
+      "dow_sin",
+      "dow_cos",
+      "doy_sin",
+      "doy_cos",
+      "forecast_horizon_hours",
+      "temperature_2m",
+      "relative_humidity_2m",
+      "surface_pressure",
+      "cloud_cover",
+      "wind_speed_10m",
+      "wind_direction_10m",
+      "shortwave_radiation",
+      "direct_radiation",
+      "diffuse_radiation",
+      "direct_normal_irradiance"
+    ],
+    "core_weather_variables": [
+      "temperature_2m",
+      "relative_humidity_2m",
+      "surface_pressure",
+      "cloud_cover",
+      "wind_speed_10m",
+      "wind_direction_10m",
+      "shortwave_radiation",
+      "direct_radiation",
+      "diffuse_radiation",
+      "direct_normal_irradiance"
+    ]
+  },
+  "model_configurations": {
+    "lightgbm_parameters": {
+      "objective": "regression",
+      "metric": "rmse",
+      "learning_rate": 0.05,
+      "num_leaves": 31,
+      "max_depth": -1,
+      "min_data_in_leaf": 40,
+      "feature_fraction": 0.9,
+      "bagging_fraction": 0.8,
+      "bagging_freq": 1,
+      "lambda_l2": 1.0,
+      "verbosity": -1,
+      "device_type": "cpu",
+      "seed": 42
+    },
+    "max_boost_round": 1000,
+    "early_stopping_rounds": 50
+  },
+  "median_improvements": {
+    "median_nowx_vs_naive_pct": -164.48,
+    "median_weather_added_val_pct": 38.34,
+    "median_wx_vs_naive_pct": -25.69
+  },
+  "feeder_results": [
+    {
+      "feeder_id": "OS Leiden Noord",
+      "p90_threshold_kw": 2416.6666666666665,
+      "n_high_demand_test": 2560,
+      "metrics_val": {
+        "Weekly Seasonal Naive": {
+          "mae_kw": 130.7901,
+          "rmse_kw": 191.9347,
+          "wape_pct": 7.457,
+          "bias_kw": -35.0139,
+          "n_obs": 4320
+        },
+        "LightGBM Without Weather": {
+          "mae_kw": 141.8783,
+          "rmse_kw": 198.6367,
+          "wape_pct": 8.0892,
+          "bias_kw": -104.5331,
+          "n_obs": 4320
+        },
+        "LightGBM With Weather": {
+          "mae_kw": 103.316,
+          "rmse_kw": 141.1666,
+          "wape_pct": 5.8905,
+          "bias_kw": -59.7099,
+          "n_obs": 4320
+        }
+      },
+      "metrics_test": {
+        "Weekly Seasonal Naive": {
+          "mae_kw": 116.6801,
+          "rmse_kw": 161.9082,
+          "wape_pct": 5.5368,
+          "bias_kw": -19.0028,
+          "n_obs": 7200,
+          "high_demand_mae_kw": 149.0391,
+          "high_demand_wape_pct": 5.4776,
+          "high_demand_n_obs": 2560,
+          "best_iteration": null,
+          "training_time_sec": 0.0
+        },
+        "LightGBM Without Weather": {
+          "mae_kw": 325.1616,
+          "rmse_kw": 410.7235,
+          "wape_pct": 15.4298,
+          "bias_kw": -315.4066,
+          "n_obs": 7200,
+          "high_demand_mae_kw": 541.7018,
+          "high_demand_wape_pct": 19.9089,
+          "high_demand_n_obs": 2560,
+          "best_iteration": 87,
+          "training_time_sec": 0.355
+        },
+        "LightGBM With Weather": {
+          "mae_kw": 200.5032,
+          "rmse_kw": 252.1108,
+          "wape_pct": 9.5144,
+          "bias_kw": -188.1121,
+          "n_obs": 7200,
+          "high_demand_mae_kw": 343.1023,
+          "high_demand_wape_pct": 12.6099,
+          "high_demand_n_obs": 2560,
+          "best_iteration": 105,
+          "training_time_sec": 0.346
+        }
+      },
+      "comparisons": {
+        "nowx_vs_naive_pct": -178.68,
+        "weather_added_val_pct": 38.34,
+        "wx_vs_naive_pct": -71.84
+      },
+      "horizon_metrics": [
+        {
+          "feeder_id": "OS Leiden Noord",
+          "model_name": "Weekly Seasonal Naive",
+          "split": "test",
+          "horizon_group": "18-24h",
+          "mae_kw": 59.7926,
+          "rmse_kw": 79.2109,
+          "wape_pct": 4.3346,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "model_name": "LightGBM Without Weather",
+          "split": "test",
+          "horizon_group": "18-24h",
+          "mae_kw": 75.8341,
+          "rmse_kw": 94.0905,
+          "wape_pct": 5.4976,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "model_name": "LightGBM With Weather",
+          "split": "test",
+          "horizon_group": "18-24h",
+          "mae_kw": 68.4735,
+          "rmse_kw": 84.4258,
+          "wape_pct": 4.964,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "model_name": "Weekly Seasonal Naive",
+          "split": "test",
+          "horizon_group": "24-30h",
+          "mae_kw": 143.8093,
+          "rmse_kw": 190.7815,
+          "wape_pct": 6.6087,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "model_name": "LightGBM Without Weather",
+          "split": "test",
+          "horizon_group": "24-30h",
+          "mae_kw": 437.5118,
+          "rmse_kw": 502.8453,
+          "wape_pct": 20.1058,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "model_name": "LightGBM With Weather",
+          "split": "test",
+          "horizon_group": "24-30h",
+          "mae_kw": 229.1059,
+          "rmse_kw": 276.6661,
+          "wape_pct": 10.5285,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "model_name": "Weekly Seasonal Naive",
+          "split": "test",
+          "horizon_group": "30-36h",
+          "mae_kw": 154.8037,
+          "rmse_kw": 203.346,
+          "wape_pct": 5.8651,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "model_name": "LightGBM Without Weather",
+          "split": "test",
+          "horizon_group": "30-36h",
+          "mae_kw": 532.3358,
+          "rmse_kw": 571.8744,
+          "wape_pct": 20.1689,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "model_name": "LightGBM With Weather",
+          "split": "test",
+          "horizon_group": "30-36h",
+          "mae_kw": 315.515,
+          "rmse_kw": 349.3696,
+          "wape_pct": 11.9541,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "model_name": "Weekly Seasonal Naive",
+          "split": "test",
+          "horizon_group": "36-41.75h",
+          "mae_kw": 108.3148,
+          "rmse_kw": 144.345,
+          "wape_pct": 4.8472,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "model_name": "LightGBM Without Weather",
+          "split": "test",
+          "horizon_group": "36-41.75h",
+          "mae_kw": 254.9647,
+          "rmse_kw": 293.3058,
+          "wape_pct": 11.4098,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "model_name": "LightGBM With Weather",
+          "split": "test",
+          "horizon_group": "36-41.75h",
+          "mae_kw": 188.9183,
+          "rmse_kw": 220.2461,
+          "wape_pct": 8.4542,
+          "sample_count": 1800
+        }
+      ],
+      "daily_test_records": [
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-16",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 70.8681,
+          "lightgbm_no_weather_mae_kw": 187.8391,
+          "lightgbm_with_weather_mae_kw": 99.657
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-17",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 48.4375,
+          "lightgbm_no_weather_mae_kw": 199.6649,
+          "lightgbm_with_weather_mae_kw": 100.6979
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-18",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 86.6667,
+          "lightgbm_no_weather_mae_kw": 178.0017,
+          "lightgbm_with_weather_mae_kw": 104.8291
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-19",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 76.1806,
+          "lightgbm_no_weather_mae_kw": 204.4475,
+          "lightgbm_with_weather_mae_kw": 101.6384
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-20",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 52.0486,
+          "lightgbm_no_weather_mae_kw": 213.7647,
+          "lightgbm_with_weather_mae_kw": 98.0938
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-21",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 69.1667,
+          "lightgbm_no_weather_mae_kw": 239.398,
+          "lightgbm_with_weather_mae_kw": 110.0047
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-22",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 64.2361,
+          "lightgbm_no_weather_mae_kw": 149.8243,
+          "lightgbm_with_weather_mae_kw": 111.663
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-23",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 102.5,
+          "lightgbm_no_weather_mae_kw": 256.2015,
+          "lightgbm_with_weather_mae_kw": 173.2275
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-24",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 78.125,
+          "lightgbm_no_weather_mae_kw": 191.2094,
+          "lightgbm_with_weather_mae_kw": 124.7505
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-25",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 73.8542,
+          "lightgbm_no_weather_mae_kw": 171.6985,
+          "lightgbm_with_weather_mae_kw": 101.7695
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-26",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 70.7639,
+          "lightgbm_no_weather_mae_kw": 150.7162,
+          "lightgbm_with_weather_mae_kw": 72.6682
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-28",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 120.4167,
+          "lightgbm_no_weather_mae_kw": 275.5744,
+          "lightgbm_with_weather_mae_kw": 163.901
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-29",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 170.1042,
+          "lightgbm_no_weather_mae_kw": 247.1584,
+          "lightgbm_with_weather_mae_kw": 187.0571
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-30",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 171.7361,
+          "lightgbm_no_weather_mae_kw": 346.123,
+          "lightgbm_with_weather_mae_kw": 255.1764
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-10-31",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 175.6597,
+          "lightgbm_no_weather_mae_kw": 260.6907,
+          "lightgbm_with_weather_mae_kw": 182.0484
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-01",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 227.0833,
+          "lightgbm_no_weather_mae_kw": 335.6406,
+          "lightgbm_with_weather_mae_kw": 255.3752
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-02",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 168.5069,
+          "lightgbm_no_weather_mae_kw": 275.2876,
+          "lightgbm_with_weather_mae_kw": 204.9382
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-04",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 105.1042,
+          "lightgbm_no_weather_mae_kw": 265.5169,
+          "lightgbm_with_weather_mae_kw": 136.8261
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-05",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 130.1389,
+          "lightgbm_no_weather_mae_kw": 296.0303,
+          "lightgbm_with_weather_mae_kw": 189.0191
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-06",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 187.9167,
+          "lightgbm_no_weather_mae_kw": 368.1708,
+          "lightgbm_with_weather_mae_kw": 269.2982
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-07",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 245.9375,
+          "lightgbm_no_weather_mae_kw": 464.3846,
+          "lightgbm_with_weather_mae_kw": 314.4136
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-08",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 249.1667,
+          "lightgbm_no_weather_mae_kw": 511.4458,
+          "lightgbm_with_weather_mae_kw": 368.8756
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-09",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 293.4028,
+          "lightgbm_no_weather_mae_kw": 499.4261,
+          "lightgbm_with_weather_mae_kw": 380.0249
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-10",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 188.5417,
+          "lightgbm_no_weather_mae_kw": 402.6042,
+          "lightgbm_with_weather_mae_kw": 280.127
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-11",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 87.8125,
+          "lightgbm_no_weather_mae_kw": 304.252,
+          "lightgbm_with_weather_mae_kw": 203.9384
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-12",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 51.25,
+          "lightgbm_no_weather_mae_kw": 278.1838,
+          "lightgbm_with_weather_mae_kw": 156.5713
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-13",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 42.9861,
+          "lightgbm_no_weather_mae_kw": 319.0393,
+          "lightgbm_with_weather_mae_kw": 206.7938
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-14",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 92.5694,
+          "lightgbm_no_weather_mae_kw": 249.7481,
+          "lightgbm_with_weather_mae_kw": 158.0987
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-15",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 139.1667,
+          "lightgbm_no_weather_mae_kw": 227.3922,
+          "lightgbm_with_weather_mae_kw": 178.3939
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-16",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 120.7292,
+          "lightgbm_no_weather_mae_kw": 232.4481,
+          "lightgbm_with_weather_mae_kw": 164.3657
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-17",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 76.8056,
+          "lightgbm_no_weather_mae_kw": 268.9425,
+          "lightgbm_with_weather_mae_kw": 103.3385
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-18",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 116.2326,
+          "lightgbm_no_weather_mae_kw": 387.429,
+          "lightgbm_with_weather_mae_kw": 207.115
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-19",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 191.8403,
+          "lightgbm_no_weather_mae_kw": 456.1689,
+          "lightgbm_with_weather_mae_kw": 231.6339
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-20",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 231.5972,
+          "lightgbm_no_weather_mae_kw": 546.5745,
+          "lightgbm_with_weather_mae_kw": 319.3374
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-21",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 182.5347,
+          "lightgbm_no_weather_mae_kw": 486.5169,
+          "lightgbm_with_weather_mae_kw": 290.236
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-22",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 190.4861,
+          "lightgbm_no_weather_mae_kw": 504.5639,
+          "lightgbm_with_weather_mae_kw": 313.2874
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-23",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 224.6181,
+          "lightgbm_no_weather_mae_kw": 530.902,
+          "lightgbm_with_weather_mae_kw": 336.1871
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-24",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 53.2292,
+          "lightgbm_no_weather_mae_kw": 281.3984,
+          "lightgbm_with_weather_mae_kw": 134.8102
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-25",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 69.2188,
+          "lightgbm_no_weather_mae_kw": 302.4108,
+          "lightgbm_with_weather_mae_kw": 146.3252
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-26",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 108.0556,
+          "lightgbm_no_weather_mae_kw": 258.1832,
+          "lightgbm_with_weather_mae_kw": 144.6847
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-27",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 64.2708,
+          "lightgbm_no_weather_mae_kw": 380.8204,
+          "lightgbm_with_weather_mae_kw": 238.2738
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-28",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 96.4931,
+          "lightgbm_no_weather_mae_kw": 298.0845,
+          "lightgbm_with_weather_mae_kw": 153.9428
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-29",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 87.7083,
+          "lightgbm_no_weather_mae_kw": 316.8089,
+          "lightgbm_with_weather_mae_kw": 178.388
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-11-30",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 57.2917,
+          "lightgbm_no_weather_mae_kw": 361.3213,
+          "lightgbm_with_weather_mae_kw": 256.3311
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-01",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 125.9722,
+          "lightgbm_no_weather_mae_kw": 425.0894,
+          "lightgbm_with_weather_mae_kw": 233.591
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-02",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 71.1111,
+          "lightgbm_no_weather_mae_kw": 380.9705,
+          "lightgbm_with_weather_mae_kw": 214.6146
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-03",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 68.5069,
+          "lightgbm_no_weather_mae_kw": 381.4696,
+          "lightgbm_with_weather_mae_kw": 231.2756
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-04",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 48.8194,
+          "lightgbm_no_weather_mae_kw": 402.31,
+          "lightgbm_with_weather_mae_kw": 282.6105
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-05",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 140.2431,
+          "lightgbm_no_weather_mae_kw": 449.0702,
+          "lightgbm_with_weather_mae_kw": 262.1271
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-06",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 79.2708,
+          "lightgbm_no_weather_mae_kw": 365.7055,
+          "lightgbm_with_weather_mae_kw": 204.1018
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-07",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 79.3056,
+          "lightgbm_no_weather_mae_kw": 312.6234,
+          "lightgbm_with_weather_mae_kw": 179.5243
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-08",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 42.4306,
+          "lightgbm_no_weather_mae_kw": 364.3118,
+          "lightgbm_with_weather_mae_kw": 155.7392
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-09",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 93.8889,
+          "lightgbm_no_weather_mae_kw": 439.2689,
+          "lightgbm_with_weather_mae_kw": 234.2414
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-10",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 95.9028,
+          "lightgbm_no_weather_mae_kw": 431.6498,
+          "lightgbm_with_weather_mae_kw": 250.3111
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-11",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 64.1667,
+          "lightgbm_no_weather_mae_kw": 440.5249,
+          "lightgbm_with_weather_mae_kw": 326.7974
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-12",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 67.6042,
+          "lightgbm_no_weather_mae_kw": 409.2376,
+          "lightgbm_with_weather_mae_kw": 278.7374
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-13",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 136.7708,
+          "lightgbm_no_weather_mae_kw": 486.0574,
+          "lightgbm_with_weather_mae_kw": 350.7801
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-14",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 125.5903,
+          "lightgbm_no_weather_mae_kw": 463.2912,
+          "lightgbm_with_weather_mae_kw": 323.2191
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-15",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 64.4444,
+          "lightgbm_no_weather_mae_kw": 352.4134,
+          "lightgbm_with_weather_mae_kw": 222.6628
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-16",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 56.2153,
+          "lightgbm_no_weather_mae_kw": 323.7225,
+          "lightgbm_with_weather_mae_kw": 227.1785
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-17",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 88.8542,
+          "lightgbm_no_weather_mae_kw": 279.4892,
+          "lightgbm_with_weather_mae_kw": 187.6453
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-18",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 138.3333,
+          "lightgbm_no_weather_mae_kw": 289.6043,
+          "lightgbm_with_weather_mae_kw": 193.6781
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-19",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 100.0694,
+          "lightgbm_no_weather_mae_kw": 313.6446,
+          "lightgbm_with_weather_mae_kw": 155.0539
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-20",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 129.7222,
+          "lightgbm_no_weather_mae_kw": 298.3992,
+          "lightgbm_with_weather_mae_kw": 186.2982
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-21",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 118.9931,
+          "lightgbm_no_weather_mae_kw": 294.1162,
+          "lightgbm_with_weather_mae_kw": 174.4105
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-22",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 60.4167,
+          "lightgbm_no_weather_mae_kw": 336.7858,
+          "lightgbm_with_weather_mae_kw": 167.3583
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-23",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 64.4792,
+          "lightgbm_no_weather_mae_kw": 336.3142,
+          "lightgbm_with_weather_mae_kw": 174.7509
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-24",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 133.75,
+          "lightgbm_no_weather_mae_kw": 288.3977,
+          "lightgbm_with_weather_mae_kw": 156.421
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-25",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 388.3333,
+          "lightgbm_no_weather_mae_kw": 150.7112,
+          "lightgbm_with_weather_mae_kw": 160.0042
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-26",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 296.7708,
+          "lightgbm_no_weather_mae_kw": 141.727,
+          "lightgbm_with_weather_mae_kw": 138.9857
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-27",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 105.8681,
+          "lightgbm_no_weather_mae_kw": 274.0793,
+          "lightgbm_with_weather_mae_kw": 150.5382
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-28",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 71.8403,
+          "lightgbm_no_weather_mae_kw": 364.9532,
+          "lightgbm_with_weather_mae_kw": 239.9772
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-29",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 65.5208,
+          "lightgbm_no_weather_mae_kw": 329.8713,
+          "lightgbm_with_weather_mae_kw": 174.3544
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-30",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 67.2222,
+          "lightgbm_no_weather_mae_kw": 288.3396,
+          "lightgbm_with_weather_mae_kw": 130.9284
+        },
+        {
+          "feeder_id": "OS Leiden Noord",
+          "test_date": "2024-12-31",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 49.1319,
+          "lightgbm_no_weather_mae_kw": 290.963,
+          "lightgbm_with_weather_mae_kw": 161.6879
+        }
+      ],
+      "runtime": {
+        "train_time_nowx_sec": 0.355,
+        "train_time_wx_sec": 0.346,
+        "pred_time_test_nowx_sec": 0.0139,
+        "pred_time_test_wx_sec": 0.0194,
+        "pred_time_per_day_ms": 0.26
+      },
+      "dataset_meta": {
+        "feeder_id": "OS Leiden Noord",
+        "construction_time_sec": 1.638,
+        "total_rows": 33024,
+        "total_days": 344
+      }
+    },
+    {
+      "feeder_id": "OS Waarderpolder",
+      "p90_threshold_kw": 1040.0,
+      "n_high_demand_test": 1593,
+      "metrics_val": {
+        "Weekly Seasonal Naive": {
+          "mae_kw": 89.8827,
+          "rmse_kw": 145.9437,
+          "wape_pct": 16.1808,
+          "bias_kw": -23.8102,
+          "n_obs": 4320
+        },
+        "LightGBM Without Weather": {
+          "mae_kw": 105.232,
+          "rmse_kw": 158.6514,
+          "wape_pct": 18.944,
+          "bias_kw": -69.6698,
+          "n_obs": 4320
+        },
+        "LightGBM With Weather": {
+          "mae_kw": 87.1172,
+          "rmse_kw": 127.588,
+          "wape_pct": 15.6829,
+          "bias_kw": -45.9164,
+          "n_obs": 4320
+        }
+      },
+      "metrics_test": {
+        "Weekly Seasonal Naive": {
+          "mae_kw": 97.1697,
+          "rmse_kw": 142.3845,
+          "wape_pct": 13.9597,
+          "bias_kw": 6.6424,
+          "n_obs": 7200,
+          "high_demand_mae_kw": 124.9655,
+          "high_demand_wape_pct": 10.1027,
+          "high_demand_n_obs": 1593,
+          "best_iteration": null,
+          "training_time_sec": 0.0
+        },
+        "LightGBM Without Weather": {
+          "mae_kw": 193.5308,
+          "rmse_kw": 265.1633,
+          "wape_pct": 27.8032,
+          "bias_kw": -155.0255,
+          "n_obs": 7200,
+          "high_demand_mae_kw": 444.388,
+          "high_demand_wape_pct": 35.9259,
+          "high_demand_n_obs": 1593,
+          "best_iteration": 75,
+          "training_time_sec": 0.251
+        },
+        "LightGBM With Weather": {
+          "mae_kw": 122.1374,
+          "rmse_kw": 168.0916,
+          "wape_pct": 17.5466,
+          "bias_kw": -75.7812,
+          "n_obs": 7200,
+          "high_demand_mae_kw": 251.3322,
+          "high_demand_wape_pct": 20.3186,
+          "high_demand_n_obs": 1593,
+          "best_iteration": 78,
+          "training_time_sec": 0.335
+        }
+      },
+      "comparisons": {
+        "nowx_vs_naive_pct": -99.17,
+        "weather_added_val_pct": 36.89,
+        "wx_vs_naive_pct": -25.69
+      },
+      "horizon_metrics": [
+        {
+          "feeder_id": "OS Waarderpolder",
+          "model_name": "Weekly Seasonal Naive",
+          "split": "test",
+          "horizon_group": "18-24h",
+          "mae_kw": 73.1935,
+          "rmse_kw": 96.0256,
+          "wape_pct": 16.1949,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "model_name": "LightGBM Without Weather",
+          "split": "test",
+          "horizon_group": "18-24h",
+          "mae_kw": 64.9478,
+          "rmse_kw": 80.631,
+          "wape_pct": 14.3705,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "model_name": "LightGBM With Weather",
+          "split": "test",
+          "horizon_group": "18-24h",
+          "mae_kw": 60.3185,
+          "rmse_kw": 76.1741,
+          "wape_pct": 13.3462,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "model_name": "Weekly Seasonal Naive",
+          "split": "test",
+          "horizon_group": "24-30h",
+          "mae_kw": 136.8824,
+          "rmse_kw": 192.7087,
+          "wape_pct": 14.295,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "model_name": "LightGBM Without Weather",
+          "split": "test",
+          "horizon_group": "24-30h",
+          "mae_kw": 318.0055,
+          "rmse_kw": 363.0685,
+          "wape_pct": 33.2103,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "model_name": "LightGBM With Weather",
+          "split": "test",
+          "horizon_group": "24-30h",
+          "mae_kw": 188.0868,
+          "rmse_kw": 231.4413,
+          "wape_pct": 19.6425,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "model_name": "Weekly Seasonal Naive",
+          "split": "test",
+          "horizon_group": "30-36h",
+          "mae_kw": 114.0278,
+          "rmse_kw": 163.4049,
+          "wape_pct": 12.8538,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "model_name": "LightGBM Without Weather",
+          "split": "test",
+          "horizon_group": "30-36h",
+          "mae_kw": 330.2485,
+          "rmse_kw": 368.6891,
+          "wape_pct": 37.2273,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "model_name": "LightGBM With Weather",
+          "split": "test",
+          "horizon_group": "30-36h",
+          "mae_kw": 182.1114,
+          "rmse_kw": 217.816,
+          "wape_pct": 20.5285,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "model_name": "Weekly Seasonal Naive",
+          "split": "test",
+          "horizon_group": "36-41.75h",
+          "mae_kw": 64.575,
+          "rmse_kw": 89.6365,
+          "wape_pct": 13.2413,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "model_name": "LightGBM Without Weather",
+          "split": "test",
+          "horizon_group": "36-41.75h",
+          "mae_kw": 60.9216,
+          "rmse_kw": 83.6337,
+          "wape_pct": 12.4921,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "model_name": "LightGBM With Weather",
+          "split": "test",
+          "horizon_group": "36-41.75h",
+          "mae_kw": 58.033,
+          "rmse_kw": 78.7892,
+          "wape_pct": 11.8998,
+          "sample_count": 1800
+        }
+      ],
+      "daily_test_records": [
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-16",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 55.3993,
+          "lightgbm_no_weather_mae_kw": 141.5314,
+          "lightgbm_with_weather_mae_kw": 109.164
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-17",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 58.8021,
+          "lightgbm_no_weather_mae_kw": 156.6217,
+          "lightgbm_with_weather_mae_kw": 89.8813
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-18",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 111.2153,
+          "lightgbm_no_weather_mae_kw": 160.6385,
+          "lightgbm_with_weather_mae_kw": 120.1397
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-19",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 57.4653,
+          "lightgbm_no_weather_mae_kw": 121.5586,
+          "lightgbm_with_weather_mae_kw": 61.8609
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-20",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 41.8924,
+          "lightgbm_no_weather_mae_kw": 134.156,
+          "lightgbm_with_weather_mae_kw": 38.5194
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-21",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 67.8819,
+          "lightgbm_no_weather_mae_kw": 169.6829,
+          "lightgbm_with_weather_mae_kw": 103.4181
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-22",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 56.8056,
+          "lightgbm_no_weather_mae_kw": 115.1765,
+          "lightgbm_with_weather_mae_kw": 133.1691
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-23",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 71.9271,
+          "lightgbm_no_weather_mae_kw": 194.7795,
+          "lightgbm_with_weather_mae_kw": 187.7216
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-24",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 60.5382,
+          "lightgbm_no_weather_mae_kw": 140.4992,
+          "lightgbm_with_weather_mae_kw": 132.2377
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-25",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 60.1042,
+          "lightgbm_no_weather_mae_kw": 94.1605,
+          "lightgbm_with_weather_mae_kw": 53.6939
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-26",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 42.1875,
+          "lightgbm_no_weather_mae_kw": 99.1118,
+          "lightgbm_with_weather_mae_kw": 41.8233
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-28",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 92.1875,
+          "lightgbm_no_weather_mae_kw": 187.0117,
+          "lightgbm_with_weather_mae_kw": 132.2805
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-29",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 110.9028,
+          "lightgbm_no_weather_mae_kw": 189.3472,
+          "lightgbm_with_weather_mae_kw": 168.3844
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-30",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 112.2222,
+          "lightgbm_no_weather_mae_kw": 168.2931,
+          "lightgbm_with_weather_mae_kw": 118.8925
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-10-31",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 139.0625,
+          "lightgbm_no_weather_mae_kw": 211.846,
+          "lightgbm_with_weather_mae_kw": 166.9819
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-01",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 122.2569,
+          "lightgbm_no_weather_mae_kw": 193.9915,
+          "lightgbm_with_weather_mae_kw": 151.4263
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-02",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 60.3125,
+          "lightgbm_no_weather_mae_kw": 146.6954,
+          "lightgbm_with_weather_mae_kw": 84.5655
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-04",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 83.4028,
+          "lightgbm_no_weather_mae_kw": 148.3475,
+          "lightgbm_with_weather_mae_kw": 120.9204
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-05",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 71.5972,
+          "lightgbm_no_weather_mae_kw": 181.749,
+          "lightgbm_with_weather_mae_kw": 106.1742
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-06",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 80.5903,
+          "lightgbm_no_weather_mae_kw": 235.8754,
+          "lightgbm_with_weather_mae_kw": 177.1786
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-07",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 71.5972,
+          "lightgbm_no_weather_mae_kw": 238.2507,
+          "lightgbm_with_weather_mae_kw": 155.6629
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-08",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 121.9444,
+          "lightgbm_no_weather_mae_kw": 263.0463,
+          "lightgbm_with_weather_mae_kw": 212.7606
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-09",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 61.2153,
+          "lightgbm_no_weather_mae_kw": 177.4601,
+          "lightgbm_with_weather_mae_kw": 85.8788
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-10",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 97.7778,
+          "lightgbm_no_weather_mae_kw": 178.9921,
+          "lightgbm_with_weather_mae_kw": 73.3609
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-11",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 70.0347,
+          "lightgbm_no_weather_mae_kw": 198.6969,
+          "lightgbm_with_weather_mae_kw": 173.4332
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-12",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 81.8056,
+          "lightgbm_no_weather_mae_kw": 211.0785,
+          "lightgbm_with_weather_mae_kw": 150.8956
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-13",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 64.0625,
+          "lightgbm_no_weather_mae_kw": 209.1557,
+          "lightgbm_with_weather_mae_kw": 121.3996
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-14",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 65.8333,
+          "lightgbm_no_weather_mae_kw": 165.2771,
+          "lightgbm_with_weather_mae_kw": 115.5173
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-15",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 107.5694,
+          "lightgbm_no_weather_mae_kw": 161.8911,
+          "lightgbm_with_weather_mae_kw": 106.6731
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-16",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 30.3472,
+          "lightgbm_no_weather_mae_kw": 132.2128,
+          "lightgbm_with_weather_mae_kw": 58.7772
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-17",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 66.3542,
+          "lightgbm_no_weather_mae_kw": 130.259,
+          "lightgbm_with_weather_mae_kw": 62.6043
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-18",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 69.6528,
+          "lightgbm_no_weather_mae_kw": 209.8269,
+          "lightgbm_with_weather_mae_kw": 102.805
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-19",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 127.5,
+          "lightgbm_no_weather_mae_kw": 283.2417,
+          "lightgbm_with_weather_mae_kw": 160.5828
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-20",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 135.5208,
+          "lightgbm_no_weather_mae_kw": 307.5449,
+          "lightgbm_with_weather_mae_kw": 188.4487
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-21",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 157.3611,
+          "lightgbm_no_weather_mae_kw": 287.8113,
+          "lightgbm_with_weather_mae_kw": 191.4052
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-22",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 129.4792,
+          "lightgbm_no_weather_mae_kw": 263.3012,
+          "lightgbm_with_weather_mae_kw": 155.3456
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-23",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 140.2431,
+          "lightgbm_no_weather_mae_kw": 262.7887,
+          "lightgbm_with_weather_mae_kw": 162.1657
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-24",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 51.875,
+          "lightgbm_no_weather_mae_kw": 139.1323,
+          "lightgbm_with_weather_mae_kw": 39.12
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-25",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 89.8611,
+          "lightgbm_no_weather_mae_kw": 217.3794,
+          "lightgbm_with_weather_mae_kw": 125.6054
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-26",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 88.75,
+          "lightgbm_no_weather_mae_kw": 190.7566,
+          "lightgbm_with_weather_mae_kw": 93.5295
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-27",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 87.6736,
+          "lightgbm_no_weather_mae_kw": 212.8747,
+          "lightgbm_with_weather_mae_kw": 84.3199
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-28",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 91.3889,
+          "lightgbm_no_weather_mae_kw": 197.9707,
+          "lightgbm_with_weather_mae_kw": 115.8852
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-29",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 59.8264,
+          "lightgbm_no_weather_mae_kw": 242.1525,
+          "lightgbm_with_weather_mae_kw": 169.3477
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-11-30",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 63.8542,
+          "lightgbm_no_weather_mae_kw": 91.7387,
+          "lightgbm_with_weather_mae_kw": 44.9294
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-01",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 47.5,
+          "lightgbm_no_weather_mae_kw": 176.3736,
+          "lightgbm_with_weather_mae_kw": 63.327
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-02",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 33.6806,
+          "lightgbm_no_weather_mae_kw": 205.708,
+          "lightgbm_with_weather_mae_kw": 116.5739
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-03",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 59.7222,
+          "lightgbm_no_weather_mae_kw": 243.3429,
+          "lightgbm_with_weather_mae_kw": 142.7735
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-04",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 64.5833,
+          "lightgbm_no_weather_mae_kw": 271.3134,
+          "lightgbm_with_weather_mae_kw": 165.818
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-05",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 60.625,
+          "lightgbm_no_weather_mae_kw": 208.9488,
+          "lightgbm_with_weather_mae_kw": 91.1995
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-06",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 124.2014,
+          "lightgbm_no_weather_mae_kw": 212.1397,
+          "lightgbm_with_weather_mae_kw": 121.0329
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-07",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 87.5,
+          "lightgbm_no_weather_mae_kw": 107.4994,
+          "lightgbm_with_weather_mae_kw": 56.7442
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-08",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 40.4167,
+          "lightgbm_no_weather_mae_kw": 147.4432,
+          "lightgbm_with_weather_mae_kw": 43.3075
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-09",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 98.2986,
+          "lightgbm_no_weather_mae_kw": 272.1642,
+          "lightgbm_with_weather_mae_kw": 158.7886
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-10",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 90.3819,
+          "lightgbm_no_weather_mae_kw": 299.4213,
+          "lightgbm_with_weather_mae_kw": 193.0059
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-11",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 59.3403,
+          "lightgbm_no_weather_mae_kw": 302.3782,
+          "lightgbm_with_weather_mae_kw": 196.4216
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-12",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 123.2639,
+          "lightgbm_no_weather_mae_kw": 306.549,
+          "lightgbm_with_weather_mae_kw": 241.5576
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-13",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 165.0694,
+          "lightgbm_no_weather_mae_kw": 333.4251,
+          "lightgbm_with_weather_mae_kw": 253.162
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-14",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 136.5278,
+          "lightgbm_no_weather_mae_kw": 268.0537,
+          "lightgbm_with_weather_mae_kw": 172.9478
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-15",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 45.7639,
+          "lightgbm_no_weather_mae_kw": 165.0967,
+          "lightgbm_with_weather_mae_kw": 66.0345
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-16",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 56.8924,
+          "lightgbm_no_weather_mae_kw": 218.3166,
+          "lightgbm_with_weather_mae_kw": 133.7164
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-17",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 108.3333,
+          "lightgbm_no_weather_mae_kw": 215.8597,
+          "lightgbm_with_weather_mae_kw": 108.3514
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-18",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 149.5139,
+          "lightgbm_no_weather_mae_kw": 195.8895,
+          "lightgbm_with_weather_mae_kw": 95.4376
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-19",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 114.0625,
+          "lightgbm_no_weather_mae_kw": 212.6952,
+          "lightgbm_with_weather_mae_kw": 99.389
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-20",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 192.7778,
+          "lightgbm_no_weather_mae_kw": 156.8091,
+          "lightgbm_with_weather_mae_kw": 64.478
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-21",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 135.8333,
+          "lightgbm_no_weather_mae_kw": 114.7595,
+          "lightgbm_with_weather_mae_kw": 69.7778
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-22",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 52.8646,
+          "lightgbm_no_weather_mae_kw": 185.1483,
+          "lightgbm_with_weather_mae_kw": 73.9829
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-23",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 128.0729,
+          "lightgbm_no_weather_mae_kw": 154.2046,
+          "lightgbm_with_weather_mae_kw": 63.2171
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-24",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 183.9583,
+          "lightgbm_no_weather_mae_kw": 136.4558,
+          "lightgbm_with_weather_mae_kw": 100.5366
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-25",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 417.8993,
+          "lightgbm_no_weather_mae_kw": 241.6065,
+          "lightgbm_with_weather_mae_kw": 327.2864
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-26",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 370.0694,
+          "lightgbm_no_weather_mae_kw": 179.9118,
+          "lightgbm_with_weather_mae_kw": 227.2729
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-27",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 140.1736,
+          "lightgbm_no_weather_mae_kw": 124.0429,
+          "lightgbm_with_weather_mae_kw": 78.4463
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-28",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 126.9792,
+          "lightgbm_no_weather_mae_kw": 253.1233,
+          "lightgbm_with_weather_mae_kw": 157.9027
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-29",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 58.75,
+          "lightgbm_no_weather_mae_kw": 149.589,
+          "lightgbm_with_weather_mae_kw": 55.3695
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-30",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 59.0625,
+          "lightgbm_no_weather_mae_kw": 159.8825,
+          "lightgbm_with_weather_mae_kw": 76.4662
+        },
+        {
+          "feeder_id": "OS Waarderpolder",
+          "test_date": "2024-12-31",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 67.3264,
+          "lightgbm_no_weather_mae_kw": 132.7477,
+          "lightgbm_with_weather_mae_kw": 97.0963
+        }
+      ],
+      "runtime": {
+        "train_time_nowx_sec": 0.251,
+        "train_time_wx_sec": 0.335,
+        "pred_time_test_nowx_sec": 0.0137,
+        "pred_time_test_wx_sec": 0.0264,
+        "pred_time_per_day_ms": 0.35
+      },
+      "dataset_meta": {
+        "feeder_id": "OS Waarderpolder",
+        "construction_time_sec": 1.331,
+        "total_rows": 33024,
+        "total_days": 344
+      }
+    },
+    {
+      "feeder_id": "OS Weesp",
+      "p90_threshold_kw": 2100.0,
+      "n_high_demand_test": 2491,
+      "metrics_val": {
+        "Weekly Seasonal Naive": {
+          "mae_kw": 300.929,
+          "rmse_kw": 471.6005,
+          "wape_pct": 23.9611,
+          "bias_kw": -84.7207,
+          "n_obs": 4320
+        },
+        "LightGBM Without Weather": {
+          "mae_kw": 331.8659,
+          "rmse_kw": 449.1838,
+          "wape_pct": 26.4244,
+          "bias_kw": -158.214,
+          "n_obs": 4320
+        },
+        "LightGBM With Weather": {
+          "mae_kw": 196.0151,
+          "rmse_kw": 284.4058,
+          "wape_pct": 15.6075,
+          "bias_kw": -55.6317,
+          "n_obs": 4320
+        }
+      },
+      "metrics_test": {
+        "Weekly Seasonal Naive": {
+          "mae_kw": 222.5565,
+          "rmse_kw": 328.6121,
+          "wape_pct": 12.1584,
+          "bias_kw": -24.9315,
+          "n_obs": 7200,
+          "high_demand_mae_kw": 263.2798,
+          "high_demand_wape_pct": 10.6786,
+          "high_demand_n_obs": 2491,
+          "best_iteration": null,
+          "training_time_sec": 0.0
+        },
+        "LightGBM Without Weather": {
+          "mae_kw": 588.6116,
+          "rmse_kw": 753.2283,
+          "wape_pct": 32.1563,
+          "bias_kw": -574.6082,
+          "n_obs": 7200,
+          "high_demand_mae_kw": 1050.3002,
+          "high_demand_wape_pct": 42.6001,
+          "high_demand_n_obs": 2491,
+          "best_iteration": 20,
+          "training_time_sec": 0.176
+        },
+        "LightGBM With Weather": {
+          "mae_kw": 232.6887,
+          "rmse_kw": 337.0359,
+          "wape_pct": 12.712,
+          "bias_kw": -184.2488,
+          "n_obs": 7200,
+          "high_demand_mae_kw": 379.2095,
+          "high_demand_wape_pct": 15.3807,
+          "high_demand_n_obs": 2491,
+          "best_iteration": 202,
+          "training_time_sec": 0.599
+        }
+      },
+      "comparisons": {
+        "nowx_vs_naive_pct": -164.48,
+        "weather_added_val_pct": 60.47,
+        "wx_vs_naive_pct": -4.55
+      },
+      "horizon_metrics": [
+        {
+          "feeder_id": "OS Weesp",
+          "model_name": "Weekly Seasonal Naive",
+          "split": "test",
+          "horizon_group": "18-24h",
+          "mae_kw": 104.3315,
+          "rmse_kw": 133.8227,
+          "wape_pct": 8.5379,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "model_name": "LightGBM Without Weather",
+          "split": "test",
+          "horizon_group": "18-24h",
+          "mae_kw": 117.8348,
+          "rmse_kw": 157.752,
+          "wape_pct": 9.6429,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "model_name": "LightGBM With Weather",
+          "split": "test",
+          "horizon_group": "18-24h",
+          "mae_kw": 73.3645,
+          "rmse_kw": 94.0647,
+          "wape_pct": 6.0037,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "model_name": "Weekly Seasonal Naive",
+          "split": "test",
+          "horizon_group": "24-30h",
+          "mae_kw": 344.2444,
+          "rmse_kw": 462.4532,
+          "wape_pct": 17.4312,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "model_name": "LightGBM Without Weather",
+          "split": "test",
+          "horizon_group": "24-30h",
+          "mae_kw": 822.8413,
+          "rmse_kw": 936.8588,
+          "wape_pct": 41.6654,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "model_name": "LightGBM With Weather",
+          "split": "test",
+          "horizon_group": "24-30h",
+          "mae_kw": 355.9793,
+          "rmse_kw": 456.0789,
+          "wape_pct": 18.0254,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "model_name": "Weekly Seasonal Naive",
+          "split": "test",
+          "horizon_group": "30-36h",
+          "mae_kw": 303.7963,
+          "rmse_kw": 411.3998,
+          "wape_pct": 13.6786,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "model_name": "LightGBM Without Weather",
+          "split": "test",
+          "horizon_group": "30-36h",
+          "mae_kw": 996.9806,
+          "rmse_kw": 1057.1634,
+          "wape_pct": 44.8896,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "model_name": "LightGBM With Weather",
+          "split": "test",
+          "horizon_group": "30-36h",
+          "mae_kw": 360.423,
+          "rmse_kw": 453.997,
+          "wape_pct": 16.2283,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "model_name": "Weekly Seasonal Naive",
+          "split": "test",
+          "horizon_group": "36-41.75h",
+          "mae_kw": 137.8537,
+          "rmse_kw": 175.8473,
+          "wape_pct": 7.24,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "model_name": "LightGBM Without Weather",
+          "split": "test",
+          "horizon_group": "36-41.75h",
+          "mae_kw": 416.7897,
+          "rmse_kw": 499.2266,
+          "wape_pct": 21.8895,
+          "sample_count": 1800
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "model_name": "LightGBM With Weather",
+          "split": "test",
+          "horizon_group": "36-41.75h",
+          "mae_kw": 140.9878,
+          "rmse_kw": 177.2102,
+          "wape_pct": 7.4046,
+          "sample_count": 1800
+        }
+      ],
+      "daily_test_records": [
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-16",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 175.2083,
+          "lightgbm_no_weather_mae_kw": 449.0428,
+          "lightgbm_with_weather_mae_kw": 220.2987
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-17",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 204.3056,
+          "lightgbm_no_weather_mae_kw": 531.7755,
+          "lightgbm_with_weather_mae_kw": 203.8671
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-18",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 288.6458,
+          "lightgbm_no_weather_mae_kw": 515.4054,
+          "lightgbm_with_weather_mae_kw": 239.4144
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-19",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 127.4306,
+          "lightgbm_no_weather_mae_kw": 355.85,
+          "lightgbm_with_weather_mae_kw": 213.0272
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-20",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 156.1111,
+          "lightgbm_no_weather_mae_kw": 307.866,
+          "lightgbm_with_weather_mae_kw": 135.1207
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-21",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 170.3125,
+          "lightgbm_no_weather_mae_kw": 557.5129,
+          "lightgbm_with_weather_mae_kw": 183.3141
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-22",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 166.25,
+          "lightgbm_no_weather_mae_kw": 380.3094,
+          "lightgbm_with_weather_mae_kw": 181.521
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-23",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 252.7778,
+          "lightgbm_no_weather_mae_kw": 579.3468,
+          "lightgbm_with_weather_mae_kw": 307.8147
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-24",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 233.1597,
+          "lightgbm_no_weather_mae_kw": 346.8991,
+          "lightgbm_with_weather_mae_kw": 171.7092
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-25",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 221.4583,
+          "lightgbm_no_weather_mae_kw": 271.1901,
+          "lightgbm_with_weather_mae_kw": 106.5963
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-26",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 232.7083,
+          "lightgbm_no_weather_mae_kw": 190.824,
+          "lightgbm_with_weather_mae_kw": 109.1037
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-28",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 132.9167,
+          "lightgbm_no_weather_mae_kw": 519.1471,
+          "lightgbm_with_weather_mae_kw": 160.8983
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-29",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 367.1875,
+          "lightgbm_no_weather_mae_kw": 625.0436,
+          "lightgbm_with_weather_mae_kw": 333.2131
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-30",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 213.2986,
+          "lightgbm_no_weather_mae_kw": 497.5815,
+          "lightgbm_with_weather_mae_kw": 202.6181
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-10-31",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 322.6042,
+          "lightgbm_no_weather_mae_kw": 569.1204,
+          "lightgbm_with_weather_mae_kw": 276.0989
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-01",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 403.7847,
+          "lightgbm_no_weather_mae_kw": 598.7719,
+          "lightgbm_with_weather_mae_kw": 307.0175
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-02",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 184.0625,
+          "lightgbm_no_weather_mae_kw": 236.5137,
+          "lightgbm_with_weather_mae_kw": 155.2171
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-04",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 285.9375,
+          "lightgbm_no_weather_mae_kw": 409.8232,
+          "lightgbm_with_weather_mae_kw": 191.4471
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-05",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 338.8194,
+          "lightgbm_no_weather_mae_kw": 427.3909,
+          "lightgbm_with_weather_mae_kw": 189.9538
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-06",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 203.9583,
+          "lightgbm_no_weather_mae_kw": 664.0175,
+          "lightgbm_with_weather_mae_kw": 289.0294
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-07",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 247.5,
+          "lightgbm_no_weather_mae_kw": 769.2965,
+          "lightgbm_with_weather_mae_kw": 331.4514
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-08",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 296.4583,
+          "lightgbm_no_weather_mae_kw": 781.1047,
+          "lightgbm_with_weather_mae_kw": 553.7826
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-09",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 456.4931,
+          "lightgbm_no_weather_mae_kw": 633.9823,
+          "lightgbm_with_weather_mae_kw": 398.1748
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-10",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 357.0139,
+          "lightgbm_no_weather_mae_kw": 565.3377,
+          "lightgbm_with_weather_mae_kw": 302.374
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-11",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 120.9722,
+          "lightgbm_no_weather_mae_kw": 498.486,
+          "lightgbm_with_weather_mae_kw": 165.8552
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-12",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 134.3403,
+          "lightgbm_no_weather_mae_kw": 561.5226,
+          "lightgbm_with_weather_mae_kw": 196.5705
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-13",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 80.9028,
+          "lightgbm_no_weather_mae_kw": 623.7426,
+          "lightgbm_with_weather_mae_kw": 229.6859
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-14",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 139.9306,
+          "lightgbm_no_weather_mae_kw": 478.54,
+          "lightgbm_with_weather_mae_kw": 170.3595
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-15",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 151.8056,
+          "lightgbm_no_weather_mae_kw": 552.4221,
+          "lightgbm_with_weather_mae_kw": 214.1296
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-16",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 70.5903,
+          "lightgbm_no_weather_mae_kw": 457.7353,
+          "lightgbm_with_weather_mae_kw": 197.6375
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-17",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 153.0556,
+          "lightgbm_no_weather_mae_kw": 406.0006,
+          "lightgbm_with_weather_mae_kw": 134.5455
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-18",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 287.9861,
+          "lightgbm_no_weather_mae_kw": 748.1425,
+          "lightgbm_with_weather_mae_kw": 292.7905
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-19",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 413.5417,
+          "lightgbm_no_weather_mae_kw": 933.9094,
+          "lightgbm_with_weather_mae_kw": 331.6173
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-20",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 351.1458,
+          "lightgbm_no_weather_mae_kw": 934.5043,
+          "lightgbm_with_weather_mae_kw": 383.5671
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-21",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 413.0556,
+          "lightgbm_no_weather_mae_kw": 954.0783,
+          "lightgbm_with_weather_mae_kw": 495.8169
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-22",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 323.125,
+          "lightgbm_no_weather_mae_kw": 887.5491,
+          "lightgbm_with_weather_mae_kw": 436.9354
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-23",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 235.7639,
+          "lightgbm_no_weather_mae_kw": 706.3695,
+          "lightgbm_with_weather_mae_kw": 281.7882
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-24",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 185.6944,
+          "lightgbm_no_weather_mae_kw": 433.2539,
+          "lightgbm_with_weather_mae_kw": 141.8522
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-25",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 237.7431,
+          "lightgbm_no_weather_mae_kw": 704.4854,
+          "lightgbm_with_weather_mae_kw": 237.9451
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-26",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 177.8125,
+          "lightgbm_no_weather_mae_kw": 627.8076,
+          "lightgbm_with_weather_mae_kw": 173.772
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-27",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 160.2431,
+          "lightgbm_no_weather_mae_kw": 748.8497,
+          "lightgbm_with_weather_mae_kw": 198.1657
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-28",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 286.2153,
+          "lightgbm_no_weather_mae_kw": 566.7862,
+          "lightgbm_with_weather_mae_kw": 152.6368
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-29",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 312.7431,
+          "lightgbm_no_weather_mae_kw": 529.8174,
+          "lightgbm_with_weather_mae_kw": 150.5474
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-11-30",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 215.1389,
+          "lightgbm_no_weather_mae_kw": 397.7949,
+          "lightgbm_with_weather_mae_kw": 92.7062
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-01",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 145.3819,
+          "lightgbm_no_weather_mae_kw": 423.306,
+          "lightgbm_with_weather_mae_kw": 180.7472
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-02",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 97.0139,
+          "lightgbm_no_weather_mae_kw": 658.2057,
+          "lightgbm_with_weather_mae_kw": 274.6593
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-03",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 90.6944,
+          "lightgbm_no_weather_mae_kw": 723.1704,
+          "lightgbm_with_weather_mae_kw": 264.6987
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-04",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 147.9167,
+          "lightgbm_no_weather_mae_kw": 885.0839,
+          "lightgbm_with_weather_mae_kw": 437.6999
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-05",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 300.3472,
+          "lightgbm_no_weather_mae_kw": 905.6656,
+          "lightgbm_with_weather_mae_kw": 317.1729
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-06",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 224.4097,
+          "lightgbm_no_weather_mae_kw": 765.1093,
+          "lightgbm_with_weather_mae_kw": 239.2044
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-07",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 133.4722,
+          "lightgbm_no_weather_mae_kw": 494.9082,
+          "lightgbm_with_weather_mae_kw": 126.5422
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-08",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 208.75,
+          "lightgbm_no_weather_mae_kw": 630.6826,
+          "lightgbm_with_weather_mae_kw": 229.795
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-09",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 227.3264,
+          "lightgbm_no_weather_mae_kw": 867.6161,
+          "lightgbm_with_weather_mae_kw": 332.9495
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-10",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 222.5,
+          "lightgbm_no_weather_mae_kw": 891.8791,
+          "lightgbm_with_weather_mae_kw": 338.8574
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-11",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 117.3611,
+          "lightgbm_no_weather_mae_kw": 937.566,
+          "lightgbm_with_weather_mae_kw": 449.0054
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-12",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 101.4931,
+          "lightgbm_no_weather_mae_kw": 870.0051,
+          "lightgbm_with_weather_mae_kw": 323.1718
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-13",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 280.0694,
+          "lightgbm_no_weather_mae_kw": 954.5898,
+          "lightgbm_with_weather_mae_kw": 550.0997
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-14",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 230.4861,
+          "lightgbm_no_weather_mae_kw": 721.3162,
+          "lightgbm_with_weather_mae_kw": 293.9504
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-15",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 114.8264,
+          "lightgbm_no_weather_mae_kw": 562.2729,
+          "lightgbm_with_weather_mae_kw": 157.2012
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-16",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 151.6319,
+          "lightgbm_no_weather_mae_kw": 692.7243,
+          "lightgbm_with_weather_mae_kw": 217.0714
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-17",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 150.6944,
+          "lightgbm_no_weather_mae_kw": 696.6465,
+          "lightgbm_with_weather_mae_kw": 191.7918
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-18",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 324.6181,
+          "lightgbm_no_weather_mae_kw": 622.4887,
+          "lightgbm_with_weather_mae_kw": 112.5071
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-19",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 296.5278,
+          "lightgbm_no_weather_mae_kw": 598.3948,
+          "lightgbm_with_weather_mae_kw": 107.7318
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-20",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 379.375,
+          "lightgbm_no_weather_mae_kw": 548.9824,
+          "lightgbm_with_weather_mae_kw": 146.4604
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-21",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 212.3611,
+          "lightgbm_no_weather_mae_kw": 408.7488,
+          "lightgbm_with_weather_mae_kw": 93.8648
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-22",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 143.9931,
+          "lightgbm_no_weather_mae_kw": 456.7989,
+          "lightgbm_with_weather_mae_kw": 98.6901
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-23",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 228.6806,
+          "lightgbm_no_weather_mae_kw": 505.3381,
+          "lightgbm_with_weather_mae_kw": 119.1467
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-24",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 167.6042,
+          "lightgbm_no_weather_mae_kw": 575.9874,
+          "lightgbm_with_weather_mae_kw": 132.8898
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-25",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 430.7986,
+          "lightgbm_no_weather_mae_kw": 247.5538,
+          "lightgbm_with_weather_mae_kw": 193.5177
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-26",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 429.7222,
+          "lightgbm_no_weather_mae_kw": 205.4005,
+          "lightgbm_with_weather_mae_kw": 235.2381
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-27",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 126.4236,
+          "lightgbm_no_weather_mae_kw": 525.1122,
+          "lightgbm_with_weather_mae_kw": 147.2382
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-28",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 122.0833,
+          "lightgbm_no_weather_mae_kw": 614.7132,
+          "lightgbm_with_weather_mae_kw": 241.1603
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-29",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 129.3056,
+          "lightgbm_no_weather_mae_kw": 549.8495,
+          "lightgbm_with_weather_mae_kw": 176.419
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-30",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 158.6111,
+          "lightgbm_no_weather_mae_kw": 565.2249,
+          "lightgbm_with_weather_mae_kw": 139.6757
+        },
+        {
+          "feeder_id": "OS Weesp",
+          "test_date": "2024-12-31",
+          "sample_count": 96,
+          "weekly_naive_mae_kw": 107.0486,
+          "lightgbm_no_weather_mae_kw": 505.5774,
+          "lightgbm_with_weather_mae_kw": 140.5053
+        }
+      ],
+      "runtime": {
+        "train_time_nowx_sec": 0.176,
+        "train_time_wx_sec": 0.599,
+        "pred_time_test_nowx_sec": 0.0061,
+        "pred_time_test_wx_sec": 0.03,
+        "pred_time_per_day_ms": 0.4
+      },
+      "dataset_meta": {
+        "feeder_id": "OS Weesp",
+        "construction_time_sec": 1.329,
+        "total_rows": 33024,
+        "total_days": 344
+      }
+    }
+  ]
+}

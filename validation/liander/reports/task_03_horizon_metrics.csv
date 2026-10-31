@@ -1,0 +1,37 @@
+feeder_id,model_name,split,horizon_group,mae_kw,rmse_kw,wape_pct,sample_count
+OS Leiden Noord,Weekly Seasonal Naive,test,18-24h,59.7926,79.2109,4.3346,1800
+OS Leiden Noord,LightGBM Without Weather,test,18-24h,75.8341,94.0905,5.4976,1800
+OS Leiden Noord,LightGBM With Weather,test,18-24h,68.4735,84.4258,4.964,1800
+OS Leiden Noord,Weekly Seasonal Naive,test,24-30h,143.8093,190.7815,6.6087,1800
+OS Leiden Noord,LightGBM Without Weather,test,24-30h,437.5118,502.8453,20.1058,1800
+OS Leiden Noord,LightGBM With Weather,test,24-30h,229.1059,276.6661,10.5285,1800
+OS Leiden Noord,Weekly Seasonal Naive,test,30-36h,154.8037,203.346,5.8651,1800
+OS Leiden Noord,LightGBM Without Weather,test,30-36h,532.3358,571.8744,20.1689,1800
+OS Leiden Noord,LightGBM With Weather,test,30-36h,315.515,349.3696,11.9541,1800
+OS Leiden Noord,Weekly Seasonal Naive,test,36-41.75h,108.3148,144.345,4.8472,1800
+OS Leiden Noord,LightGBM Without Weather,test,36-41.75h,254.9647,293.3058,11.4098,1800
+OS Leiden Noord,LightGBM With Weather,test,36-41.75h,188.9183,220.2461,8.4542,1800
+OS Waarderpolder,Weekly Seasonal Naive,test,18-24h,73.1935,96.0256,16.1949,1800
+OS Waarderpolder,LightGBM Without Weather,test,18-24h,64.9478,80.631,14.3705,1800
+OS Waarderpolder,LightGBM With Weather,test,18-24h,60.3185,76.1741,13.3462,1800
+OS Waarderpolder,Weekly Seasonal Naive,test,24-30h,136.8824,192.7087,14.295,1800
+OS Waarderpolder,LightGBM Without Weather,test,24-30h,318.0055,363.0685,33.2103,1800
+OS Waarderpolder,LightGBM With Weather,test,24-30h,188.0868,231.4413,19.6425,1800
+OS Waarderpolder,Weekly Seasonal Naive,test,30-36h,114.0278,163.4049,12.8538,1800
+OS Waarderpolder,LightGBM Without Weather,test,30-36h,330.2485,368.6891,37.2273,1800
+OS Waarderpolder,LightGBM With Weather,test,30-36h,182.1114,217.816,20.5285,1800
+OS Waarderpolder,Weekly Seasonal Naive,test,36-41.75h,64.575,89.6365,13.2413,1800
+OS Waarderpolder,LightGBM Without Weather,test,36-41.75h,60.9216,83.6337,12.4921,1800
+OS Waarderpolder,LightGBM With Weather,test,36-41.75h,58.033,78.7892,11.8998,1800
+OS Weesp,Weekly Seasonal Naive,test,18-24h,104.3315,133.8227,8.5379,1800
+OS Weesp,LightGBM Without Weather,test,18-24h,117.8348,157.752,9.6429,1800
+OS Weesp,LightGBM With Weather,test,18-24h,73.3645,94.0647,6.0037,1800
+OS Weesp,Weekly Seasonal Naive,test,24-30h,344.2444,462.4532,17.4312,1800
+OS Weesp,LightGBM Without Weather,test,24-30h,822.8413,936.8588,41.6654,1800
+OS Weesp,LightGBM With Weather,test,24-30h,355.9793,456.0789,18.0254,1800
+OS Weesp,Weekly Seasonal Naive,test,30-36h,303.7963,411.3998,13.6786,1800
+OS Weesp,LightGBM Without Weather,test,30-36h,996.9806,1057.1634,44.8896,1800
+OS Weesp,LightGBM With Weather,test,30-36h,360.423,453.997,16.2283,1800
+OS Weesp,Weekly Seasonal Naive,test,36-41.75h,137.8537,175.8473,7.24,1800
+OS Weesp,LightGBM Without Weather,test,36-41.75h,416.7897,499.2266,21.8895,1800
+OS Weesp,LightGBM With Weather,test,36-41.75h,140.9878,177.2102,7.4046,1800
