@@ -1,0 +1,254 @@
+{
+  "audit_metadata": {
+    "task": "task_01_raw_file_audit",
+    "project": "Niramaya",
+    "timestamp_utc": "2026-10-31T13:53:04Z",
+    "timestamp_local": "2026-10-31 19:23:04 +0530",
+    "command": "python validation/niramaya/task_01_raw_file_audit/audit_raw_files.py --data-dir ../data/raw --output-dir validation/niramaya/task_01_raw_file_audit/output",
+    "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
+    "python_executable": "C:\\Program Files\\Python313\\python.exe",
+    "os_platform": "Windows-11-10.0.26200-SP0",
+    "os_release": "Windows 11 (10.0.26200)",
+    "machine": "AMD64",
+    "working_dir": "D:\\Niramaya\\validation-repo",
+    "data_dir": "D:\\Niramaya\\data\\raw",
+    "output_dir": "D:\\Niramaya\\validation-repo\\validation\\niramaya\\task_01_raw_file_audit\\output"
+  },
+  "files": {
+    "hrrp": {
+      "file_key": "hrrp",
+      "filename": "FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
+      "label": "FY 2026 Hospital Readmissions Reduction Program (HRRP) Hospital",
+      "expected_cms_source": "https://data.cms.gov/provider-data/dataset/9n3s-kdb3",
+      "direct_resource_url": "https://data.cms.gov/provider-data/sites/default/files/resources/a171bc36c488d3e0dc33ec63abb469a6_1770163617/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
+      "resolved_path": "D:\\Niramaya\\data\\raw\\FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
+      "file_exists": true,
+      "is_regular_file": true,
+      "size_bytes": 2068464,
+      "size_mb": 1.9726,
+      "sha256": "7e7915dd2751a1e59ac46dbc9194fb781e820962a04d47c31344ea2bb30c91f6",
+      "has_utf8_bom": false,
+      "encoding_used": "utf-8",
+      "readable": true,
+      "header_columns_count": 12,
+      "original_column_names": [
+        "Facility Name",
+        "Facility ID",
+        "State",
+        "Measure Name",
+        "Number of Discharges",
+        "Footnote",
+        "Excess Readmission Ratio",
+        "Predicted Readmission Rate",
+        "Expected Readmission Rate",
+        "Number of Readmissions",
+        "Start Date",
+        "End Date"
+      ],
+      "empty_column_names": [],
+      "duplicate_column_names": [],
+      "data_row_count": 18330,
+      "malformed_rows_count": 0,
+      "malformed_rows_samples": [],
+      "required_columns_audit": {
+        "required": [
+          "Facility Name",
+          "Facility ID",
+          "State",
+          "Measure Name",
+          "Number of Discharges",
+          "Footnote",
+          "Excess Readmission Ratio",
+          "Predicted Readmission Rate",
+          "Expected Readmission Rate",
+          "Number of Readmissions",
+          "Start Date",
+          "End Date"
+        ],
+        "matched": {
+          "Facility Name": "Facility Name",
+          "Facility ID": "Facility ID",
+          "State": "State",
+          "Measure Name": "Measure Name",
+          "Number of Discharges": "Number of Discharges",
+          "Footnote": "Footnote",
+          "Excess Readmission Ratio": "Excess Readmission Ratio",
+          "Predicted Readmission Rate": "Predicted Readmission Rate",
+          "Expected Readmission Rate": "Expected Readmission Rate",
+          "Number of Readmissions": "Number of Readmissions",
+          "Start Date": "Start Date",
+          "End Date": "End Date"
+        },
+        "missing": [],
+        "all_present": true
+      },
+      "facility_id_audit": {
+        "column_present": true,
+        "column_name": "Facility ID",
+        "total_values": 18330,
+        "blank_count": 0,
+        "unique_nonblank_count": 3055,
+        "length_distribution": {
+          "6": 18330
+        },
+        "leading_zero_count": 3354,
+        "leading_zero_preserved": true,
+        "sample_identifiers": [
+          "010001",
+          "010001",
+          "010001",
+          "010001",
+          "010001"
+        ],
+        "sample_leading_zero_identifiers": [
+          "010001",
+          "010005",
+          "010006",
+          "010007",
+          "010008"
+        ]
+      },
+      "exact_duplicate_rows_audit": {
+        "duplicate_rows_beyond_first": 0,
+        "distinct_duplicated_patterns": 0,
+        "duplicated_pattern_samples": []
+      },
+      "catalogue_comparison": {
+        "reference_rows": 18330,
+        "actual_rows": 18330,
+        "row_difference": 0,
+        "reference_columns": 12,
+        "actual_columns": 12,
+        "column_difference": 0,
+        "match": true,
+        "requires_investigation": false,
+        "notes": "Exact match with CMS catalogue reference counts."
+      },
+      "issues": []
+    },
+    "hospital_general_information": {
+      "file_key": "hospital_general_information",
+      "filename": "Hospital_General_Information.csv",
+      "label": "Hospital General Information",
+      "expected_cms_source": "https://data.cms.gov/provider-data/dataset/xubh-q36u",
+      "direct_resource_url": "https://data.cms.gov/provider-data/sites/default/files/resources/893c372430d9d71a1c52737d01239d47_1785189955/Hospital_General_Information.csv",
+      "resolved_path": "D:\\Niramaya\\data\\raw\\Hospital_General_Information.csv",
+      "file_exists": true,
+      "is_regular_file": true,
+      "size_bytes": 1450767,
+      "size_mb": 1.3836,
+      "sha256": "f874f09fef895a1ccf5bb7392dcbb2be05c9860339261b093fe00f0c1b013480",
+      "has_utf8_bom": false,
+      "encoding_used": "utf-8",
+      "readable": true,
+      "header_columns_count": 38,
+      "original_column_names": [
+        "Facility ID",
+        "Facility Name",
+        "Address",
+        "City/Town",
+        "State",
+        "ZIP Code",
+        "County/Parish",
+        "Telephone Number",
+        "Hospital Type",
+        "Hospital Ownership",
+        "Emergency Services",
+        "Meets criteria for birthing friendly designation",
+        "Hospital overall rating",
+        "Hospital overall rating footnote",
+        "MORT Group Measure Count",
+        "Count of Facility MORT Measures",
+        "Count of MORT Measures Better",
+        "Count of MORT Measures No Different",
+        "Count of MORT Measures Worse",
+        "MORT Group Footnote",
+        "Safety Group Measure Count",
+        "Count of Facility Safety Measures",
+        "Count of Safety Measures Better",
+        "Count of Safety Measures No Different",
+        "Count of Safety Measures Worse",
+        "Safety Group Footnote",
+        "READM Group Measure Count",
+        "Count of Facility READM Measures",
+        "Count of READM Measures Better",
+        "Count of READM Measures No Different",
+        "Count of READM Measures Worse",
+        "READM Group Footnote",
+        "Pt Exp Group Measure Count",
+        "Count of Facility Pt Exp Measures",
+        "Pt Exp Group Footnote",
+        "TE Group Measure Count",
+        "Count of Facility TE Measures",
+        "TE Group Footnote"
+      ],
+      "empty_column_names": [],
+      "duplicate_column_names": [],
+      "data_row_count": 5419,
+      "malformed_rows_count": 0,
+      "malformed_rows_samples": [],
+      "required_columns_audit": {
+        "required": [
+          "Facility ID",
+          "Facility Name",
+          "State",
+          "Hospital Type",
+          "Hospital Ownership"
+        ],
+        "matched": {
+          "Facility ID": "Facility ID",
+          "Facility Name": "Facility Name",
+          "State": "State",
+          "Hospital Type": "Hospital Type",
+          "Hospital Ownership": "Hospital Ownership"
+        },
+        "missing": [],
+        "all_present": true
+      },
+      "facility_id_audit": {
+        "column_present": true,
+        "column_name": "Facility ID",
+        "total_values": 5419,
+        "blank_count": 0,
+        "unique_nonblank_count": 5419,
+        "length_distribution": {
+          "6": 5419
+        },
+        "leading_zero_count": 854,
+        "leading_zero_preserved": true,
+        "sample_identifiers": [
+          "010001",
+          "010005",
+          "010006",
+          "010007",
+          "010011"
+        ],
+        "sample_leading_zero_identifiers": [
+          "010001",
+          "010005",
+          "010006",
+          "010007",
+          "010011"
+        ]
+      },
+      "exact_duplicate_rows_audit": {
+        "duplicate_rows_beyond_first": 0,
+        "distinct_duplicated_patterns": 0,
+        "duplicated_pattern_samples": []
+      },
+      "catalogue_comparison": {
+        "reference_rows": 5419,
+        "actual_rows": 5419,
+        "row_difference": 0,
+        "reference_columns": 38,
+        "actual_columns": 38,
+        "column_difference": 0,
+        "match": true,
+        "requires_investigation": false,
+        "notes": "Exact match with CMS catalogue reference counts."
+      },
+      "issues": []
+    }
+  },
+  "issues_requiring_attention": []
+}
