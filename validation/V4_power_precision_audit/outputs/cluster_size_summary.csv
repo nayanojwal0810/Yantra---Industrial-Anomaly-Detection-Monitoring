@@ -1,0 +1,9 @@
+sample_definition,arm_code,arm_name,populated_clusters,total_participants,mean_cluster_size,median_cluster_size,std_cluster_size,coefficient_of_variation_cv,min_cluster_size,max_cluster_size,p25_cluster_size,p75_cluster_size,p90_cluster_size,largest_10pct_clusters_share_pct,cluster_share_of_total_trial_pct,participant_share_of_total_trial_pct,benchmark_reconciliation_status
+Enrolled Sample (Nominal),1,Control,68,970,14.26,13.0,10.01,0.7019,1,42,6.0,20.2,28.3,24.54,42.77,39.41,MATCH
+Enrolled Sample (Nominal),2,Home visits,19,317,16.68,18.0,7.98,0.4783,3,28,10.0,22.0,26.4,17.67,11.95,12.88,MATCH
+Enrolled Sample (Nominal),3,Afini,72,1174,16.31,13.0,10.32,0.6327,1,42,8.0,22.2,31.9,24.87,45.28,47.7,MATCH
+Enrolled Sample (Nominal),TOTAL,All Arms Combined,159,2461,15.48,13.0,9.94,0.6419,1,42,7.0,22.0,29.2,22.84,100.0,100.0,MATCH
+Analysis Sample (Valid GSED),1,Control,68,864,12.71,11.5,8.99,0.7078,1,35,6.0,18.2,24.3,24.88,42.77,40.2,MATCH
+Analysis Sample (Valid GSED),2,Home visits,19,297,15.63,18.0,7.37,0.4712,3,27,9.5,20.5,24.4,17.85,11.95,13.82,MATCH
+Analysis Sample (Valid GSED),3,Afini,72,988,13.72,11.0,8.78,0.6401,1,38,7.0,18.0,27.9,25.3,45.28,45.97,MATCH
+Analysis Sample (Valid GSED),TOTAL,All Arms Combined,159,2149,13.52,12.0,8.72,0.645,1,38,6.0,19.5,27.0,22.99,100.0,100.0,MATCH
