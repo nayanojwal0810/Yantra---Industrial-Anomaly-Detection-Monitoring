@@ -1,9 +1,9 @@
 {
   "audit_metadata": {
-    "task": "Niramaya Task 04: Hospital Dimension Audit and Join Feasibility",
-    "timestamp_utc": "2026-10-31 14:53:32 UTC",
-    "timestamp_local": "2026-10-31 20:23:32 India Standard Time",
-    "execution_command": "python validation/niramaya/task_04_hospital_dimension_audit/audit_hospital_dimension_join.py",
+    "task": "Niramaya Task 04: Hospital Dimension Audit and Join Feasibility (Targeted Correction)",
+    "timestamp_utc": "2026-10-31 15:05:27 UTC",
+    "timestamp_local": "2026-10-31 20:35:27 India Standard Time",
+    "execution_command": "python validation/niramaya/task_04_hospital_dimension_audit/audit_hospital_dimension_join.py --hrrp-file ../data/raw/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv --hgi-file ../data/raw/Hospital_General_Information.csv --output-dir validation/niramaya/task_04_hospital_dimension_audit/output",
     "hrrp_file": "D:\\Niramaya\\data\\raw\\FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
     "hgi_file": "D:\\Niramaya\\data\\raw\\Hospital_General_Information.csv",
     "output_dir": "D:\\Niramaya\\validation-repo\\validation\\niramaya\\task_04_hospital_dimension_audit\\output",
@@ -18,6 +18,8 @@
       "file_size_bytes": 2068464,
       "has_bom": false,
       "detected_encoding": "utf-8",
+      "encoding_validation_status": "PASSED_STRICT_DECODE (0 decode errors)",
+      "strict_decode_errors_count": 0,
       "detected_delimiter": ",",
       "total_rows": 18330,
       "total_columns": 12,
@@ -83,6 +85,8 @@
       "file_size_bytes": 1450767,
       "has_bom": false,
       "detected_encoding": "utf-8",
+      "encoding_validation_status": "PASSED_STRICT_DECODE (0 decode errors)",
+      "strict_decode_errors_count": 0,
       "detected_delimiter": ",",
       "total_rows": 5419,
       "total_columns": 38,
@@ -183,6 +187,16 @@
     "matched_hgi_facilities_pct": 56.0066,
     "unmatched_hgi_facilities": 2384,
     "unmatched_hgi_facilities_pct": 43.9934,
+    "unmatched_hgi_by_hospital_type": {
+      "Acute Care - Veterans Administration": 132,
+      "Rural Emergency Hospital": 43,
+      "Critical Access Hospitals": 1382,
+      "Childrens": 94,
+      "Psychiatric": 624,
+      "Acute Care - Department of Defense": 32,
+      "Acute Care Hospitals": 72,
+      "Long-term": 5
+    },
     "fact_rows_before_join": 18330,
     "fact_rows_after_inner_join": 18210,
     "fact_rows_after_left_join": 18330,
@@ -198,18 +212,20 @@
     "state_mismatches": 0,
     "exact_name_matches": 2983,
     "exact_name_matches_pct": 98.29,
-    "formatting_case_name_mismatches": 2,
-    "material_name_mismatches": 50,
+    "formatting_only_differences": 2,
+    "normalized_text_differences": 50,
     "total_name_mismatches": 52,
     "total_name_mismatches_pct": 1.71
   },
+  "diagnostic_unmatched_summary": {
+    "total_unmatched_hrrp_facilities": 20,
+    "identical_name_candidates_count": 4,
+    "similar_name_candidates_count_ge_70": 10,
+    "no_high_similarity_candidates_count_lt_70": 6,
+    "total_candidates_ge_70": 14
+  },
   "attribute_inventory_summary": {
     "total_columns_profiled": 38,
-    "candidate_attributes_profiled": 12
-  },
-  "unmatched_exceptions_summary": {
-    "total_unmatched_hrrp_facilities": 20,
-    "cah_conversion_matches_count": 4,
-    "potential_system_acquisitions_count": 10
+    "candidate_attributes_profiled": 16
   }
 }
