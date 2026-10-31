@@ -27,10 +27,10 @@ Neither raw dataset has been modified, resaved, or committed to version control.
 | **Fact Row Multiplication** | Exactly 0 fact rows multiplied (1.0x multiplication factor) | **Zero Row Multiplication** (Exact 1:N cardinality) |
 | **Inner Join vs Left Join Impact** | Inner join causes the loss of 120 fact rows (39 published ERR); Left outer join retains 100% of rows | **LEFT OUTER JOIN Strongly Recommended** |
 | **State Level Concordance** | 3,035 of 3,035 matched facilities have identical State codes | **100.0% State Concordance (0 mismatches)** |
-| **Facility Name Consistency** | 2,983 exact matches (98.29%); 52 text differences (2 formatting-only, 50 normalized text) | Textual comparison results; causes unverified |
+| **Facility Name Consistency** | 2,983 exact matches (98.29%); 52 text differences (2 formatting-only [060014, 330047], 50 normalized text [e.g. 050257]) | Textual comparison results; causes unverified |
 | **Hospital Type Variance** | Exactly 100.0% of matched HRRP hospitals are `Acute Care Hospitals` | **Zero Variance in matched cohort** (Cohort filter only) |
 | **Hospital Ownership** | 10 distinct classes (48.6% non-profit, 20.4% proprietary, 7.9% other non-profit) | Optional exploratory segmentation (temporal caveat) |
-| **Geographic Profiling** | State (51 groups, stable); County (998 groups, 443 single-hospital); ZIP (2,768 groups, 2,544 single-hospital) | State preferred; County/ZIP require group-size checks |
+| **Geographic Profiling** | State (51 groups, range 6–280, 0 singletons); County (998 groups, range 1–71, 502 singletons); City (1,824 groups, range 1–26, 1,320 singletons); ZIP (2,768 groups, range 1–5, 2,543 singletons) | State preferred; County/ZIP require group-size checks |
 | **Temporal Compatibility** | HGI is a July 2026 CASPER snapshot; HRRP is a 2021–2024 performance window | Sourced from current state; temporal caveats required |
 
 ---
@@ -101,8 +101,8 @@ Same-state string-similarity diagnostic matching yielded the following inspectab
 - **State Code:** 3,035 of 3,035 matched facilities match State exactly (**100.00% concordance**, 0 mismatches).
 - **Facility Name Comparison:**
   - Exact matches: 2,983 facilities (**98.29%**).
-  - Formatting-only differences: 2 facilities (`FORMATTING_ONLY_DIFFERENCE`; differ only by case, whitespace, or punctuation).
-  - Normalized text differences: 50 facilities (`NORMALIZED_TEXT_DIFFERENCE`; names differ after normalization).
+  - Formatting-only differences: 2 facilities (`FORMATTING_ONLY_DIFFERENCE`; differ only by case, whitespace, or punctuation: Facility IDs `060014` and `330047`).
+  - Normalized text differences: 50 facilities (`NORMALIZED_TEXT_DIFFERENCE`; names differ after normalization: e.g. Facility ID `050257`).
   - *Interpretation:* These are textual string comparison results. The cause of each difference is not established by this audit. Both source names are preserved in `output/hospital_name_state_mismatches.csv`.
 
 ### 5. Candidate Dimension Attribute Profiles
@@ -112,8 +112,18 @@ Same-state string-similarity diagnostic matching yielded the following inspectab
 - **`Hospital overall rating` (1 to 5 Stars):** 1-Star (5.6%), 2-Star (18.7%), 3-Star (27.9%), 4-Star (25.7%), 5-Star (9.6%), Not Available (12.6%). Current composite quality indicator; keep as reference information only (not causal).
 - **`READM Group Summary Fields` (97.2% populated):** Covers up to 11 public-reporting measures. Useful as external facility profile context; must not be substituted for fact-level condition ERR.
 - **Geographic Fields (`State`, `County/Parish`, `City/Town`, `ZIP Code`):**
-  - `State` is preferred for broad regional comparisons (100% concordant, already present in HRRP).
-  - `County/Parish` (998 groups in matched HRRP; 443 single-hospital counties) and `ZIP Code` (2,768 groups; 2,544 single-hospital ZIPs) are optional descriptive context subject to current-snapshot limitations and minimum group-size checks.
+  - Category frequency distributions from `output/hospital_dimension_attribute_profile.csv`:
+
+    | Geographic Field | Distinct Matched Groups (3,035) | Singleton Groups (Count = 1) | Group-Size Range | Usability Classification |
+    | :--- | :---: | :---: | :---: | :--- |
+    | `State` | 51 | 0 | 6–280 | **Recommended for Broad Regional Descriptive Comparisons** |
+    | `County/Parish` | 998 | 502 | 1–71 | **Optional Current Descriptive Context** (Requires group-size checks) |
+    | `City/Town` | 1,824 | 1,320 | 1–26 | **Descriptive Label Only** |
+    | `ZIP Code` | 2,768 | 2,543 | 1–5 | **Optional Current Descriptive Context** (High cardinality) |
+
+  - `State` is preferred for broad regional comparisons (100% concordant with HRRP, well-populated across all 51 jurisdictions with 6 to 280 hospitals).
+  - `County/Parish` (998 groups in matched HRRP; 502 single-hospital counties, range 1–71) and `ZIP Code` (2,768 groups; 2,543 single-hospital ZIPs, range 1–5) are optional descriptive context subject to current-snapshot limitations and minimum group-size thresholding.
+  - `City/Town` (1,824 groups in matched HRRP; 1,320 single-hospital cities, range 1–26) is fragmented and suitable as a descriptive label only.
   - ZIP Code does not supply socioeconomic information without validated linkage to an external dataset.
 
 ---

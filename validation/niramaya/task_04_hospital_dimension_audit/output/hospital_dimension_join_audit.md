@@ -2,8 +2,8 @@
 
 > **Project:** Niramaya  
 > **Task:** Validation Task 04 — Hospital Dimension Audit and Join Feasibility (Targeted Correction)  
-> **Audit Date & Time (UTC):** 2026-10-31 15:05:27 UTC  
-> **Audit Date & Time (Local):** 2026-10-31 20:35:27 India Standard Time  
+> **Audit Date & Time (UTC):** 2026-10-31 15:17:55 UTC  
+> **Audit Date & Time (Local):** 2026-10-31 20:47:55 India Standard Time  
 > **Execution Command:** `python validation/niramaya/task_04_hospital_dimension_audit/audit_hospital_dimension_join.py --hrrp-file ../data/raw/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv --hgi-file ../data/raw/Hospital_General_Information.csv --output-dir validation/niramaya/task_04_hospital_dimension_audit/output`  
 
 ---
@@ -151,8 +151,8 @@ For the 3,035 matched facilities, attribute consistency between HRRP and HGI was
 
 ### B. Facility Name Consistency
 - **Exact Name Matches:** 2,983 of 3,035 (**98.29%**)
-- **Formatting-Only Differences:** 2 facilities (0.07%)
-- **Normalized Text Differences:** 50 facilities (1.65%)
+- **Formatting-Only Differences:** 2 facilities (0.07%; Facility IDs `060014` and `330047`)
+- **Normalized Text Differences:** 50 facilities (1.65%; e.g. Facility ID `050257`)
 - **Total Name Differences:** 52 facilities (**1.71%**)
 
 ### Top Text Discrepancies (Sample)
@@ -277,12 +277,12 @@ Candidate attributes were profiled across both **All HGI Records (5,419)** and t
 
 Full frequency distributions for all geographic attributes across both All HGI (5,419) and Matched HRRP (3,035) are compiled in `output/hospital_dimension_attribute_profile.csv`:
 
-| Geographic Field | Distinct in All HGI (5,419) | Distinct in Matched HRRP (3,035) | Cardinality & Group Size Assessment | Usability Classification |
-| :--- | :---: | :---: | :--- | :--- |
-| `State` | 56 | 51 (50 States + DC) | Low cardinality; all groups well-populated (1 to 297 hospitals). Concordant with HRRP State. | **Recommended for Broad Regional Descriptive Comparisons** |
-| `County/Parish` | 1,557 | 998 | High cardinality; 443 counties have exactly 1 hospital in matched HRRP. Requires group-size thresholding. | **Optional Current Descriptive Context** |
-| `City/Town` | 3,046 | 1,824 | High cardinality; 1,241 cities have exactly 1 hospital in matched HRRP. Highly fragmented. | **Descriptive Label Only** |
-| `ZIP Code` | 4,716 | 2,768 | Very high cardinality; 2,544 ZIPs have exactly 1 hospital in matched HRRP. Does not supply socioeconomic data without external linkage. | **Optional Current Descriptive Context** |
+| Geographic Field | Distinct in All HGI (5,419) | Distinct Matched Groups (3,035) | Singleton Groups (Count = 1) | Group-Size Range | Usability Classification |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| `State` | 56 | 51 | 0 | 6–280 | **Recommended for Broad Regional Descriptive Comparisons** |
+| `County/Parish` | 1,557 | 998 | 502 | 1–71 | **Optional Current Descriptive Context** (Requires group-size thresholding) |
+| `City/Town` | 3,046 | 1,824 | 1,320 | 1–26 | **Descriptive Label Only** |
+| `ZIP Code` | 4,716 | 2,768 | 2,543 | 1–5 | **Optional Current Descriptive Context** (High cardinality) |
 
 > [!NOTE]
 > High-cardinality geographic attributes (`ZIP Code`, `City/Town`, `County/Parish`) must not be used for segmentation without explicit group-size checks to prevent tiny, unrepresentative sub-cohorts. ZIP Code does not supply socioeconomic information without validated external linkage.

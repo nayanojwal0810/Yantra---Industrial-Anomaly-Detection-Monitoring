@@ -789,6 +789,28 @@ def run_hospital_dimension_audit(
             "Diagnostic Note": diag_note,
         })
 
+    # Dynamic calculation of geographic summary metrics from attribute_profiles
+    geo_fields = ["State", "County/Parish", "City/Town", "ZIP Code"]
+    geographic_profile_summary = {}
+    for gf in geo_fields:
+        gf_rows = [p for p in attribute_profiles if p["Attribute Name"] == gf]
+        matched_gf_rows = [p for p in gf_rows if p["Matched HRRP Count"] > 0]
+        distinct_matched = len(matched_gf_rows)
+        singletons = sum(1 for p in matched_gf_rows if p["Matched HRRP Count"] == 1)
+        counts = [p["Matched HRRP Count"] for p in matched_gf_rows]
+        min_size = min(counts) if counts else 0
+        max_size = max(counts) if counts else 0
+        distinct_all = sum(1 for p in gf_rows if p["All HGI Count"] > 0)
+
+        geographic_profile_summary[gf] = {
+            "distinct_all": distinct_all,
+            "distinct_matched": distinct_matched,
+            "singletons": singletons,
+            "min_size": min_size,
+            "max_size": max_size,
+            "range_str": f"{min_size}–{max_size}",
+        }
+
     # Prepare complete audit result dictionary
     results: Dict[str, Any] = {
         "audit_metadata": {
@@ -866,6 +888,7 @@ def run_hospital_dimension_audit(
             "total_columns_profiled": len(hgi_columns),
             "candidate_attributes_profiled": len(CANDIDATE_ATTRIBUTES),
         },
+        "geographic_profile_summary": geographic_profile_summary,
     }
 
     # Save output artifacts
@@ -1005,6 +1028,7 @@ def generate_markdown_report(
     grain = res["key_uniqueness_and_grain"]
     ns = res["name_and_state_consistency"]
     diag_summary = res["diagnostic_unmatched_summary"]
+    geo_summary = res["geographic_profile_summary"]
     hrrp_raw = res["raw_file_integrity"]["hrrp_dataset"]
     hgi_raw = res["raw_file_integrity"]["hgi_dataset"]
 
@@ -1153,8 +1177,8 @@ def generate_markdown_report(
         "",
         "### B. Facility Name Consistency",
         f"- **Exact Name Matches:** {ns['exact_name_matches']:,} of {ns['total_matched_facilities']:,} (**{ns['exact_name_matches_pct']}%**)",
-        f"- **Formatting-Only Differences:** {ns['formatting_only_differences']} facilities ({ns['formatting_only_differences'] / ns['total_matched_facilities'] * 100:.2f}%)",
-        f"- **Normalized Text Differences:** {ns['normalized_text_differences']} facilities ({ns['normalized_text_differences'] / ns['total_matched_facilities'] * 100:.2f}%)",
+        f"- **Formatting-Only Differences:** {ns['formatting_only_differences']} facilities ({ns['formatting_only_differences'] / ns['total_matched_facilities'] * 100:.2f}%; Facility IDs `060014` and `330047`)",
+        f"- **Normalized Text Differences:** {ns['normalized_text_differences']} facilities ({ns['normalized_text_differences'] / ns['total_matched_facilities'] * 100:.2f}%; e.g. Facility ID `050257`)",
         f"- **Total Name Differences:** {ns['total_name_mismatches']} facilities (**{ns['total_name_mismatches_pct']}%**)",
         "",
         "### Top Text Discrepancies (Sample)",
@@ -1250,12 +1274,12 @@ def generate_markdown_report(
         "",
         "Full frequency distributions for all geographic attributes across both All HGI (5,419) and Matched HRRP (3,035) are compiled in `output/hospital_dimension_attribute_profile.csv`:",
         "",
-        "| Geographic Field | Distinct in All HGI (5,419) | Distinct in Matched HRRP (3,035) | Cardinality & Group Size Assessment | Usability Classification |",
-        "| :--- | :---: | :---: | :--- | :--- |",
-        "| `State` | 56 | 51 (50 States + DC) | Low cardinality; all groups well-populated (1 to 297 hospitals). Concordant with HRRP State. | **Recommended for Broad Regional Descriptive Comparisons** |",
-        "| `County/Parish` | 1,557 | 998 | High cardinality; 443 counties have exactly 1 hospital in matched HRRP. Requires group-size thresholding. | **Optional Current Descriptive Context** |",
-        "| `City/Town` | 3,046 | 1,824 | High cardinality; 1,241 cities have exactly 1 hospital in matched HRRP. Highly fragmented. | **Descriptive Label Only** |",
-        "| `ZIP Code` | 4,716 | 2,768 | Very high cardinality; 2,544 ZIPs have exactly 1 hospital in matched HRRP. Does not supply socioeconomic data without external linkage. | **Optional Current Descriptive Context** |",
+        "| Geographic Field | Distinct in All HGI (5,419) | Distinct Matched Groups (3,035) | Singleton Groups (Count = 1) | Group-Size Range | Usability Classification |",
+        "| :--- | :---: | :---: | :---: | :---: | :--- |",
+        f"| `State` | {geo_summary['State']['distinct_all']} | {geo_summary['State']['distinct_matched']} | {geo_summary['State']['singletons']} | {geo_summary['State']['range_str']} | **Recommended for Broad Regional Descriptive Comparisons** |",
+        f"| `County/Parish` | {geo_summary['County/Parish']['distinct_all']:,} | {geo_summary['County/Parish']['distinct_matched']} | {geo_summary['County/Parish']['singletons']} | {geo_summary['County/Parish']['range_str']} | **Optional Current Descriptive Context** (Requires group-size thresholding) |",
+        f"| `City/Town` | {geo_summary['City/Town']['distinct_all']:,} | {geo_summary['City/Town']['distinct_matched']:,} | {geo_summary['City/Town']['singletons']:,} | {geo_summary['City/Town']['range_str']} | **Descriptive Label Only** |",
+        f"| `ZIP Code` | {geo_summary['ZIP Code']['distinct_all']:,} | {geo_summary['ZIP Code']['distinct_matched']:,} | {geo_summary['ZIP Code']['singletons']:,} | {geo_summary['ZIP Code']['range_str']} | **Optional Current Descriptive Context** (High cardinality) |",
         "",
         "> [!NOTE]",
         "> High-cardinality geographic attributes (`ZIP Code`, `City/Town`, `County/Parish`) must not be used for segmentation without explicit group-size checks to prevent tiny, unrepresentative sub-cohorts. ZIP Code does not supply socioeconomic information without validated external linkage.",

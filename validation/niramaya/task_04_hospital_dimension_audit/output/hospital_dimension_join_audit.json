@@ -1,8 +1,8 @@
 {
   "audit_metadata": {
     "task": "Niramaya Task 04: Hospital Dimension Audit and Join Feasibility (Targeted Correction)",
-    "timestamp_utc": "2026-10-31 15:05:27 UTC",
-    "timestamp_local": "2026-10-31 20:35:27 India Standard Time",
+    "timestamp_utc": "2026-10-31 15:17:55 UTC",
+    "timestamp_local": "2026-10-31 20:47:55 India Standard Time",
     "execution_command": "python validation/niramaya/task_04_hospital_dimension_audit/audit_hospital_dimension_join.py --hrrp-file ../data/raw/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv --hgi-file ../data/raw/Hospital_General_Information.csv --output-dir validation/niramaya/task_04_hospital_dimension_audit/output",
     "hrrp_file": "D:\\Niramaya\\data\\raw\\FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
     "hgi_file": "D:\\Niramaya\\data\\raw\\Hospital_General_Information.csv",
@@ -227,5 +227,39 @@
   "attribute_inventory_summary": {
     "total_columns_profiled": 38,
     "candidate_attributes_profiled": 16
+  },
+  "geographic_profile_summary": {
+    "State": {
+      "distinct_all": 56,
+      "distinct_matched": 51,
+      "singletons": 0,
+      "min_size": 6,
+      "max_size": 280,
+      "range_str": "6\u2013280"
+    },
+    "County/Parish": {
+      "distinct_all": 1557,
+      "distinct_matched": 998,
+      "singletons": 502,
+      "min_size": 1,
+      "max_size": 71,
+      "range_str": "1\u201371"
+    },
+    "City/Town": {
+      "distinct_all": 3046,
+      "distinct_matched": 1824,
+      "singletons": 1320,
+      "min_size": 1,
+      "max_size": 26,
+      "range_str": "1\u201326"
+    },
+    "ZIP Code": {
+      "distinct_all": 4716,
+      "distinct_matched": 2768,
+      "singletons": 2543,
+      "min_size": 1,
+      "max_size": 5,
+      "range_str": "1\u20135"
+    }
   }
 }
