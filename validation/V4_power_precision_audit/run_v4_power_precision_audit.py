@@ -669,7 +669,10 @@ def estimate_adjusted_pairwise_contrasts(df_with_z: pd.DataFrame, m_imputations:
             f"Cannot perform required reproduction verification."
         )
 
-    v3_diag_df = pd.read_csv(v3_benchmark_path)
+    v3_diag_df = pd.read_csv(
+        v3_benchmark_path,
+        float_precision="round_trip"
+    )
     if "parameter" not in v3_diag_df.columns or "pooled_coef" not in v3_diag_df.columns:
         raise ValueError(f"Required columns 'parameter' and 'pooled_coef' missing from {v3_benchmark_path}.")
 
@@ -1164,7 +1167,7 @@ def build_v4_summary_json(
     v3_reproduced_1e6 = bool(mi_stores.get("v3_reproduced_within_1e6", False))
 
     v4_summary = {
-        "task_version": "V4.2",
+        "task_version": "V4.3",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "project": "Niyati",
         "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",

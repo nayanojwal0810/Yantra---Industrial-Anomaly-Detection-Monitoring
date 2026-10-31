@@ -126,22 +126,30 @@ In cluster-robust estimation (CR1), $\operatorname{Cov}\left(\hat{\beta}_{\text{
 
 ### Table 4.1: Pairwise Contrasts — Unadjusted Model ($N=2,149, K=159, df=158$)
 
+| Contrast Name | Point Est. | Display | Standard Error | Degrees of Freedom | 95% Confidence Interval | CI Width | $t$-stat | $p$-value | Interpretation |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Home Visits vs Control** | $+0.1669$ | $+0.17$ | $0.0662$ | $158.0$ | $[+0.0361,\, +0.2977]$ | $0.2616$ | $2.520$ | $0.0127$ | Statistically significant ($p < 0.05$). |
+| **Digital vs Control** | $+0.1394$ | $+0.14$ | $0.0450$ | $158.0$ | $[+0.0506,\, +0.2283]$ | $0.1777$ | $3.099$ | $0.0023$ | Statistically significant ($p < 0.01$). |
+| **Home Visits vs Digital** | $+0.0275$ | $+0.03$ | $0.0652$ | $158.0$ | $[-0.1012,\, +0.1562]$ | $0.2574$ | $0.422$ | $0.6738$ | **Non-significant ($p = 0.67$)**. Wide CI $[-0.10, +0.16]$. |
+
+### Table 4.2: Pairwise Contrasts — Adjusted Model (Multiple Imputation $M=250$, Seed `20260226`)
+
 | Contrast Name | Point Est. | Display | Standard Error | Barnard-Rubin $df$ | 95% Confidence Interval | CI Width | $t$-stat | $p$-value | Benchmark Type | V3.3 Benchmark | Diff. vs Benchmark | Status |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- | :---: | :---: | :--- |
-| **Home Visits vs Control** | $+0.1663$ | $+0.17$ | $0.0689$ | $155.9$ | $[+0.0302,\, +0.3024]$ | $0.2722$ | $2.413$ | $0.0170$ | Direct Treatment Coefficient (`hv`) | $0.1662615$ | $8.33 \times 10^{-17}$ | `EXACT_REPRODUCTION (<1e-6)` |
-| **Digital vs Control** | $+0.1066$ | $+0.11$ | $0.0447$ | $155.8$ | $[+0.0184,\, +0.1948]$ | $0.1764$ | $2.388$ | $0.0182$ | Direct Treatment Coefficient (`afini`) | $0.1066302$ | $2.78 \times 10^{-17}$ | `EXACT_REPRODUCTION (<1e-6)` |
-| **Home Visits vs Digital** | $+0.0596$ | $+0.06$ | $0.0682$ | $155.9$ | $[-0.0750,\, +0.1943]$ | $0.2693$ | $0.875$ | $0.3831$ | Derived Contrast (`hv - afini`) | $0.0596313$ | $1.32 \times 10^{-16}$ | `DERIVED_FROM_V3_TREATMENT_COEFFICIENTS_WITHIN_1E-6` |
+| **Home Visits vs Control** | $+0.1663$ | $+0.17$ | $0.0689$ | $155.9$ | $[+0.0302,\, +0.3024]$ | $0.2722$ | $2.413$ | $0.0170$ | `DIRECT_TREATMENT_COEFFICIENT` | $0.16626152216742296$ | $1.39 \times 10^{-16}$ | `EXACT_REPRODUCTION (<1e-6)` |
+| **Digital vs Control** | $+0.1066$ | $+0.11$ | $0.0447$ | $155.8$ | $[+0.0184,\, +0.1948]$ | $0.1764$ | $2.388$ | $0.0182$ | `DIRECT_TREATMENT_COEFFICIENT` | $0.10663017547660632$ | $1.39 \times 10^{-17}$ | `EXACT_REPRODUCTION (<1e-6)` |
+| **Home Visits vs Digital** | $+0.0596$ | $+0.06$ | $0.0682$ | $155.9$ | $[-0.0750,\, +0.1943]$ | $0.2693$ | $0.875$ | $0.3831$ | `ALGEBRAICALLY_DERIVED_CONTRAST` | $0.05963134669081664$ | $1.73 \times 10^{-16}$ | `DERIVED_FROM_V3_TREATMENT_COEFFICIENTS_WITHIN_1E-6` |
 
 *Note on V3.3 Benchmark Verification & Distinct Contrast Classification:*
-- Full-precision benchmark coefficients are read directly from `validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv`:
-  - `hv` parameter: $0.1662615221674229$ (V4: $0.16626152216742282$, absolute difference $= 8.33 \times 10^{-17} < 10^{-6}$). Direct reproduction of independently reported V3.3 treatment coefficient.
-  - `afini` parameter: $0.1066301754766063$ (V4: $0.10663017547660633$, absolute difference $= 2.78 \times 10^{-17} < 10^{-6}$). Direct reproduction of independently reported V3.3 treatment coefficient.
+- Full-precision benchmark coefficients are read directly with `float_precision="round_trip"` from `validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv`:
+  - `hv` parameter: $0.16626152216742296$ (V4: $0.16626152216742282$, absolute difference $= 1.3877787807814457 \times 10^{-16} < 10^{-6}$). Direct reproduction of independently reported V3.3 treatment coefficient.
+  - `afini` parameter: $0.10663017547660632$ (V4: $0.10663017547660633$, absolute difference $= 1.3877787807814457 \times 10^{-17} < 10^{-6}$). Direct reproduction of independently reported V3.3 treatment coefficient.
 - **Direct Active Contrast (Home Visits vs Digital):**
   - V3.3 did not independently estimate or report the direct active-intervention contrast between Home Visits and Digital.
   - The V3.3 benchmark is therefore derived algebraically from the two independently estimated treatment coefficients:
-    $$\beta_{\text{V3, derived}} = \beta_{\text{HV}} - \beta_{\text{Digital}} = 0.1662615221674229 - 0.1066301754766063 = 0.0596313466908166\text{ SD}$$
+    $$\beta_{\text{V3, derived}} = \beta_{\text{HV}} - \beta_{\text{Digital}} = 0.16626152216742296 - 0.10663017547660632 = 0.05963134669081664\text{ SD}$$
   - The V4 estimated contrast is $0.05963134669081647\text{ SD}$.
-  - Absolute numerical difference: $|0.05963134669081647 - 0.0596313466908166| = 1.32 \times 10^{-16} < 10^{-6}$.
+  - Absolute numerical difference: $|0.05963134669081647 - 0.05963134669081664| = 1.734723475976807 \times 10^{-16} < 10^{-6}$.
   - Status is explicitly reported as `DERIVED_FROM_V3_TREATMENT_COEFFICIENTS_WITHIN_1E-6`. It is strictly not described as an independent V3.3 reproduction.
   - Substantive interpretation: Non-significant difference ($p = 0.3831$). The wide 95% CI $[-0.0750, +0.1943]$ (span $0.27$ SD) cannot rule out either substantial Home Visits superiority ($+0.19$ SD) or Digital superiority ($-0.08$ SD). Does NOT establish equivalence or non-inferiority.
 
@@ -389,8 +397,8 @@ All output files are located in `validation/V4_power_precision_audit/outputs/`:
 - **Reproduction Fidelity & Benchmark Verification:**
   - Unadjusted HV vs Control: $\beta = 0.1669, SE = 0.0662$ (Exact match).
   - Unadjusted Digital vs Control: $\beta = 0.1394, SE = 0.0450$ (Exact match).
-  - Adjusted MI HV vs Control: $\beta = 0.1663, SE = 0.0689$ (Difference from V3.3 direct benchmark: $8.33 \times 10^{-17} < 10^{-6}$; exact reproduction of independently reported treatment coefficient).
-  - Adjusted MI Digital vs Control: $\beta = 0.1066, SE = 0.0447$ (Difference from V3.3 direct benchmark: $2.78 \times 10^{-17} < 10^{-6}$; exact reproduction of independently reported treatment coefficient).
-  - Adjusted MI Home Visits vs Digital: $\beta = 0.0596, SE = 0.0682$ (Difference from algebraically derived V3.3 contrast: $1.32 \times 10^{-16} < 10^{-6}$; verified consistent with derived treatment coefficients, not claimed as an independent V3.3 result).
+  - Adjusted MI HV vs Control: $\beta = 0.1663, SE = 0.0689$ (Difference from V3.3 direct benchmark: $1.39 \times 10^{-16} < 10^{-6}$; exact reproduction of independently reported treatment coefficient).
+  - Adjusted MI Digital vs Control: $\beta = 0.1066, SE = 0.0447$ (Difference from V3.3 direct benchmark: $1.39 \times 10^{-17} < 10^{-6}$; exact reproduction of independently reported treatment coefficient).
+  - Adjusted MI Home Visits vs Digital: $\beta = 0.0596, SE = 0.0682$ (Difference from algebraically derived V3.3 contrast: $1.73 \times 10^{-16} < 10^{-6}$; verified consistent with derived treatment coefficients, not claimed as an independent V3.3 result).
   - Strict reproduction tolerance ($\text{diff} < 10^{-6}$): **VERIFIED & SATISFIED**.
   - Raw archive preserved intact: `doi_10_5061_dryad_nzs7h4551__v20260226.zip` untouched.
