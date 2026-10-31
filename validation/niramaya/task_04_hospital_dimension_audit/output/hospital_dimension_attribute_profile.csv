@@ -1,0 +1,90 @@
+Attribute Name,Category Value,All HGI Count,All HGI Percentage,Matched HRRP Count,Matched HRRP Percentage,Usability Classification,Temporal and Conceptual Caveat
+Hospital Type,Acute Care Hospitals,3107,57.34%,3035,100.00%,Exclude as Segmentation Variable (Retain as Cohort Filter),Reflects current certification. Hospitals converting to CAH/REH exit the Acute Care classification.
+Hospital Type,Acute Care - Department of Defense,32,0.59%,0,0.00%,Exclude as Segmentation Variable (Retain as Cohort Filter),Reflects current certification. Hospitals converting to CAH/REH exit the Acute Care classification.
+Hospital Type,Acute Care - Veterans Administration,132,2.44%,0,0.00%,Exclude as Segmentation Variable (Retain as Cohort Filter),Reflects current certification. Hospitals converting to CAH/REH exit the Acute Care classification.
+Hospital Type,Childrens,94,1.73%,0,0.00%,Exclude as Segmentation Variable (Retain as Cohort Filter),Reflects current certification. Hospitals converting to CAH/REH exit the Acute Care classification.
+Hospital Type,Critical Access Hospitals,1382,25.50%,0,0.00%,Exclude as Segmentation Variable (Retain as Cohort Filter),Reflects current certification. Hospitals converting to CAH/REH exit the Acute Care classification.
+Hospital Type,Long-term,5,0.09%,0,0.00%,Exclude as Segmentation Variable (Retain as Cohort Filter),Reflects current certification. Hospitals converting to CAH/REH exit the Acute Care classification.
+Hospital Type,Psychiatric,624,11.52%,0,0.00%,Exclude as Segmentation Variable (Retain as Cohort Filter),Reflects current certification. Hospitals converting to CAH/REH exit the Acute Care classification.
+Hospital Type,Rural Emergency Hospital,43,0.79%,0,0.00%,Exclude as Segmentation Variable (Retain as Cohort Filter),Reflects current certification. Hospitals converting to CAH/REH exit the Acute Care classification.
+Hospital Ownership,Voluntary non-profit - Private,2322,42.85%,1474,48.57%,Usable Only with Clear Temporal Caveat,"Sourced from CASPER July 2026 snapshot. Ownership transfers, system acquisitions, and privatization occur over time; does not guarantee 2021-2024 ownership."
+Hospital Ownership,Proprietary,1063,19.62%,619,20.40%,Usable Only with Clear Temporal Caveat,"Sourced from CASPER July 2026 snapshot. Ownership transfers, system acquisitions, and privatization occur over time; does not guarantee 2021-2024 ownership."
+Hospital Ownership,Voluntary non-profit - Other,353,6.51%,241,7.94%,Usable Only with Clear Temporal Caveat,"Sourced from CASPER July 2026 snapshot. Ownership transfers, system acquisitions, and privatization occur over time; does not guarantee 2021-2024 ownership."
+Hospital Ownership,Government - Hospital District or Authority,512,9.45%,220,7.25%,Usable Only with Clear Temporal Caveat,"Sourced from CASPER July 2026 snapshot. Ownership transfers, system acquisitions, and privatization occur over time; does not guarantee 2021-2024 ownership."
+Hospital Ownership,Voluntary non-profit - Church,264,4.87%,199,6.56%,Usable Only with Clear Temporal Caveat,"Sourced from CASPER July 2026 snapshot. Ownership transfers, system acquisitions, and privatization occur over time; does not guarantee 2021-2024 ownership."
+Hospital Ownership,Government - Local,393,7.25%,135,4.45%,Usable Only with Clear Temporal Caveat,"Sourced from CASPER July 2026 snapshot. Ownership transfers, system acquisitions, and privatization occur over time; does not guarantee 2021-2024 ownership."
+Hospital Ownership,Physician,80,1.48%,70,2.31%,Usable Only with Clear Temporal Caveat,"Sourced from CASPER July 2026 snapshot. Ownership transfers, system acquisitions, and privatization occur over time; does not guarantee 2021-2024 ownership."
+Hospital Ownership,Government - State,209,3.86%,45,1.48%,Usable Only with Clear Temporal Caveat,"Sourced from CASPER July 2026 snapshot. Ownership transfers, system acquisitions, and privatization occur over time; does not guarantee 2021-2024 ownership."
+Hospital Ownership,Government - Federal,42,0.78%,23,0.76%,Usable Only with Clear Temporal Caveat,"Sourced from CASPER July 2026 snapshot. Ownership transfers, system acquisitions, and privatization occur over time; does not guarantee 2021-2024 ownership."
+Hospital Ownership,Tribal,17,0.31%,9,0.30%,Usable Only with Clear Temporal Caveat,"Sourced from CASPER July 2026 snapshot. Ownership transfers, system acquisitions, and privatization occur over time; does not guarantee 2021-2024 ownership."
+Hospital Ownership,Department of Defense,32,0.59%,0,0.00%,Usable Only with Clear Temporal Caveat,"Sourced from CASPER July 2026 snapshot. Ownership transfers, system acquisitions, and privatization occur over time; does not guarantee 2021-2024 ownership."
+Hospital Ownership,Veterans Health Administration,132,2.44%,0,0.00%,Usable Only with Clear Temporal Caveat,"Sourced from CASPER July 2026 snapshot. Ownership transfers, system acquisitions, and privatization occur over time; does not guarantee 2021-2024 ownership."
+Emergency Services,Yes,4495,82.95%,2758,90.87%,Usable Only with Clear Temporal Caveat,Current operational capability snapshot; emergency departments may open or close over a 3-year performance period.
+Emergency Services,No,924,17.05%,277,9.13%,Usable Only with Clear Temporal Caveat,Current operational capability snapshot; emergency departments may open or close over a 3-year performance period.
+Hospital overall rating,3,985,18.18%,846,27.87%,Keep as Reference Information Only,"Current composite rating aggregating 5 distinct domains (Mortality, Safety, Readmission, Pt Exp, Timely Care). Must not be used as a causal explanation for historical HRRP performance."
+Hospital overall rating,4,946,17.46%,779,25.67%,Keep as Reference Information Only,"Current composite rating aggregating 5 distinct domains (Mortality, Safety, Readmission, Pt Exp, Timely Care). Must not be used as a causal explanation for historical HRRP performance."
+Hospital overall rating,2,661,12.20%,569,18.75%,Keep as Reference Information Only,"Current composite rating aggregating 5 distinct domains (Mortality, Safety, Readmission, Pt Exp, Timely Care). Must not be used as a causal explanation for historical HRRP performance."
+Hospital overall rating,Not Available,2245,41.43%,381,12.55%,Keep as Reference Information Only,"Current composite rating aggregating 5 distinct domains (Mortality, Safety, Readmission, Pt Exp, Timely Care). Must not be used as a causal explanation for historical HRRP performance."
+Hospital overall rating,5,384,7.09%,290,9.56%,Keep as Reference Information Only,"Current composite rating aggregating 5 distinct domains (Mortality, Safety, Readmission, Pt Exp, Timely Care). Must not be used as a causal explanation for historical HRRP performance."
+Hospital overall rating,1,198,3.65%,170,5.60%,Keep as Reference Information Only,"Current composite rating aggregating 5 distinct domains (Mortality, Safety, Readmission, Pt Exp, Timely Care). Must not be used as a causal explanation for historical HRRP performance."
+Hospital overall rating footnote,[BLANK],3103,57.26%,2583,85.11%,Keep as Reference Information Only,Associated with July 2026 star rating calculation.
+Hospital overall rating footnote,16,1337,24.67%,344,11.33%,Keep as Reference Information Only,Associated with July 2026 star rating calculation.
+Hospital overall rating footnote,29,60,1.11%,60,1.98%,Keep as Reference Information Only,Associated with July 2026 star rating calculation.
+Hospital overall rating footnote,5,71,1.31%,20,0.66%,Keep as Reference Information Only,Associated with July 2026 star rating calculation.
+Hospital overall rating footnote,19,801,14.78%,13,0.43%,Keep as Reference Information Only,Associated with July 2026 star rating calculation.
+Hospital overall rating footnote,23,11,0.20%,11,0.36%,Keep as Reference Information Only,Associated with July 2026 star rating calculation.
+Hospital overall rating footnote,"16, 23",3,0.06%,3,0.10%,Keep as Reference Information Only,Associated with July 2026 star rating calculation.
+Hospital overall rating footnote,11,1,0.02%,1,0.03%,Keep as Reference Information Only,Associated with July 2026 star rating calculation.
+Hospital overall rating footnote,22,32,0.59%,0,0.00%,Keep as Reference Information Only,Associated with July 2026 star rating calculation.
+READM Group Measure Count,11,4569,84.31%,3018,99.44%,Keep as Reference Information Only,Reflects Hospital Compare measure set structure.
+READM Group Measure Count,Not Available,850,15.69%,17,0.56%,Keep as Reference Information Only,Reflects Hospital Compare measure set structure.
+Count of Facility READM Measures,11,478,8.82%,478,15.75%,Usable Only with Clear Temporal Caveat,Includes measures outside HRRP (e.g. Hospital-Wide All-Cause Readmission).
+Count of Facility READM Measures,8,461,8.51%,431,14.20%,Usable Only with Clear Temporal Caveat,Includes measures outside HRRP (e.g. Hospital-Wide All-Cause Readmission).
+Count of Facility READM Measures,9,411,7.58%,407,13.41%,Usable Only with Clear Temporal Caveat,Includes measures outside HRRP (e.g. Hospital-Wide All-Cause Readmission).
+Count of Facility READM Measures,10,338,6.24%,338,11.14%,Usable Only with Clear Temporal Caveat,Includes measures outside HRRP (e.g. Hospital-Wide All-Cause Readmission).
+Count of Facility READM Measures,7,356,6.57%,314,10.35%,Usable Only with Clear Temporal Caveat,Includes measures outside HRRP (e.g. Hospital-Wide All-Cause Readmission).
+Count of Facility READM Measures,6,454,8.38%,313,10.31%,Usable Only with Clear Temporal Caveat,Includes measures outside HRRP (e.g. Hospital-Wide All-Cause Readmission).
+Count of Facility READM Measures,5,350,6.46%,200,6.59%,Usable Only with Clear Temporal Caveat,Includes measures outside HRRP (e.g. Hospital-Wide All-Cause Readmission).
+Count of Facility READM Measures,4,338,6.24%,158,5.21%,Usable Only with Clear Temporal Caveat,Includes measures outside HRRP (e.g. Hospital-Wide All-Cause Readmission).
+Count of Facility READM Measures,3,379,6.99%,148,4.88%,Usable Only with Clear Temporal Caveat,Includes measures outside HRRP (e.g. Hospital-Wide All-Cause Readmission).
+Count of Facility READM Measures,2,367,6.77%,95,3.13%,Usable Only with Clear Temporal Caveat,Includes measures outside HRRP (e.g. Hospital-Wide All-Cause Readmission).
+Count of Facility READM Measures,Not Available,1155,21.31%,86,2.83%,Usable Only with Clear Temporal Caveat,Includes measures outside HRRP (e.g. Hospital-Wide All-Cause Readmission).
+Count of Facility READM Measures,1,332,6.13%,67,2.21%,Usable Only with Clear Temporal Caveat,Includes measures outside HRRP (e.g. Hospital-Wide All-Cause Readmission).
+Count of READM Measures Better,0,2583,47.67%,1622,53.44%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific. Must not replace HRRP ERR.
+Count of READM Measures Better,1,1214,22.40%,917,30.21%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific. Must not replace HRRP ERR.
+Count of READM Measures Better,2,335,6.18%,282,9.29%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific. Must not replace HRRP ERR.
+Count of READM Measures Better,3,89,1.64%,86,2.83%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific. Must not replace HRRP ERR.
+Count of READM Measures Better,Not Available,1155,21.31%,86,2.83%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific. Must not replace HRRP ERR.
+Count of READM Measures Better,4,32,0.59%,31,1.02%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific. Must not replace HRRP ERR.
+Count of READM Measures Better,5,10,0.18%,10,0.33%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific. Must not replace HRRP ERR.
+Count of READM Measures Better,8,1,0.02%,1,0.03%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific. Must not replace HRRP ERR.
+Count of READM Measures No Different,7,525,9.69%,493,16.24%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures No Different,6,523,9.65%,470,15.49%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures No Different,5,515,9.50%,415,13.67%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures No Different,8,399,7.36%,391,12.88%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures No Different,4,490,9.04%,312,10.28%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures No Different,9,255,4.71%,255,8.40%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures No Different,3,488,9.01%,221,7.28%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures No Different,2,485,8.95%,170,5.60%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures No Different,1,474,8.75%,114,3.76%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures No Different,10,89,1.64%,89,2.93%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures No Different,Not Available,1155,21.31%,86,2.83%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures No Different,11,15,0.28%,15,0.49%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures No Different,0,6,0.11%,4,0.13%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures Worse,0,2197,40.54%,1164,38.35%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures Worse,1,1160,21.41%,935,30.81%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures Worse,2,586,10.81%,545,17.96%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures Worse,3,224,4.13%,215,7.08%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures Worse,Not Available,1155,21.31%,86,2.83%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures Worse,4,84,1.55%,78,2.57%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures Worse,5,8,0.15%,7,0.23%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures Worse,6,4,0.07%,4,0.13%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+Count of READM Measures Worse,7,1,0.02%,1,0.03%,Usable Only with Clear Temporal Caveat,Hospital-wide summary; not condition-specific.
+READM Group Footnote,[BLANK],4196,77.43%,2881,94.93%,Keep as Reference Information Only,Associated with July 2026 data release.
+READM Group Footnote,5,322,5.94%,73,2.41%,Keep as Reference Information Only,Associated with July 2026 data release.
+READM Group Footnote,29,67,1.24%,67,2.21%,Keep as Reference Information Only,Associated with July 2026 data release.
+READM Group Footnote,19,801,14.78%,13,0.43%,Keep as Reference Information Only,Associated with July 2026 data release.
+READM Group Footnote,23,1,0.02%,1,0.03%,Keep as Reference Information Only,Associated with July 2026 data release.
+READM Group Footnote,22,32,0.59%,0,0.00%,Keep as Reference Information Only,Associated with July 2026 data release.
+Meets criteria for birthing friendly designation,Y,2263,41.76%,2041,67.25%,Exclude from Core Project Analysis,CMS designation established in recent years; irrelevant to 2021-2024 readmission metrics.
+Meets criteria for birthing friendly designation,[BLANK],3156,58.24%,994,32.75%,Exclude from Core Project Analysis,CMS designation established in recent years; irrelevant to 2021-2024 readmission metrics.

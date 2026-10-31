@@ -1,0 +1,16 @@
+Execution Environment Record
+============================
+Project: Niramaya
+Task: Task 04 - Hospital Dimension Audit and Join Feasibility
+Execution Timestamp (UTC): 2026-10-31 14:53:32 UTC
+Execution Timestamp (Local): 2026-10-31 20:23:32 India Standard Time
+Python Version: 3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]
+Python Executable: C:\Program Files\Python313\python.exe
+Operating System: Windows-11-10.0.26200-SP0
+OS System/Release: Windows 11 (10.0.26200)
+Architecture: AMD64
+Working Directory: D:\Niramaya\validation-repo
+HRRP Data File: D:\Niramaya\data\raw\FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv
+HGI Data File: D:\Niramaya\data\raw\Hospital_General_Information.csv
+Output Directory: D:\Niramaya\validation-repo\validation\niramaya\task_04_hospital_dimension_audit\output
+Execution Command: python validation/niramaya/task_04_hospital_dimension_audit/audit_hospital_dimension_join.py

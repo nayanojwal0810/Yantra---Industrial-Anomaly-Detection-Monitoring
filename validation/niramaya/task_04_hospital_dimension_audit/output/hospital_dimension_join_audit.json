@@ -1,0 +1,215 @@
+{
+  "audit_metadata": {
+    "task": "Niramaya Task 04: Hospital Dimension Audit and Join Feasibility",
+    "timestamp_utc": "2026-10-31 14:53:32 UTC",
+    "timestamp_local": "2026-10-31 20:23:32 India Standard Time",
+    "execution_command": "python validation/niramaya/task_04_hospital_dimension_audit/audit_hospital_dimension_join.py",
+    "hrrp_file": "D:\\Niramaya\\data\\raw\\FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
+    "hgi_file": "D:\\Niramaya\\data\\raw\\Hospital_General_Information.csv",
+    "output_dir": "D:\\Niramaya\\validation-repo\\validation\\niramaya\\task_04_hospital_dimension_audit\\output",
+    "cms_hrrp_catalogue": "https://data.cms.gov/provider-data/dataset/9n3s-kdb3",
+    "cms_hgi_catalogue": "https://data.cms.gov/provider-data/dataset/xubh-q36u",
+    "cms_about_data_source": "https://data.cms.gov/provider-data/topics/hospitals/about-data"
+  },
+  "raw_file_integrity": {
+    "hrrp_dataset": {
+      "file_name": "FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
+      "file_path": "D:\\Niramaya\\data\\raw\\FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
+      "file_size_bytes": 2068464,
+      "has_bom": false,
+      "detected_encoding": "utf-8",
+      "detected_delimiter": ",",
+      "total_rows": 18330,
+      "total_columns": 12,
+      "header": [
+        "Facility Name",
+        "Facility ID",
+        "State",
+        "Measure Name",
+        "Number of Discharges",
+        "Footnote",
+        "Excess Readmission Ratio",
+        "Predicted Readmission Rate",
+        "Expected Readmission Rate",
+        "Number of Readmissions",
+        "Start Date",
+        "End Date"
+      ],
+      "malformed_rows_count": 0,
+      "malformed_rows_sample": [],
+      "exact_duplicate_rows_count": 0,
+      "blank_values_by_column": {
+        "Footnote": 11343
+      },
+      "facility_id_column": "Facility ID",
+      "total_facility_ids": 18330,
+      "blank_facility_ids": 0,
+      "distinct_facility_ids": 3055,
+      "duplicate_facility_ids_count": 3055,
+      "duplicate_facility_ids_sample": [
+        [
+          "010001",
+          6
+        ],
+        [
+          "010005",
+          6
+        ],
+        [
+          "010006",
+          6
+        ],
+        [
+          "010007",
+          6
+        ],
+        [
+          "010008",
+          6
+        ]
+      ],
+      "id_length_distribution": {
+        "6": 18330
+      },
+      "id_whitespace_count": 0,
+      "id_leading_zero_count": 3354,
+      "id_exact_6digit_count": 18330,
+      "id_exact_6alphanumeric_count": 18330,
+      "non_conforming_ids_count": 0
+    },
+    "hgi_dataset": {
+      "file_name": "Hospital_General_Information.csv",
+      "file_path": "D:\\Niramaya\\data\\raw\\Hospital_General_Information.csv",
+      "file_size_bytes": 1450767,
+      "has_bom": false,
+      "detected_encoding": "utf-8",
+      "detected_delimiter": ",",
+      "total_rows": 5419,
+      "total_columns": 38,
+      "header": [
+        "Facility ID",
+        "Facility Name",
+        "Address",
+        "City/Town",
+        "State",
+        "ZIP Code",
+        "County/Parish",
+        "Telephone Number",
+        "Hospital Type",
+        "Hospital Ownership",
+        "Emergency Services",
+        "Meets criteria for birthing friendly designation",
+        "Hospital overall rating",
+        "Hospital overall rating footnote",
+        "MORT Group Measure Count",
+        "Count of Facility MORT Measures",
+        "Count of MORT Measures Better",
+        "Count of MORT Measures No Different",
+        "Count of MORT Measures Worse",
+        "MORT Group Footnote",
+        "Safety Group Measure Count",
+        "Count of Facility Safety Measures",
+        "Count of Safety Measures Better",
+        "Count of Safety Measures No Different",
+        "Count of Safety Measures Worse",
+        "Safety Group Footnote",
+        "READM Group Measure Count",
+        "Count of Facility READM Measures",
+        "Count of READM Measures Better",
+        "Count of READM Measures No Different",
+        "Count of READM Measures Worse",
+        "READM Group Footnote",
+        "Pt Exp Group Measure Count",
+        "Count of Facility Pt Exp Measures",
+        "Pt Exp Group Footnote",
+        "TE Group Measure Count",
+        "Count of Facility TE Measures",
+        "TE Group Footnote"
+      ],
+      "malformed_rows_count": 0,
+      "malformed_rows_sample": [],
+      "exact_duplicate_rows_count": 0,
+      "blank_values_by_column": {
+        "Hospital overall rating footnote": 3103,
+        "MORT Group Footnote": 4023,
+        "Safety Group Footnote": 3270,
+        "READM Group Footnote": 4196,
+        "Pt Exp Group Footnote": 3403,
+        "TE Group Footnote": 4411,
+        "Meets criteria for birthing friendly designation": 3156
+      },
+      "facility_id_column": "Facility ID",
+      "total_facility_ids": 5419,
+      "blank_facility_ids": 0,
+      "distinct_facility_ids": 5419,
+      "duplicate_facility_ids_count": 0,
+      "duplicate_facility_ids_sample": [],
+      "id_length_distribution": {
+        "6": 5419
+      },
+      "id_whitespace_count": 0,
+      "id_leading_zero_count": 854,
+      "id_exact_6digit_count": 5255,
+      "id_exact_6alphanumeric_count": 5419,
+      "non_conforming_ids_count": 0
+    }
+  },
+  "key_uniqueness_and_grain": {
+    "hrrp": {
+      "total_rows": 18330,
+      "distinct_facilities": 3055,
+      "condition_records_per_facility": {
+        "6": 3055
+      },
+      "has_exact_six_records_all_facilities": true,
+      "intended_cardinality": "Many-to-One (6 HRRP fact rows to 1 HGI hospital dimension row)"
+    },
+    "hgi": {
+      "total_rows": 5419,
+      "distinct_facilities": 5419,
+      "is_facility_id_unique": true,
+      "duplicate_facility_ids_count": 0,
+      "intended_cardinality": "One-to-Many dimension source"
+    }
+  },
+  "join_coverage": {
+    "distinct_hrrp_facilities": 3055,
+    "matched_hrrp_facilities": 3035,
+    "matched_hrrp_facilities_pct": 99.3453,
+    "unmatched_hrrp_facilities": 20,
+    "unmatched_hrrp_facilities_pct": 0.6547,
+    "distinct_hgi_facilities": 5419,
+    "matched_hgi_facilities": 3035,
+    "matched_hgi_facilities_pct": 56.0066,
+    "unmatched_hgi_facilities": 2384,
+    "unmatched_hgi_facilities_pct": 43.9934,
+    "fact_rows_before_join": 18330,
+    "fact_rows_after_inner_join": 18210,
+    "fact_rows_after_left_join": 18330,
+    "fact_rows_multiplication_factor": 1.0,
+    "fact_rows_lost_under_inner_join": 120,
+    "published_numeric_err_in_lost_rows": 39,
+    "fact_rows_lost_under_left_join": 0
+  },
+  "name_and_state_consistency": {
+    "total_matched_facilities": 3035,
+    "exact_state_matches": 3035,
+    "exact_state_matches_pct": 100.0,
+    "state_mismatches": 0,
+    "exact_name_matches": 2983,
+    "exact_name_matches_pct": 98.29,
+    "formatting_case_name_mismatches": 2,
+    "material_name_mismatches": 50,
+    "total_name_mismatches": 52,
+    "total_name_mismatches_pct": 1.71
+  },
+  "attribute_inventory_summary": {
+    "total_columns_profiled": 38,
+    "candidate_attributes_profiled": 12
+  },
+  "unmatched_exceptions_summary": {
+    "total_unmatched_hrrp_facilities": 20,
+    "cah_conversion_matches_count": 4,
+    "potential_system_acquisitions_count": 10
+  }
+}
