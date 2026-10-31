@@ -1,4 +1,4 @@
-# Task V5.1: Missing Outcomes, Attrition & Missing-Data Feasibility Audit
+# Task V5.2: Missing Outcomes, Attrition & Missing-Data Feasibility Audit
 
 **Project:** Niyati  
 **Repository:** `nayanojwal0810/Yantra---Industrial-Anomaly-Detection-Monitoring`  
@@ -18,7 +18,7 @@ This audit independently investigates the structure of missing outcomes, endline
 ### Two Distinct Outcome-Availability Definitions:
 1. **Primary Attrition Metric: Raw GSED Missingness (`miss_raw_gsed == 1`)**
    - Defined as participants without a valid recorded numerical endline score (`el_gsed_dscore` is missing).
-   - Exactly **$307$ participants** ($12.47\%$ of the enrolled cohort) have missing raw GSED assessments ($278$ pre-survey non-participants plus $29$ survey-completed participants without a recorded raw GSED score).
+   - Exactly **$307$ participants** ($12.47\%$ of the enrolled cohort) have missing raw GSED scores ($278$ pre-survey non-participants plus $29$ survey-completed participants without a recorded raw GSED score).
    - This constitutes the authoritative, primary outcome non-observation / attrition measure for all attrition models.
 2. **Secondary Sensitivity Metric: Standardized Outcome Unavailable (`miss_outcome == 1`)**
    - Defined as participants without a valid standardized developmental outcome (`gsed_Z` is missing).
@@ -28,17 +28,17 @@ This audit independently investigates the structure of missing outcomes, endline
 ### Key Audit Findings:
 1. **Sample Flow & Discrepancy Resolution:**
    - **The 29-case gap is RESOLVED WITH DIRECT EVIDENCE:** Exactly $2,183$ caregiver-child dyads completed the endline household survey (`final_status == 1`). Of these, exactly $29$ participants have `final_status == 1` but no recorded raw GSED score (`el_gsed_dscore` is missing), leaving exactly $2,154$ recorded raw GSED scores ($2,183 - 29 = 2,154$). The released dataset establishes that the score is absent; it does not establish whether the assessment was not administered or was administered but not recorded.
-   - **The 20-case gap remains UNRESOLVED WITH AVAILABLE SOURCES:** Released data and local replication code account for exactly $312$ exclusions ($307$ missing raw GSED assessments plus $5$ singleton 10-day age-band technical drops), yielding the exact primary analysis sample of $N = 2,149$ ($2,461 - 312 = 2,149$). The footnote in published Table 2 states that $332$ children were excluded due to missing outcome data. If $332$ had been excluded, the analysis sample would be $2,129$, directly contradicting Table 2's reported $N = 2,149$. The cause of the $20$-participant difference ($332 - 312 = 20$) is unknown with available sources.
+   - **The 20-case gap remains UNRESOLVED WITH AVAILABLE SOURCES:** Released data and local replication code account for exactly $312$ exclusions ($307$ missing raw GSED scores plus $5$ singleton 10-day age-band technical drops), yielding the exact primary analysis sample of $N = 2,149$ ($2,461 - 312 = 2,149$). The footnote in published Table 2 states that $332$ children were excluded due to missing outcome data. If $332$ had been excluded, the analysis sample would be $2,129$, directly contradicting Table 2's reported $N = 2,149$. The cause of the $20$-participant difference ($332 - 312 = 20$) is unknown with available sources.
 2. **Marked Differential Attrition Across Treatment Arms ($p < 0.001$):**
    - **Afini (Digital):** Suffered the highest raw GSED missingness at **$15.59\%$** ($183 / 1,174$).
    - **Control:** Intermediate raw GSED missingness at **$10.93\%$** ($106 / 970$).
    - **Home Visits:** Lowest raw GSED missingness at **$5.68\%$** ($18 / 317$).
    - In cluster-robust linear probability models (CR1), Digital raw missingness was $+4.66$ percentage points higher than Control ($SE = 1.69\%, p = 0.0058$; conservative $df=67$, $p = 0.0075$; Odds Ratio $= 1.505$ [95% CI: $1.118, 2.026$], $p = 0.0070$).
    - Home Visits raw missingness was $-5.25$ percentage points lower than Control ($SE = 1.65\%, p = 0.0015$; conservative $df=18$, $p = 0.0052$; Odds Ratio $= 0.491$ [95% CI: $0.301, 0.799$], $p = 0.0042$).
-   - The direct contrast between active modalities is substantial: Home Visits achieved a **$9.91$ percentage point lower raw missingness rate** than Digital ($5.68\%$ vs $15.59\%$, $SE = 1.69\%, z = -5.876, p < 10^{-6}$; conservative $df=18$, $p = 1.5 \times 10^{-5}$), corresponding to a $67.4\%$ reduction in the odds of missingness (Odds Ratio $= 0.326$ [95% CI: $0.205, 0.518$], $p = 2 \times 10^{-6}$).
+   - The direct contrast between active modalities is substantial: Home Visits achieved a **$9.91$ percentage point lower raw missingness rate** than Digital ($5.68\%$ vs $15.59\%$, $SE = 1.69\%, z = -5.876, p = 4.19 \times 10^{-9}$; conservative $df=18$, $p = 1.45 \times 10^{-5}$), corresponding to a $67.4\%$ reduction in the odds of missingness (Odds Ratio $= 0.326$ [95% CI: $0.205, 0.518$], $p = 2.14 \times 10^{-6}$).
 3. **Evidence Against Missing Completely at Random (MCAR):**
    - Observed associations between outcome missingness, treatment assignment, and baseline characteristics provide strong evidence against MCAR.
-   - In multivariable models ($N = 2,373$ complete baseline cases), raw GSED missingness is significantly predicted by younger maternal age ($p < 0.0001$, AOR $= 0.9493$ [95% CI: $0.9280, 0.9711$]), low birth weight ($p = 0.0210$, AOR $= 1.5957$ [95% CI: $1.0731, 2.3729$]), and fewer household adults ($p = 0.0126$, AOR $= 0.8555$ [95% CI: $0.7568, 0.9671$]), alongside treatment assignment.
+   - In multivariable models ($N = 2,373$ complete baseline cases), raw GSED missingness is significantly predicted by younger maternal age ($p = 3.31 \times 10^{-6}$, AOR $= 0.9493$ [95% CI: $0.9280, 0.9711$], $p = 6.98 \times 10^{-6}$), low birth weight ($p = 0.0386$, AOR $= 1.5957$ [95% CI: $1.0731, 2.3729$], $p = 0.0210$), and fewer household adults ($p = 0.0065$, AOR $= 0.8555$ [95% CI: $0.7568, 0.9671$], $p = 0.0126$), alongside treatment assignment.
 4. **Feasibility of Missing-Data Strategies for Niyati:**
    - **Complete-case analysis** (the published Table 2 approach) is vulnerable to selection bias because attrited children were disproportionately from vulnerable households and from the Digital arm.
    - **Multiple Imputation under MAR** is technically feasible for full-cohort sensitivity analysis ($N = 2,461$) because $71.34\%$ of raw-GSED attriters ($219 / 307$) have fully intact baseline profiles across all 13 baseline variables. However, MAR is an inherently untestable assumption. Child deaths ($10$ cases) represent survival truncation rather than ordinary continuous missingness; post-death developmental scores cannot be imputed as if the child were alive. Furthermore, V3 diagnostics concerned baseline covariate imputation in the assessed complete cases; they do not constitute validation of a full-cohort primary-outcome imputation model.
@@ -60,10 +60,10 @@ The sample flow from initial randomized enrollment ($N = 2,461$) to the final an
 | **3** | **Pre-survey attriters / non-participants** | **278** | 278 | $0$ | `RESOLVED_WITH_DIRECT_EVIDENCE` | Households not participating in endline survey: 10 child deaths (`code 2`), 100 moved away (`code 3`), 65 refusals (`code 4`), and 103 unreached after 4+ visits (`code 5`). ($2,461 - 2,183 = 278$). |
 | **4** | **Survey completed but unrecorded raw GSED score** | **29** | 29 | $0$ | `RESOLVED_WITH_DIRECT_EVIDENCE` | **Resolves the 29-case gap:** Twenty-nine participants have `final_status == 1` but no recorded raw GSED score. The released dataset establishes that the score is absent; it does not establish whether the assessment was not administered or was administered but not recorded. ($2,183 - 29 = 2,154$). |
 | **5** | **Recorded raw GSED outcome scores** | **2,154** | 2,154 | $0$ | `RESOLVED_WITH_DIRECT_EVIDENCE` | Caregiver-child dyads with a valid recorded numerical endline GSED raw score (`el_gsed_dscore` notna). Exactly verified from dataset. |
-| **6** | **Missing raw GSED outcome scores (Definition A)** | **307** | 307 | $0$ | `RESOLVED_WITH_DIRECT_EVIDENCE` | **Primary Attrition Metric:** Sum of 278 pre-survey non-participants plus 29 survey-completed children without GSED assessment ($278 + 29 = 307$). |
+| **6** | **Missing raw GSED outcome scores (Definition A)** | **307** | 307 | $0$ | `RESOLVED_WITH_DIRECT_EVIDENCE` | **Primary Attrition Metric:** 278 pre-survey non-participants plus 29 survey-completed participants without a recorded raw GSED score ($278 + 29 = 307$). Primary measure of outcome non-observation. |
 | **7** | **Singleton 10-day age-band exclusions** | **5** | 5 | $0$ | `RESOLVED_WITH_DIRECT_EVIDENCE` | Children assessed for raw GSED but falling into 10-day age brackets with $n=1$ where sample standard deviation is undefined in Stata (brackets 73, 126, 131, 137, 146). These 5 children are technical outcome-construction exclusions, NOT participant attrition. |
 | **8** | **Final primary analysis sample (Table 2)** | **2,149** | 2,149 | $0$ | `RESOLVED_WITH_DIRECT_EVIDENCE` | Participants with valid derived `gsed_Z` scores ($2,154 - 5 = 2,149$). Exactly matches the primary analysis sample $N$ reported in published Table 2. |
-| **9** | **Standardized outcome unavailable (Definition B)** | **312** | 312 | $0$ | `RESOLVED_WITH_DIRECT_EVIDENCE` | Mutually exclusive sum: 307 missing raw GSED assessments + 5 singleton age-band technical drops = 312 total exclusions ($2,461 - 312 = 2,149$). |
+| **9** | **Standardized outcome unavailable (Definition B)** | **312** | 312 | $0$ | `RESOLVED_WITH_DIRECT_EVIDENCE` | Mutually exclusive sum: 307 participants with missing raw GSED scores + 5 singleton age-band technical drops = 312 total exclusions ($2,461 - 312 = 2,149$). |
 | **10** | **Missing-outcome exclusions reported in paper text** | **312** | 332 | **$-20$** | `UNRESOLVED_WITH_AVAILABLE_SOURCES` | The released data and local replication code account for 312 exclusions, while the paper footnote reports 332 exclusions. The cause of the 20-participant difference ($332 - 312 = 20$) is unknown with available sources. If 332 were excluded, the sample size would be 2,129 rather than 2,149. |
 
 Generated data file:
@@ -78,11 +78,11 @@ Primary outcome missingness is substantially and significantly differential acro
 ### Table 3.1: Outcome Missingness and Attrition by Treatment Arm
 
 | Trial Arm | Enrolled ($N$) | Observed Raw GSED | Missing Raw GSED | Raw GSED Missing % | Arm Rate 95% CI | Singleton Age Drops | Final Analysis Sample ($N$) | Total Exclusions ($N$) | Standardized Unavailable % | Diff vs Control (pp) | Cluster SE (CR1) | Diff 95% CI | $p$-value (CR1) | $p$-value (Cons. $df$) | Odds Ratio vs Control | OR 95% CI | OR $p$-value |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Control** | $970$ | $864$ | $106$ | **$10.93\%$** | $[8.63\%,\, 13.23\%]$ | $0$ | $864$ | $106$ | $10.93\%$ | Baseline | — | — | — | — | $1.000$ (Ref.) | — | — |
 | **Home Visits** | $317$ | $299$ | $18$ | **$5.68\%$** | $[3.34\%,\, 8.02\%]$ | $2$ | $297$ | $20$ | $6.31\%$ | **$-5.25$** | $1.65\%$ | $[-8.49\%,\, -2.01\%]$ | $0.0015$ | **$0.0052$** | **$0.491$** | $[0.301,\, 0.799]$ | $0.0042$ |
 | **Afini (Digital)** | $1,174$ | $991$ | $183$ | **$15.59\%$** | $[13.19\%,\, 17.98\%]$ | $3$ | $988$ | $186$ | $15.84\%$ | **$+4.66$** | $1.69\%$ | $[+1.35\%,\, +7.97\%]$ | $0.0058$ | **$0.0075$** | **$1.505$** | $[1.118,\, 2.026]$ | $0.0070$ |
-| **Direct Contrast (HV vs Afini)** | $1,491$ | $1,290$ | $201$ | **$13.48\%$** | — | $5$ | $1,285$ | $206$ | $13.82\%$ | **$-9.91$** | $1.69\%$ | $[-13.21\%,\, -6.60\%]$ | $< 10^{-6}$ | **$0.000015$** | **$0.326$** | $[0.205,\, 0.518]$ | $0.000002$ |
+| **Direct Contrast (HV vs Afini)** | $1,491$ | $1,290$ | $201$ | **$13.48\%$** | — | $5$ | $1,285$ | $206$ | $13.82\%$ | **$-9.91$** | $1.69\%$ | $[-13.21\%,\, -6.60\%]$ | **$4.19 \times 10^{-9}$** | **$1.45 \times 10^{-5}$** | **$0.326$** | $[0.205,\, 0.518]$ | **$2.14 \times 10^{-6}$** |
 | **Total Trial** | **2,461** | **2,154** | **307** | **$12.47\%$** | $[10.87\%,\, 14.08\%]$ | **5** | **2,149** | **312** | **$12.68\%$** | — | — | — | — | — | — | — | — |
 
 *Notes on Statistical Models:*
@@ -91,6 +91,7 @@ Primary outcome missingness is substantially and significantly differential acro
 - In the Control reference row, no contrast $p$-value or difference is reported.
 - Separate confidence intervals are reported for arm rates (e.g., Control rate CI $[8.63\%, 13.23\%]$) versus differences vs Control (e.g., HV diff CI $[-8.49\%, -2.01\%]$).
 - All pairwise differences remain statistically significant under both standard CR1 and conservative degrees of freedom ($p < 0.01$).
+- Direct contrast $p$-values are computed using numerically stable survival functions (`stats.norm.sf` and `stats.t.sf`) and preserved without zero-rounding.
 
 Generated data file:
 - [`outcome_missingness_by_arm.csv`](file:///D:/Niyati/validation/V5_missingness_attrition_audit/outputs/outcome_missingness_by_arm.csv)
@@ -99,24 +100,26 @@ Generated data file:
 
 ## 4. Cluster-Level Missingness Distributions & Concentration
 
-We evaluated the distribution of primary outcome missingness across the $159$ populated clusters for both primary raw GSED missingness ($N = 307$) and secondary standardized outcome unavailability ($N = 312$).
+We evaluated the distribution of primary outcome missingness across the $159$ populated clusters for both primary raw GSED missingness ($N = 307$) and secondary standardized outcome unavailability ($N = 312$), including explicit singleton technical-exclusion distributions.
 
-### Table 4.1: Cluster-Level Missingness Summary
+### Table 4.1: Cluster-Level Missingness and Singleton Summary
 
-| Stratum & Metric | Classification | Populated Clusters ($K$) | Enrolled Part. ($N$) | Missing Count ($N$) | Mean Cluster Missing Rate | SD Missing Rate | Median Missing Rate | IQR Missing Rate | Min Cluster Rate | Max Cluster Rate | Zero-Missing Clusters ($N$, %) | Top 10% Clusters Missing Count | Top 10% Clusters Missing Share (%) | Top 20% Clusters Missing Share (%) |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Total Trial (Primary: Raw GSED)** | `PRIMARY_RAW_GSED` | $159$ | $2,461$ | $307$ | **$11.96\%$** | $11.41\%$ | $10.26\%$ | $18.18\%$ | $0.00\%$ | $75.00\%$ | $42$ ($26.42\%$) | $106$ | **$34.53\%$** | **$53.75\%$** |
-| **Control (Primary: Raw GSED)** | `PRIMARY_RAW_GSED` | $68$ | $970$ | $106$ | $10.90\%$ | $12.95\%$ | $8.45\%$ | $15.25\%$ | $0.00\%$ | $75.00\%$ | $21$ ($30.88\%$) | $40$ | $37.74\%$ | $58.49\%$ |
-| **Home Visits (Primary: Raw GSED)** | `PRIMARY_RAW_GSED` | $19$ | $317$ | $18$ | **$4.56\%$** | $5.26\%$ | $3.57\%$ | $7.85\%$ | $0.00\%$ | **$14.29\%$** | $9$ ($47.37\%$) | $6$ | $33.33\%$ | $55.56\%$ |
-| **Afini (Primary: Raw GSED)** | `PRIMARY_RAW_GSED` | $72$ | $1,174$ | $183$ | **$14.92\%$** | $9.99\%$ | $15.38\%$ | $13.32\%$ | $0.00\%$ | **$42.86\%$** | $12$ ($16.67\%$) | $55$ | $30.05\%$ | $46.99\%$ |
-| **Total Trial (Secondary: Standardized)** | `SECONDARY_STANDARDIZED` | $159$ | $2,461$ | $312$ | **$12.14\%$** | $11.39\%$ | $10.53\%$ | $19.26\%$ | $0.00\%$ | $75.00\%$ | $41$ ($25.79\%$) | $108$ | **$34.62\%$** | **$53.53\%$** |
-| **Home Visits (Secondary: Standardized)** | `SECONDARY_STANDARDIZED` | $19$ | $317$ | $20$ | **$5.44\%$** | $5.49\%$ | $4.76\%$ | $9.35\%$ | $0.00\%$ | **$14.29\%$** | $8$ ($42.11\%$) | $6$ | $30.00\%$ | $50.00\%$ |
-| **Afini (Secondary: Standardized)** | `SECONDARY_STANDARDIZED` | $72$ | $1,174$ | $186$ | **$15.09\%$** | $10.02\%$ | $15.59\%$ | $13.32\%$ | $0.00\%$ | **$42.86\%$** | $12$ ($16.67\%$) | $56$ | $30.11\%$ | $47.31\%$ |
+| Stratum & Metric | Classification | Clusters ($K$) | Enrolled ($N$) | Missing ($N$) | Mean Rate | SD | Median | IQR | Min Rate | Max Rate | Zero-Missing ($N$, %) | Top 10% Share (%) | Top 20% Share (%) | Singleton Drops ($N$) | Affected Clusters ($N$, %) | Max per Cluster | Singleton Concentration Profile |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Total Trial (Primary: Raw GSED)** | `PRIMARY_RAW_GSED` | $159$ | $2,461$ | $307$ | **$11.96\%$** | $11.41\%$ | $10.26\%$ | $18.18\%$ | $0.00\%$ | $75.00\%$ | $42$ ($26.42\%$) | **$34.53\%$** | **$53.75\%$** | $5$ | $5$ ($3.14\%$) | $1$ | 5 singletons across 5 clusters (1 each in clusters 5, 19, 58, 81, 136). |
+| **Control (Primary: Raw GSED)** | `PRIMARY_RAW_GSED` | $68$ | $970$ | $106$ | $10.90\%$ | $12.95\%$ | $8.45\%$ | $15.25\%$ | $0.00\%$ | $75.00\%$ | $21$ ($30.88\%$) | $37.74\%$ | $58.49\%$ | $0$ | $0$ ($0.00\%$) | $0$ | 0 singleton exclusions across 68 clusters. |
+| **Home Visits (Primary: Raw GSED)** | `PRIMARY_RAW_GSED` | $19$ | $317$ | $18$ | **$4.56\%$** | $5.26\%$ | $3.57\%$ | $7.85\%$ | $0.00\%$ | **$14.29\%$** | $9$ ($47.37\%$) | $33.33\%$ | $55.56\%$ | $2$ | $2$ ($10.53\%$) | $1$ | 2 singletons across 2 clusters (1 each in clusters 81, 136). |
+| **Afini (Primary: Raw GSED)** | `PRIMARY_RAW_GSED` | $72$ | $1,174$ | $183$ | **$14.92\%$** | $9.99\%$ | $15.38\%$ | $13.32\%$ | $0.00\%$ | **$42.86\%$** | $12$ ($16.67\%$) | $30.05\%$ | $46.99\%$ | $3$ | $3$ ($4.17\%$) | $1$ | 3 singletons across 3 clusters (1 each in clusters 5, 19, 58). |
+| **Total Trial (Secondary: Standardized)** | `SECONDARY_STANDARDIZED` | $159$ | $2,461$ | $312$ | **$12.14\%$** | $11.39\%$ | $10.53\%$ | $19.26\%$ | $0.00\%$ | $75.00\%$ | $41$ ($25.79\%$) | **$34.62\%$** | **$53.53\%$** | $5$ | $5$ ($3.14\%$) | $1$ | 5 singletons across 5 clusters (1 each in clusters 5, 19, 58, 81, 136). |
+| **Control (Secondary: Standardized)** | `SECONDARY_STANDARDIZED` | $68$ | $970$ | $106$ | $10.90\%$ | $12.95\%$ | $8.45\%$ | $15.25\%$ | $0.00\%$ | $75.00\%$ | $21$ ($30.88\%$) | $37.74\%$ | $58.49\%$ | $0$ | $0$ ($0.00\%$) | $0$ | 0 singleton exclusions across 68 clusters. |
+| **Home Visits (Secondary: Standardized)** | `SECONDARY_STANDARDIZED` | $19$ | $317$ | $20$ | **$5.44\%$** | $5.49\%$ | $4.76\%$ | $9.35\%$ | $0.00\%$ | **$14.29\%$** | $8$ ($42.11\%$) | $30.00\%$ | $50.00\%$ | $2$ | $2$ ($10.53\%$) | $1$ | 2 singletons across 2 clusters (1 each in clusters 81, 136). |
+| **Afini (Secondary: Standardized)** | `SECONDARY_STANDARDIZED` | $72$ | $1,174$ | $186$ | **$15.09\%$** | $10.02\%$ | $15.59\%$ | $13.32\%$ | $0.00\%$ | **$42.86\%$** | $12$ ($16.67\%$) | $30.11\%$ | $47.31\%$ | $3$ | $3$ ($4.17\%$) | $1$ | 3 singletons across 3 clusters (1 each in clusters 5, 19, 58). |
 
 ### Key Cluster Findings:
 1. **Dispersion:** For raw GSED missingness, $42$ of $159$ clusters ($26.42\%$) experienced zero missingness. In Home Visits, nearly half ($47.37\%$, $9 / 19$) had zero missing raw outcomes, compared to only $16.67\%$ ($12 / 72$) in Afini.
 2. **Cluster Boundedness in Home Visits:** In the Home Visits arm, no cluster had a raw missingness rate higher than $14.29\%$. In Afini, individual cluster missingness reached up to $42.86\%$.
 3. **Concentration:** The top $10\%$ of clusters with highest raw missing counts ($16$ clusters) account for $34.53\%$ ($106 / 307$) of all missing outcomes, while the top $20\%$ account for over half ($53.75\%$, $165 / 307$).
+4. **Singleton Technical Exclusions Distribution:** All $5$ singleton age-band technical drops are completely dispersed: exactly $1$ drop per cluster across $5$ separate clusters (Control: $0$; Home Visits: $2$ clusters [$81, 136$]; Afini: $3$ clusters [$5, 19, 58$]). No cluster experienced more than a single technical drop.
 
 Generated data file:
 - [`cluster_missingness_summary.csv`](file:///D:/Niyati/validation/V5_missingness_attrition_audit/outputs/cluster_missingness_summary.csv)
@@ -154,15 +157,19 @@ We audited whether baseline characteristics differ between participants who comp
 
 We fit cluster-robust linear probability models (LPM) and logistic regression models predicting raw GSED missingness (`miss_raw_gsed = 1`, $N = 2,373$ complete baseline cases):
 
-- **Predictors included in model:** `hv`, `afini`, `bl_z_overall`, `bl_childage`, `child_female`, `bl_low_bweight`, `bl_mo_age`, `bl_child_sib_tot`, `bl_hhadults`, `bl_f_b`, `bl_qses_index`.
-- **Baseline predictors excluded due to missingness:** `bl_fa_age` (311 missing), `bl_fa_educ_level` (351 missing), `bl_mics_tot` (218 missing), and `bl_mo_educ_level` (45 missing).
+- **Predictors included in model ($11$):** `hv`, `afini`, `bl_z_overall`, `bl_childage`, `child_female`, `bl_low_bweight`, `bl_mo_age`, `bl_child_sib_tot`, `bl_hhadults`, `bl_f_b`, `bl_qses_index`.
+- **Baseline predictors excluded from multivariable formula ($4$):**
+  - `bl_fa_age` ($311$ missing, $12.64\%$): excluded due to substantial missingness (>8-14%).
+  - `bl_fa_educ_level` ($351$ missing, $14.26\%$): excluded due to substantial missingness (>8-14%).
+  - `bl_mics_tot` ($218$ missing, $8.86\%$): excluded due to substantial missingness (>8-14%).
+  - `bl_mo_educ_level` ($45$ missing, $1.83\%$): excluded due to its categorical specification in the selected model (not due to substantial missingness).
 
 | Predictor Variable | LPM Coef. ($\beta$) | Cluster SE | 95% CI (LPM) | $p$-value (LPM) | Adjusted Odds Ratio (AOR) | 95% CI (AOR) | $p$-value (Logit) | Substantive Interpretation |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Intercept** | $+0.3009$ | $0.0463$ | $[+0.2102,\, +0.3916]$ | $< 0.0001$ | $0.7523$ | $[0.3409,\, 1.6602]$ | $0.4810$ | Baseline missingness anchor. |
+| **Intercept** | $+0.3009$ | $0.0463$ | $[+0.2102,\, +0.3916]$ | $7.79 \times 10^{-11}$ | $0.7523$ | $[0.3409,\, 1.6602]$ | $0.4810$ | Baseline missingness anchor. |
 | **Home Visits (`hv`)** | **$-0.0548$** | $0.0178$ | $[-0.0897,\, -0.0200]$ | **$0.0021$** | **$0.4225$** | $[0.2269,\, 0.7867]$ | **$0.0066$** | Decreases raw missingness probability by $5.48$ pp ($57.8\%$ lower odds). |
 | **Afini (`afini`)** | **$+0.0590$** | $0.0173$ | $[+0.0251,\, +0.0930]$ | **$0.0007$** | **$1.7043$** | $[1.2425,\, 2.3377]$ | **$0.0009$** | Increases raw missingness probability by $5.90$ pp ($70.4\%$ higher odds). |
-| **Mother's Age (`bl_mo_age`)** | **$-0.0051$** | $0.0011$ | $[-0.0073,\, -0.0030]$ | **$< 0.0001$** | **$0.9493$** | $[0.9280,\, 0.9711]$ | **$< 0.0001$** | Strong protective factor: older mothers have significantly lower attrition. |
+| **Mother's Age (`bl_mo_age`)** | **$-0.0051$** | $0.0011$ | $[-0.0073,\, -0.0030]$ | **$3.31 \times 10^{-6}$** | **$0.9493$** | $[0.9280,\, 0.9711]$ | **$6.98 \times 10^{-6}$** | Strong protective factor: older mothers have significantly lower attrition. |
 | **Low Birth Weight (`bl_low_bweight`)** | **$+0.0585$** | $0.0283$ | $[+0.0031,\, +0.1139]$ | **$0.0386$** | **$1.5957$** | $[1.0731,\, 2.3729]$ | **$0.0210$** | Infant vulnerability: low birth weight infants have $5.85$ pp higher missingness. |
 | **Household Adults (`bl_hhadults`)** | **$-0.0151$** | $0.0056$ | $[-0.0261,\, -0.0042]$ | **$0.0065$** | **$0.8555$** | $[0.7568,\, 0.9671]$ | **$0.0126$** | Caregiver capacity: more adults in household reduce missingness probability. |
 | **Baseline CREDI (`bl_z_overall`)** | $-0.0181$ | $0.0131$ | $[-0.0437,\, +0.0075]$ | $0.1659$ | $0.8499$ | $[0.6703,\, 1.0777]$ | $0.1794$ | Directionally negative: lower baseline development associates with higher attrition. |
@@ -248,12 +255,12 @@ All generated outputs are located in [`validation/V5_missingness_attrition_audit
 | :--- | :--- | :---: |
 | [`sample_flow_reconciliation.csv`](file:///D:/Niyati/validation/V5_missingness_attrition_audit/outputs/sample_flow_reconciliation.csv) | Step-by-step sample-flow reconstruction, resolving the 29-case gap and explaining the 20-case footnote gap. | 10 rows |
 | [`outcome_missingness_by_arm.csv`](file:///D:/Niyati/validation/V5_missingness_attrition_audit/outputs/outcome_missingness_by_arm.csv) | Primary outcome missingness rates by randomized arm with cluster-robust LPM and logistic models and conservative $df$. | 5 rows |
-| [`cluster_missingness_summary.csv`](file:///D:/Niyati/validation/V5_missingness_attrition_audit/outputs/cluster_missingness_summary.csv) | Cluster-level missingness distributions, quartile dispersions, zero-missing counts, and top 10%/20% concentration shares. | 7 rows |
+| [`cluster_missingness_summary.csv`](file:///D:/Niyati/validation/V5_missingness_attrition_audit/outputs/cluster_missingness_summary.csv) | Cluster-level missingness distributions, quartile dispersions, zero-missing counts, top 10%/20% shares, and singleton drop distributions across all 8 strata. | 8 rows |
 | [`baseline_missingness_summary.csv`](file:///D:/Niyati/validation/V5_missingness_attrition_audit/outputs/baseline_missingness_summary.csv) | Baseline covariate missingness rates overall and contrasted by primary outcome observation status with exploratory $\chi^2$ tests. | 15 rows |
 | [`missingness_association_models.csv`](file:///D:/Niyati/validation/V5_missingness_attrition_audit/outputs/missingness_association_models.csv) | Comprehensive regression models (arm-only LPM, bivariate LPM, multivariable LPM, arm-only Logistic, and multivariable Logistic) predicting missingness. | 55 rows |
 | [`missing_pattern_summary.csv`](file:///D:/Niyati/validation/V5_missingness_attrition_audit/outputs/missing_pattern_summary.csv) | Mapping of all 31 distinct joint missingness patterns across outcome and 13 key baseline covariates. | 31 rows |
 | [`imputation_feasibility.csv`](file:///D:/Niyati/validation/V5_missingness_attrition_audit/outputs/imputation_feasibility.csv) | Methodological comparative assessment of Complete-Case, MAR Imputation, IPW, and MNAR Tipping-Point strategies. | 4 rows |
-| [`v5_summary.json`](file:///D:/Niyati/validation/V5_missingness_attrition_audit/outputs/v5_summary.json) | Complete machine-readable metadata summary of all sample flows, missingness models, tests, and feasibility verdicts. | 152 lines |
+| [`v5_summary.json`](file:///D:/Niyati/validation/V5_missingness_attrition_audit/outputs/v5_summary.json) | Complete machine-readable metadata summary of all sample flows, missingness models, tests, and feasibility verdicts. | 197 lines |
 
 ---
 

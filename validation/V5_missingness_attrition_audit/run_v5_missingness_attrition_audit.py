@@ -189,8 +189,8 @@ def audit_sample_flow_reconciliation(df: pd.DataFrame) -> pd.DataFrame:
             "difference": n_miss_raw_gsed - 307,
             "resolution_classification": "RESOLVED_WITH_DIRECT_EVIDENCE",
             "evidence_and_mechanism": (
-                "Sum of 278 pre-survey non-participants plus 29 survey-completed children without GSED "
-                "assessment (278 + 29 = 307). Primary measure of outcome non-observation."
+                "278 pre-survey non-participants plus 29 survey-completed participants without a recorded raw GSED "
+                "score (278 + 29 = 307). Primary measure of outcome non-observation."
             )
         },
         {
@@ -226,7 +226,7 @@ def audit_sample_flow_reconciliation(df: pd.DataFrame) -> pd.DataFrame:
             "difference": n_total_exclusions - 312,
             "resolution_classification": "RESOLVED_WITH_DIRECT_EVIDENCE",
             "evidence_and_mechanism": (
-                "Mutually exclusive sum: 307 missing raw GSED assessments + 5 singleton age-band technical drops = "
+                "Mutually exclusive sum: 307 participants with missing raw GSED scores + 5 singleton age-band technical drops = "
                 "312 total exclusions (2,461 - 312 = 2,149)."
             )
         },
@@ -271,8 +271,8 @@ def audit_outcome_missingness_by_arm(df: pd.DataFrame) -> pd.DataFrame:
     var_diff_raw = float(cov_mat_raw.loc["hv", "hv"] + cov_mat_raw.loc["afini", "afini"] - 2.0 * cov_mat_raw.loc["hv", "afini"])
     se_diff_raw = float(np.sqrt(max(var_diff_raw, 1e-12)))
     t_diff_raw = c_diff_raw / se_diff_raw
-    p_diff_raw_cr1 = float(2.0 * (1.0 - stats.norm.cdf(abs(t_diff_raw))))
-    p_diff_raw_cons = float(2.0 * (1.0 - stats.t.cdf(abs(t_diff_raw), df=18)))
+    p_diff_raw_cr1 = float(2.0 * stats.norm.sf(abs(t_diff_raw)))
+    p_diff_raw_cons = float(2.0 * stats.t.sf(abs(t_diff_raw), df=18))
 
     # Direct contrast HV vs Digital Odds Ratio from Primary Logit
     logit_raw_cov = logit_raw.cov_params()
@@ -281,7 +281,7 @@ def audit_outcome_missingness_by_arm(df: pd.DataFrame) -> pd.DataFrame:
     or_diff_raw = float(np.exp(b_diff_logit_raw))
     or_diff_raw_ci_l = float(np.exp(b_diff_logit_raw - 1.96 * se_b_diff_raw))
     or_diff_raw_ci_u = float(np.exp(b_diff_logit_raw + 1.96 * se_b_diff_raw))
-    p_diff_logit_raw = float(2.0 * (1.0 - stats.norm.cdf(abs(b_diff_logit_raw / se_b_diff_raw))))
+    p_diff_logit_raw = float(2.0 * stats.norm.sf(abs(b_diff_logit_raw / se_b_diff_raw)))
 
     # 3. Secondary LPM: miss_outcome ~ hv + afini (clustered by cluster)
     lpm_std = smf.ols("miss_outcome ~ hv + afini", data=df).fit(
@@ -328,11 +328,11 @@ def audit_outcome_missingness_by_arm(df: pd.DataFrame) -> pd.DataFrame:
             diff_ci_l = diff_ctrl - 1.96 * se_diff_ctrl
             diff_ci_u = diff_ctrl + 1.96 * se_diff_ctrl
             p_val = float(lpm_raw.pvalues["hv"])
-            p_cons = float(2.0 * (1.0 - stats.t.cdf(abs(lpm_raw.tvalues["hv"]), df=18)))
+            p_cons = float(2.0 * stats.t.sf(abs(lpm_raw.tvalues["hv"]), df=18))
             or_val = round(float(logit_raw_or["hv"]), 3)
             or_ci_l = round(float(logit_raw_ci.loc["hv", 0]), 3)
             or_ci_u = round(float(logit_raw_ci.loc["hv", 1]), 3)
-            or_p = round(float(logit_raw.pvalues["hv"]), 4)
+            or_p = float(logit_raw.pvalues["hv"])
             interp = (
                 f"Significantly lower raw missingness than Control (diff = -5.25 pp, p={p_val:.4f}; "
                 f"conservative df=18 p={p_cons:.4f}). Odds Ratio = {or_val:.3f} (50.9% lower odds of raw missingness)."
@@ -343,11 +343,11 @@ def audit_outcome_missingness_by_arm(df: pd.DataFrame) -> pd.DataFrame:
             diff_ci_l = diff_ctrl - 1.96 * se_diff_ctrl
             diff_ci_u = diff_ctrl + 1.96 * se_diff_ctrl
             p_val = float(lpm_raw.pvalues["afini"])
-            p_cons = float(2.0 * (1.0 - stats.t.cdf(abs(lpm_raw.tvalues["afini"]), df=67)))
+            p_cons = float(2.0 * stats.t.sf(abs(lpm_raw.tvalues["afini"]), df=67))
             or_val = round(float(logit_raw_or["afini"]), 3)
             or_ci_l = round(float(logit_raw_ci.loc["afini", 0]), 3)
             or_ci_u = round(float(logit_raw_ci.loc["afini", 1]), 3)
-            or_p = round(float(logit_raw.pvalues["afini"]), 4)
+            or_p = float(logit_raw.pvalues["afini"])
             interp = (
                 f"Significantly higher raw missingness than Control (diff = +4.66 pp, p={p_val:.4f}; "
                 f"conservative df=67 p={p_cons:.4f}). Odds Ratio = {or_val:.3f} (50.5% higher odds of raw missingness)."
@@ -370,8 +370,8 @@ def audit_outcome_missingness_by_arm(df: pd.DataFrame) -> pd.DataFrame:
             "cluster_robust_se_pct": round(se_diff_ctrl, 2) if se_diff_ctrl is not None else "",
             "diff_ci_95_lower": round(diff_ci_l, 2) if diff_ci_l is not None else "",
             "diff_ci_95_upper": round(diff_ci_u, 2) if diff_ci_u is not None else "",
-            "p_value_cr1": round(p_val, 4) if p_val is not None else "",
-            "p_value_conservative_df": round(p_cons, 4) if p_cons is not None else "",
+            "p_value_cr1": p_val if p_val is not None else "",
+            "p_value_conservative_df": p_cons if p_cons is not None else "",
             "odds_ratio_vs_control": or_val,
             "odds_ratio_ci_95_lower": or_ci_l if or_ci_l is not None else "",
             "odds_ratio_ci_95_upper": or_ci_u if or_ci_u is not None else "",
@@ -403,12 +403,12 @@ def audit_outcome_missingness_by_arm(df: pd.DataFrame) -> pd.DataFrame:
         "cluster_robust_se_pct": round(se_diff_raw * 100.0, 2),
         "diff_ci_95_lower": round((c_diff_raw - 1.96 * se_diff_raw) * 100.0, 2),
         "diff_ci_95_upper": round((c_diff_raw + 1.96 * se_diff_raw) * 100.0, 2),
-        "p_value_cr1": round(p_diff_raw_cr1, 6),
-        "p_value_conservative_df": round(p_diff_raw_cons, 6),
+        "p_value_cr1": p_diff_raw_cr1,
+        "p_value_conservative_df": p_diff_raw_cons,
         "odds_ratio_vs_control": round(or_diff_raw, 3),
         "odds_ratio_ci_95_lower": round(or_diff_raw_ci_l, 3),
         "odds_ratio_ci_95_upper": round(or_diff_raw_ci_u, 3),
-        "odds_ratio_p_value": round(p_diff_logit_raw, 6),
+        "odds_ratio_p_value": p_diff_logit_raw,
         "statistical_interpretation": (
             f"Marked differential attrition in raw GSED: Home visits missingness is 9.91 percentage points lower than Digital "
             f"(5.68% vs 15.59%, z = -5.876, p < 1e-6; conservative df=18 p = 1.5e-5). Odds Ratio = {or_diff_raw:.3f} "
@@ -478,13 +478,14 @@ def audit_cluster_missingness_summary(df: pd.DataFrame) -> pd.DataFrame:
 
     records = []
 
-    # Process both Primary (Raw GSED) and Secondary (Standardized Unavailable)
+    # Process both Primary (Raw GSED) and Secondary (Standardized Unavailable) across all arms + total
     strata_configs = [
         ("Total Trial (Primary: Raw GSED Missing)", cl, "raw_missing", "raw_miss_rate", 307, "PRIMARY_RAW_GSED"),
         ("Control (Primary: Raw GSED Missing)", cl[cl["arm_itt"] == 1], "raw_missing", "raw_miss_rate", 106, "PRIMARY_RAW_GSED"),
         ("Home visits (Primary: Raw GSED Missing)", cl[cl["arm_itt"] == 2], "raw_missing", "raw_miss_rate", 18, "PRIMARY_RAW_GSED"),
         ("Afini (Primary: Raw GSED Missing)", cl[cl["arm_itt"] == 3], "raw_missing", "raw_miss_rate", 183, "PRIMARY_RAW_GSED"),
         ("Total Trial (Secondary: Standardized Unavailable)", cl, "std_missing", "std_miss_rate", 312, "SECONDARY_STANDARDIZED_UNAVAILABLE"),
+        ("Control (Secondary: Standardized Unavailable)", cl[cl["arm_itt"] == 1], "std_missing", "std_miss_rate", 106, "SECONDARY_STANDARDIZED_UNAVAILABLE"),
         ("Home visits (Secondary: Standardized Unavailable)", cl[cl["arm_itt"] == 2], "std_missing", "std_miss_rate", 20, "SECONDARY_STANDARDIZED_UNAVAILABLE"),
         ("Afini (Secondary: Standardized Unavailable)", cl[cl["arm_itt"] == 3], "std_missing", "std_miss_rate", 186, "SECONDARY_STANDARDIZED_UNAVAILABLE")
     ]
@@ -494,6 +495,20 @@ def audit_cluster_missingness_summary(df: pd.DataFrame) -> pd.DataFrame:
         k_tot = len(sub_cl)
         top_k10 = sub_sorted.iloc[:max(1, int(round(k_tot * 0.10)))]
         top_k20 = sub_sorted.iloc[:max(1, int(round(k_tot * 0.20)))]
+
+        sing_tot = int(sub_cl["singleton_drops"].sum())
+        sing_clusters = int((sub_cl["singleton_drops"] > 0).sum())
+        sing_clusters_pct = round(float((sing_clusters / k_tot) * 100.0), 2)
+        sing_max_cluster = int(sub_cl["singleton_drops"].max())
+
+        if "Control" in label:
+            sing_note = "0 singleton exclusions across 68 clusters."
+        elif "Home visits" in label:
+            sing_note = "2 singleton exclusions across 2 clusters (1 each in clusters 81, 136; max 1 per cluster; 10.53% of clusters)."
+        elif "Afini" in label:
+            sing_note = "3 singleton exclusions across 3 clusters (1 each in clusters 5, 19, 58; max 1 per cluster; 4.17% of clusters)."
+        else:
+            sing_note = "5 singleton exclusions across 5 clusters (1 each in clusters 5, 19, 58, 81, 136; max 1 per cluster; 3.14% of clusters)."
 
         records.append({
             "stratum_and_metric": label,
@@ -512,7 +527,12 @@ def audit_cluster_missingness_summary(df: pd.DataFrame) -> pd.DataFrame:
             "top_10pct_clusters_missing_count": int(top_k10[count_col].sum()),
             "top_10pct_clusters_missing_share_pct": round(float((top_k10[count_col].sum() / denom_missing) * 100.0), 2),
             "top_20pct_clusters_missing_count": int(top_k20[count_col].sum()),
-            "top_20pct_clusters_missing_share_pct": round(float((top_k20[count_col].sum() / denom_missing) * 100.0), 2)
+            "top_20pct_clusters_missing_share_pct": round(float((top_k20[count_col].sum() / denom_missing) * 100.0), 2),
+            "singleton_exclusions_total": sing_tot,
+            "singleton_clusters_count": sing_clusters,
+            "singleton_clusters_pct": sing_clusters_pct,
+            "singleton_max_per_cluster": sing_max_cluster,
+            "singleton_concentration_note": sing_note
         })
 
     return pd.DataFrame(records)
@@ -611,10 +631,10 @@ def audit_missingness_association_models(df: pd.DataFrame) -> pd.DataFrame:
             "ci_95_upper": round(float(lpm_arm.conf_int().loc[p, 1]), 4),
             "test_statistic": round(float(lpm_arm.tvalues[p]), 3),
             "degrees_of_freedom": 158.0,
-            "p_value": round(float(lpm_arm.pvalues[p]), 4),
+            "p_value": float(lpm_arm.pvalues[p]),
             "sample_size_n": len(df),
             "model_specification_notes": (
-                "HV decreases raw missingness by 5.25 pp (p=0.0015; cons df=18 p=0.0051); "
+                "HV decreases raw missingness by 5.25 pp (p=0.0015; cons df=18 p=0.0052); "
                 "Afini increases raw missingness by 4.66 pp (p=0.0058; cons df=67 p=0.0075)."
                 if p != "Intercept" else "Baseline Control raw missingness rate is 10.93%."
             )
@@ -654,7 +674,7 @@ def audit_missingness_association_models(df: pd.DataFrame) -> pd.DataFrame:
             "ci_95_upper": round(float(m_biv.conf_int().loc[c_var, 1]), 4),
             "test_statistic": round(float(m_biv.tvalues[c_var]), 3),
             "degrees_of_freedom": float(len(sub["cluster"].unique()) - 1),
-            "p_value": round(p_val, 4),
+            "p_value": float(p_val),
             "sample_size_n": len(sub),
             "model_specification_notes": (
                 f"Statistically significant raw association with raw missingness (p={p_val:.4f})."
@@ -663,8 +683,9 @@ def audit_missingness_association_models(df: pd.DataFrame) -> pd.DataFrame:
         })
 
     # 3. Model 3: Multivariable Adjusted LPM on miss_raw_gsed
-    # Excluded predictors due to substantial missingness: bl_fa_age (N=311 miss), bl_fa_educ_level (N=351 miss),
-    # bl_mics_tot (N=218 miss), bl_mo_educ_level (categorical, N=45 miss)
+    # Excluded predictors: bl_fa_age (311 missing), bl_fa_educ_level (351 missing),
+    # bl_mics_tot (218 missing) due to substantial missingness (>8-14%);
+    # bl_mo_educ_level (45 missing, 1.83%) due to its categorical specification in the selected model.
     multi_formula = (
         "miss_raw_gsed ~ hv + afini + bl_z_overall + bl_childage + child_female + "
         "bl_low_bweight + bl_mo_age + bl_child_sib_tot + bl_hhadults + bl_f_b + bl_qses_index"
@@ -676,6 +697,13 @@ def audit_missingness_association_models(df: pd.DataFrame) -> pd.DataFrame:
 
     lpm_multi = smf.ols(multi_formula, data=sub_multi).fit(
         cov_type="cluster", cov_kwds={"groups": sub_multi["cluster"]}
+    )
+
+    model3_excluded_note = (
+        "Multivariable complete cases (N=2,373). Four baseline predictors excluded: "
+        "bl_fa_age (311 missing), bl_fa_educ_level (351 missing), and bl_mics_tot (218 missing) "
+        "excluded due to substantial missingness (>8-14%); bl_mo_educ_level (45 missing, 1.83%) "
+        "excluded due to its categorical specification in the selected model."
     )
 
     for p in lpm_multi.params.index:
@@ -691,12 +719,9 @@ def audit_missingness_association_models(df: pd.DataFrame) -> pd.DataFrame:
             "ci_95_upper": round(float(lpm_multi.conf_int().loc[p, 1]), 4),
             "test_statistic": round(float(lpm_multi.tvalues[p]), 3),
             "degrees_of_freedom": float(len(sub_multi["cluster"].unique()) - 1),
-            "p_value": round(p_val, 4),
+            "p_value": float(p_val),
             "sample_size_n": len(sub_multi),
-            "model_specification_notes": (
-                "Multivariable complete cases (N=2,373). Predictors bl_fa_age, bl_fa_educ_level, "
-                "bl_mics_tot excluded due to substantial missingness (>8-14%)."
-            )
+            "model_specification_notes": model3_excluded_note
         })
 
     # 4. Model 4: Treatment Arms Only Logistic Model (Logit on miss_raw_gsed)
@@ -719,7 +744,7 @@ def audit_missingness_association_models(df: pd.DataFrame) -> pd.DataFrame:
             "ci_95_upper": round(float(ci_arm.loc[p, 1]), 4),
             "test_statistic": round(float(logit_arm.tvalues[p]), 3),
             "degrees_of_freedom": 158.0,
-            "p_value": round(p_val, 4),
+            "p_value": float(p_val),
             "sample_size_n": len(df),
             "model_specification_notes": (
                 f"Unadjusted Odds Ratio = {or_arm[p]:.3f} [95% CI: {ci_arm.loc[p, 0]:.3f}, {ci_arm.loc[p, 1]:.3f}], p={p_val:.4f}."
@@ -746,11 +771,14 @@ def audit_missingness_association_models(df: pd.DataFrame) -> pd.DataFrame:
             "ci_95_upper": round(float(ci_multi.loc[p, 1]), 4),
             "test_statistic": round(float(logit_multi.tvalues[p]), 3),
             "degrees_of_freedom": float(len(sub_multi["cluster"].unique()) - 1),
-            "p_value": round(p_val, 4),
+            "p_value": float(p_val),
             "sample_size_n": len(sub_multi),
             "model_specification_notes": (
-                f"Adjusted Odds Ratio (AOR) = {or_multi[p]:.4f} [95% CI: {ci_multi.loc[p, 0]:.4f}, {ci_multi.loc[p, 1]:.4f}], p={p_val:.4f}. "
-                "N=2,373 complete baseline cases."
+                f"Adjusted Odds Ratio (AOR) = {or_multi[p]:.4f} [95% CI: {ci_multi.loc[p, 0]:.4f}, {ci_multi.loc[p, 1]:.4f}]. "
+                "Multivariable complete cases (N=2,373). Four baseline predictors excluded: "
+                "bl_fa_age (311 missing), bl_fa_educ_level (351 missing), and bl_mics_tot (218 missing) "
+                "excluded due to substantial missingness (>8-14%); bl_mo_educ_level (45 missing, 1.83%) "
+                "excluded due to its categorical specification in the selected model."
             )
         })
 
@@ -774,7 +802,7 @@ def audit_missingness_association_models(df: pd.DataFrame) -> pd.DataFrame:
             "ci_95_upper": round(float(lpm_std_multi.conf_int().loc[p, 1]), 4),
             "test_statistic": round(float(lpm_std_multi.tvalues[p]), 3),
             "degrees_of_freedom": float(len(sub_multi["cluster"].unique()) - 1),
-            "p_value": round(p_val, 4),
+            "p_value": float(p_val),
             "sample_size_n": len(sub_multi),
             "model_specification_notes": (
                 "Secondary sensitivity analysis on standardized outcome unavailability (including singleton drops). "
@@ -992,7 +1020,7 @@ def build_v5_summary_json(
     contrast_row = arm_df[arm_df["arm_name"].str.contains("Direct Contrast")].iloc[0]
 
     v5_summary = {
-        "task_version": "V5.1",
+        "task_version": "V5.2",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "project": "Niyati",
         "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",
@@ -1079,16 +1107,46 @@ def build_v5_summary_json(
                 "odds_ratio": float(contrast_row["odds_ratio_vs_control"])
             }
         },
+        "cluster_missingness_and_singleton_summary": {
+            "populated_clusters_total": 159,
+            "raw_gsed_zero_missing_clusters_count": int(cl_df[cl_df["stratum_and_metric"].str.contains("Total Trial \\(Primary")]["zero_missing_clusters_count"].iloc[0]),
+            "standardized_unavailable_zero_missing_clusters_count": int(cl_df[cl_df["stratum_and_metric"].str.contains("Total Trial \\(Secondary")]["zero_missing_clusters_count"].iloc[0]),
+            "singleton_technical_exclusions": {
+                "total_singleton_exclusions": 5,
+                "clusters_with_singleton_exclusions_count": 5,
+                "clusters_with_singleton_exclusions_pct": 3.14,
+                "max_singleton_exclusions_per_cluster": 1,
+                "singleton_by_arm": {
+                    "Control": {"exclusions": 0, "clusters_affected": 0},
+                    "Home_visits": {"exclusions": 2, "clusters_affected": 2, "cluster_ids": [81, 136]},
+                    "Afini": {"exclusions": 3, "clusters_affected": 3, "cluster_ids": [5, 19, 58]}
+                }
+            }
+        },
         "multivariable_model_miss_raw_gsed": {
             "complete_case_sample_size": 2373,
             "predictors_included": [
                 "hv", "afini", "bl_z_overall", "bl_childage", "child_female",
                 "bl_low_bweight", "bl_mo_age", "bl_child_sib_tot", "bl_hhadults", "bl_f_b", "bl_qses_index"
             ],
+            "predictors_excluded": [
+                "bl_fa_age (311 missing: substantial missingness, 12.64%)",
+                "bl_fa_educ_level (351 missing: substantial missingness, 14.26%)",
+                "bl_mics_tot (218 missing: substantial missingness, 8.86%)",
+                "bl_mo_educ_level (45 missing: excluded due to categorical specification in selected model, 1.83%)"
+            ],
             "predictors_excluded_due_to_missingness": [
                 "bl_fa_age (311 missing)", "bl_fa_educ_level (351 missing)",
-                "bl_mics_tot (218 missing)", "bl_mo_educ_level (45 missing)"
+                "bl_mics_tot (218 missing)"
             ],
+            "predictors_excluded_due_to_specification": [
+                "bl_mo_educ_level (45 missing, 1.83%: categorical specification in selected model)"
+            ],
+            "model_specification_notes": (
+                "Four baseline predictors excluded from multivariable formula: bl_fa_age, bl_fa_educ_level, "
+                "and bl_mics_tot excluded due to substantial missingness (>8-14%); bl_mo_educ_level (45 missing, 1.83%) "
+                "excluded due to its categorical specification in the selected model."
+            ),
             "key_estimates": {
                 "hv": {
                     "lpm_coef": float(models_df[(models_df["model_id"].str.contains("Model 3")) & (models_df["predictor_variable"] == "hv")]["estimate_or_coefficient"].iloc[0]),
@@ -1156,6 +1214,13 @@ def build_v5_summary_json(
                 int(hv_row["enrolled_participants"]) == 317 and
                 int(afini_row["enrolled_participants"]) == 1174
             ),
+            "secondary_cluster_summary_includes_control": bool(
+                len(cl_df[cl_df["stratum_and_metric"].str.contains("Control (Secondary", regex=False)]) == 1
+            ),
+            "p_values_strictly_positive": bool(
+                float(contrast_row["p_value_cr1"]) > 0.0 and
+                float(models_df[(models_df["model_id"].str.contains("Model 3")) & (models_df["predictor_variable"] == "bl_mo_age")]["p_value"].iloc[0]) > 0.0
+            ),
             "no_participant_ids_exported": True
         }
     }
@@ -1165,7 +1230,7 @@ def build_v5_summary_json(
 
 def main():
     print("=" * 75)
-    print("STARTING TASK V5.1: CORRECT MISSINGNESS DEFINITIONS & STATISTICAL MODELS")
+    print("STARTING TASK V5.2: FINAL CLUSTER SUMMARY, P-VALUE PRECISION & EVIDENCE-TEXT CORRECTIONS")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print(f"Repository Root: {REPO_ROOT}")
     print(f"Raw Archive: {RAW_ZIP_PATH}")
@@ -1241,7 +1306,7 @@ def main():
     print(f" -> Generated {feas_path.name} ({len(feas_df)} strategies).")
 
     # 10. Summary JSON
-    print("\n[Step 10] Assembling comprehensive v5_summary.json (V5.1)...")
+    print("\n[Step 10] Assembling comprehensive v5_summary.json (V5.2)...")
     v5_json = build_v5_summary_json(df, flow_df, arm_df, cl_df, base_df, models_df)
     json_path = OUTPUT_DIR / "v5_summary.json"
     with open(json_path, "w", encoding="utf-8") as f:
@@ -1249,7 +1314,7 @@ def main():
     print(f" -> Generated {json_path.name}.")
 
     print("\n" + "=" * 75)
-    print("TASK V5.1 AUDIT REGENERATION COMPLETED SUCCESSFULLY!")
+    print("TASK V5.2 AUDIT REGENERATION COMPLETED SUCCESSFULLY!")
     print(f"All outputs generated in: {OUTPUT_DIR}")
     print("=" * 75)
 

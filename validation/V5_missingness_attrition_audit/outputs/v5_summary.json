@@ -1,6 +1,6 @@
 {
-  "task_version": "V5.1",
-  "timestamp_utc": "2026-10-31T09:21:30.888185+00:00",
+  "task_version": "V5.2",
+  "timestamp_utc": "2026-10-31T09:47:10.758337+00:00",
   "project": "Niyati",
   "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",
   "dataset_metadata": {
@@ -53,8 +53,8 @@
       "standardized_outcome_unavailable_pct": 6.31,
       "diff_vs_control_percentage_points": -5.25,
       "cluster_robust_se_pct": 1.65,
-      "p_value_cr1": 0.0015,
-      "p_value_conservative_df18": 0.0052,
+      "p_value_cr1": 0.0014738332621109923,
+      "p_value_conservative_df18": 0.005187858975289383,
       "odds_ratio_vs_control": 0.491
     },
     "Afini_Digital": {
@@ -68,15 +68,49 @@
       "standardized_outcome_unavailable_pct": 15.84,
       "diff_vs_control_percentage_points": 4.66,
       "cluster_robust_se_pct": 1.69,
-      "p_value_cr1": 0.0058,
+      "p_value_cr1": 0.005803261580201379,
       "odds_ratio_vs_control": 1.505
     },
     "Direct_Active_Contrast_HV_vs_Digital": {
       "diff_percentage_points": -9.91,
       "cluster_robust_se_pct": 1.69,
-      "p_value_cr1": 0.0,
-      "p_value_conservative_df18": 1.5e-05,
+      "p_value_cr1": 4.1920895108453015e-09,
+      "p_value_conservative_df18": 1.4529750283946738e-05,
       "odds_ratio": 0.326
+    }
+  },
+  "cluster_missingness_and_singleton_summary": {
+    "populated_clusters_total": 159,
+    "raw_gsed_zero_missing_clusters_count": 42,
+    "standardized_unavailable_zero_missing_clusters_count": 41,
+    "singleton_technical_exclusions": {
+      "total_singleton_exclusions": 5,
+      "clusters_with_singleton_exclusions_count": 5,
+      "clusters_with_singleton_exclusions_pct": 3.14,
+      "max_singleton_exclusions_per_cluster": 1,
+      "singleton_by_arm": {
+        "Control": {
+          "exclusions": 0,
+          "clusters_affected": 0
+        },
+        "Home_visits": {
+          "exclusions": 2,
+          "clusters_affected": 2,
+          "cluster_ids": [
+            81,
+            136
+          ]
+        },
+        "Afini": {
+          "exclusions": 3,
+          "clusters_affected": 3,
+          "cluster_ids": [
+            5,
+            19,
+            58
+          ]
+        }
+      }
     }
   },
   "multivariable_model_miss_raw_gsed": {
@@ -94,42 +128,51 @@
       "bl_f_b",
       "bl_qses_index"
     ],
+    "predictors_excluded": [
+      "bl_fa_age (311 missing: substantial missingness, 12.64%)",
+      "bl_fa_educ_level (351 missing: substantial missingness, 14.26%)",
+      "bl_mics_tot (218 missing: substantial missingness, 8.86%)",
+      "bl_mo_educ_level (45 missing: excluded due to categorical specification in selected model, 1.83%)"
+    ],
     "predictors_excluded_due_to_missingness": [
       "bl_fa_age (311 missing)",
       "bl_fa_educ_level (351 missing)",
-      "bl_mics_tot (218 missing)",
-      "bl_mo_educ_level (45 missing)"
+      "bl_mics_tot (218 missing)"
     ],
+    "predictors_excluded_due_to_specification": [
+      "bl_mo_educ_level (45 missing, 1.83%: categorical specification in selected model)"
+    ],
+    "model_specification_notes": "Four baseline predictors excluded from multivariable formula: bl_fa_age, bl_fa_educ_level, and bl_mics_tot excluded due to substantial missingness (>8-14%); bl_mo_educ_level (45 missing, 1.83%) excluded due to its categorical specification in the selected model.",
     "key_estimates": {
       "hv": {
         "lpm_coef": -0.0548,
-        "lpm_p": 0.0021,
+        "lpm_p": 0.002064132339490866,
         "logit_aor": 0.4225,
-        "logit_p": 0.0066
+        "logit_p": 0.006599283632628348
       },
       "afini": {
         "lpm_coef": 0.059,
-        "lpm_p": 0.0007,
+        "lpm_p": 0.0006566732216963622,
         "logit_aor": 1.7043,
-        "logit_p": 0.0009
+        "logit_p": 0.0009451013242968047
       },
       "bl_mo_age": {
         "lpm_coef": -0.0051,
-        "lpm_p": 0.0,
+        "lpm_p": 3.310269358470205e-06,
         "logit_aor": 0.9493,
-        "logit_p": 0.0
+        "logit_p": 6.976713872634842e-06
       },
       "bl_low_bweight": {
         "lpm_coef": 0.0585,
-        "lpm_p": 0.0386,
+        "lpm_p": 0.0385715271916193,
         "logit_aor": 1.5957,
-        "logit_p": 0.021
+        "logit_p": 0.020983601066368967
       },
       "bl_hhadults": {
         "lpm_coef": -0.0151,
-        "lpm_p": 0.0065,
+        "lpm_p": 0.0064516936695536145,
         "logit_aor": 0.8555,
-        "logit_p": 0.0126
+        "logit_p": 0.012570478522080255
       }
     }
   },
@@ -147,6 +190,8 @@
     "final_analysis_participants_2149": true,
     "enrolled_participants_2461": true,
     "arm_counts_970_317_1174": true,
+    "secondary_cluster_summary_includes_control": true,
+    "p_values_strictly_positive": true,
     "no_participant_ids_exported": true
   }
 }
