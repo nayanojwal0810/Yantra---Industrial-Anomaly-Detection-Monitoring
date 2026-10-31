@@ -1,6 +1,6 @@
 {
-  "task_version": "V4.0",
-  "timestamp_utc": "2026-10-31T07:19:49.799955+00:00",
+  "task_version": "V4.1",
+  "timestamp_utc": "2026-10-31T07:50:57.090644+00:00",
   "project": "Niyati",
   "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",
   "dataset_metadata": {
@@ -24,8 +24,21 @@
       317,
       1174
     ],
-    "no_cross_arm_cluster_contamination": true,
+    "cluster_assignment_integrity_verified": true,
+    "note_on_exposure_crossover": "Cluster assignment integrity is verified: no populated cluster contains mixed arm_itt assignments. This establishes cluster-level assignment integrity, but does not imply absence of individual-level exposure crossover (as documented in V1 audit, 4 Control participants had positive digital tracking).",
     "v3_adjusted_estimates_reproduced_within_1e6": true,
+    "v3_reproduction_details": {
+      "benchmark_source_file": "validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv",
+      "hv_benchmark_coef": 0.1662615221674229,
+      "hv_v4_coef": 0.1663,
+      "hv_difference": 8.326672684688674e-17,
+      "hv_reproduced_within_1e6": true,
+      "afini_benchmark_coef": 0.1066301754766063,
+      "afini_v4_coef": 0.1066,
+      "afini_difference": 2.7755575615628914e-17,
+      "afini_reproduced_within_1e6": true,
+      "reproduction_tolerance": 1e-06
+    },
     "no_retrospective_observed_power_reported": true
   },
   "cluster_allocation_and_size_imbalance": {
@@ -59,38 +72,38 @@
       "Total": 15.48
     },
     "cv_cluster_size_enrolled": {
-      "Control": 0.7024,
-      "Home visits": 0.4784,
+      "Control": 0.7019,
+      "Home visits": 0.4783,
       "Afini": 0.6327,
-      "Total": 0.6481
+      "Total": 0.6419
     },
     "largest_10pct_clusters_share_enrolled": {
       "Control": 24.54,
       "Home visits": 17.67,
       "Afini": 24.87,
-      "Total": 24.58
+      "Total": 22.84
     }
   },
   "design_effects_at_empirical_icc_0_03202": {
     "Control": {
-      "design_effect": 1.65,
+      "design_effect": 1.6495,
       "effective_n": 588.0,
       "effective_n_pct": 60.62
     },
     "Home visits": {
-      "design_effect": 1.624,
-      "effective_n": 195.1,
-      "effective_n_pct": 61.56
+      "design_effect": 1.6243,
+      "effective_n": 195.2,
+      "effective_n_pct": 61.57
     },
     "Afini": {
-      "design_effect": 1.699,
-      "effective_n": 691.0,
-      "effective_n_pct": 58.86
+      "design_effect": 1.6993,
+      "effective_n": 690.9,
+      "effective_n_pct": 58.85
     },
     "Total": {
-      "design_effect": 1.673,
-      "effective_n": 1471.1,
-      "effective_n_pct": 59.78
+      "design_effect": 1.6679,
+      "effective_n": 1475.5,
+      "effective_n_pct": 59.96
     }
   },
   "pairwise_treatment_contrasts": {
@@ -164,11 +177,11 @@
   },
   "eight_core_audit_questions_answered": {
     "q1_cluster_allocation_imbalance": "Extreme allocation asymmetry: Control received 68 clusters (42.8%), Digital received 72 clusters (45.3%), while Home Visits received only 19 clusters (11.9%). Control and Digital have 3.6x and 3.8x as many clusters as Home Visits.",
-    "q2_cluster_size_variation": "Severe cluster-size variation across all arms. Cluster sizes span from 1 to 42 participants, with CVs between 0.48 and 0.70. The largest 10% of clusters contain approximately one-quarter of all participants.",
-    "q3_effective_sample_size_reduction": "Clustering reduces effective sample size by ~40% across all arms at empirical ICC rho=0.03202 (DE approx 1.62-1.70). Home Visits effective sample size falls from 317 nominal to only 195.1 participants.",
-    "q4_precision_relative_to_control": "Digital vs Control is estimated with substantially higher precision (SE=0.045 unadj, 0.045 adj) than Home Visits vs Control (SE=0.066 unadj, 0.069 adj). Home Visits confidence intervals are 50% wider due to having only 19 clusters.",
+    "q2_cluster_size_variation": "Severe cluster-size variation across all arms. Cluster sizes span from 1 to 42 participants (1 to 38 in analysis sample), with CVs between 0.48 and 0.70 across arms (overall enrolled CV = 0.6419, approx 0.642; analysis CV = 0.6450). Across the entire trial, the largest 10% of clusters (16 clusters) contain 22.84% of enrolled participants (22.99% in analysis sample). Within arms, the top deciles hold 24.5% in Control (7 clusters), 17.7% in Home Visits (2 clusters), and 24.9% in Afini (8 clusters).",
+    "q3_effective_sample_size_reduction": "Clustering reduces effective sample size by ~40% across all arms at empirical ICC rho=0.03202 (Total DE = 1.6679, effective N = 1,475.5, 59.96%). Control effective sample size is 588.0 (60.62%), Home Visits effective sample size is 195.2 (61.57%), and Digital is 690.9 (58.85%).",
+    "q4_precision_relative_to_control": "Digital vs Control is estimated with substantially higher precision (SE=0.045 unadj, 0.045 adj) than Home Visits vs Control (SE=0.066 unadj, 0.069 adj). Home Visits confidence intervals are 54% wider due to having only 19 clusters.",
     "q5_direct_hv_vs_digital_contrast": "The direct contrast shows a statistically non-significant difference in favor of Home Visits: unadjusted +0.027 SD (p=0.674; 95% CI [-0.10, +0.16]) and adjusted +0.060 SD (p=0.383; 95% CI [-0.08, +0.19]). The interval is too wide to establish which is superior.",
-    "q6_small_sample_inference_sensitivities": "Under conservative degrees of freedom (df=18), Home Visits vs Control remains statistically significant (p=0.028 adj), but confidence interval width expands by 5-7%. The direct HV vs Digital CI widens to [-0.085, +0.204].",
+    "q6_small_sample_inference_sensitivities": "Under conservative degrees of freedom (df=18), Home Visits vs Control remains statistically significant (p=0.028 adj), but confidence interval width expands by 7.2%. The direct HV vs Digital CI widens to [-0.085, +0.204].",
     "q7_realistically_detectable_effect_sizes": "At empirical ICC=0.03202, Digital vs Control is adequately powered (92.4%) to detect the target 0.20 SD effect (MDE = 0.165 SD). In contrast, Home Visits vs Control is underpowered for 0.20 SD (power = 64.8%, MDE = 0.240 SD). Home Visits vs Digital has only 11% power to detect the observed 0.06 SD difference and requires an effect >= 0.236 SD for 80% power.",
     "q8_equivalence_and_non_inferiority_verdict": "NO. The trial DOES NOT support any claim that Digital is statistically equivalent or non-inferior to Home Visits. The non-significant p-value (p=0.38) reflects lack of precision, not equivalence. The 95% CI [-0.08, +0.19] includes both substantial Home Visits superiority (+0.19 SD) and Digital superiority (-0.08 SD), completely exceeding standard non-inferiority margins."
   }

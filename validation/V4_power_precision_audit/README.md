@@ -21,12 +21,13 @@ All analyses utilize the authoritative enrolled sample ($N = 2,461$ across $K = 
 1. **Extreme Cluster Allocation Asymmetry:**  
    The trial assigned 68 clusters (42.8%) to Control, 72 clusters (45.3%) to Digital (Afini), but only **19 clusters (11.9%)** to Home Visits. Control and Digital arms have **3.58$\times$ and 3.79$\times$ more clusters** than Home Visits, respectively. This severe structural imbalance severely constrains the statistical precision of any comparison involving Home Visits.
 2. **Severe Cluster-Size Imbalance:**  
-   Across all arms, cluster sizes vary by up to 42-fold (ranging from singletons $n=1$ to $n=42$). The coefficient of variation of cluster size ($CV$) ranges between **0.478 and 0.702** across arms. The largest 10% of clusters contain nearly one-fourth (**24.58%**) of all enrolled participants, violating standard equal-cluster planning assumptions.
+   Across all arms, cluster sizes vary by up to 42-fold (ranging from singletons $n=1$ to $n=42$). The coefficient of variation of cluster size ($CV$) is **0.702** in Control, **0.478** in Home Visits, **0.633** in Digital, and **0.642** overall (0.6419 enrolled, 0.6450 analysis). Across the entire trial, the largest 10% of clusters (16 clusters) contain **22.84%** of all enrolled participants (562 / 2,461) and **22.99%** of analysis participants (494 / 2,149). Within individual arms, the top deciles account for 24.54% (Control, 7 clusters), 17.67% (Home Visits, 2 clusters), and 24.87% (Digital, 8 clusters).
 3. **Substantial Effective Sample Size Degradation:**  
-   At the empirical null-model intracluster correlation coefficient ($\rho = 0.03202$), design effects range between **1.624 and 1.699** across arms. Effective sample sizes are degraded by approximately **40%** relative to nominal counts:
-   - **Control:** nominal $N = 970 \rightarrow N_{\text{eff}} = 588.0$ (60.6%)
-   - **Home Visits:** nominal $N = 317 \rightarrow N_{\text{eff}} = 195.2$ (61.6%)
-   - **Digital:** nominal $N = 1,174 \rightarrow N_{\text{eff}} = 690.9$ (58.9%)
+   At the empirical null-model intracluster correlation coefficient ($\rho = 0.03202$), design effects range between **1.624 and 1.699** across arms, and **1.668** (1.6679) for the overall trial. Effective sample sizes are degraded by approximately **40%** relative to nominal counts:
+   - **Control:** nominal $N = 970 \rightarrow N_{\text{eff}} = 588.0$ (60.62%)
+   - **Home Visits:** nominal $N = 317 \rightarrow N_{\text{eff}} = 195.2$ (61.57%)
+   - **Digital:** nominal $N = 1,174 \rightarrow N_{\text{eff}} = 690.9$ (58.85%)
+   - **Total Trial:** nominal $N = 2,461 \rightarrow N_{\text{eff}} = 1,475.5$ (59.96%)
 4. **Disparity in Estimator Precision:**  
    The cluster-robust standard error for Home Visits vs Control ($SE = 0.0689$ adjusted, $0.0662$ unadjusted) is **over 50% larger** than that for Digital vs Control ($SE = 0.0447$ adjusted, $0.0450$ unadjusted). Consequently, confidence intervals for Home Visits are 54% wider.
 5. **Direct Active-Intervention Contrast (Home Visits vs Digital):**  
@@ -42,7 +43,7 @@ All analyses utilize the authoritative enrolled sample ($N = 2,461$ across $K = 
 
 ## 2. Cluster Allocation & Size Imbalance Diagnostics
 
-All 159 clusters were cross-referenced against trial records and provincial boundaries. No cluster contamination across arms was detected.
+All 159 clusters were cross-referenced against trial records and provincial boundaries. No populated cluster contains mixed `arm_itt` assignments, confirming cluster assignment integrity. (Note: as established in the V1 audit, cluster assignment integrity does not imply the absence of individual-level exposure crossover, as four Control-assigned participants had positive digital tracking records).
 
 ### Table 2.1: Enrolled vs Analysis Sample Cluster Allocation
 
@@ -51,13 +52,15 @@ All 159 clusters were cross-referenced against trial records and provincial boun
 | **Control** | 68 | 42.77% | 970 | 39.41% | 864 | 40.20% | 14.26 | 0.702 | 1 – 42 | 24.54% (7 cl) | **MATCH** |
 | **Home Visits** | 19 | 11.95% | 317 | 12.88% | 297 | 13.82% | 16.68 | 0.478 | 3 – 28 | 17.67% (2 cl) | **MATCH** |
 | **Digital (Afini)** | 72 | 45.28% | 1,174 | 47.70% | 988 | 45.97% | 16.31 | 0.633 | 1 – 42 | 24.87% (8 cl) | **MATCH** |
-| **Total Trial** | **159** | **100.0%** | **2,461** | **100.0%** | **2,149** | **100.0%** | **15.48** | **0.648** | **1 – 42** | **24.58% (16 cl)** | **MATCH** |
+| **Total Trial** | **159** | **100.0%** | **2,461** | **100.0%** | **2,149** | **100.0%** | **15.48** | **0.642** | **1 – 42** | **22.84% (16 cl)** | **MATCH** |
 
 ### Analytical Dimensions of Imbalance
 - **Cluster Allocation Ratio:** Control has $68 / 19 = 3.58\times$ the clusters of Home Visits; Digital has $72 / 19 = 3.79\times$ the clusters of Home Visits.
 - **Participant Allocation Ratio:** Control has $3.06\times$ and Digital has $3.70\times$ the enrolled participants of Home Visits.
-- **Coefficient of Variation ($CV$):** With $CV = 0.702$ in Control, $0.478$ in Home Visits, and $0.633$ in Digital, all arms far exceed the threshold ($CV > 0.23$) identified by Eldridge et al. (2006) where cluster-size variation substantially inflates design effects beyond standard equal-size approximations.
-- **Top 10% Concentration:** Across the entire trial, the top 16 largest clusters (10.1% of clusters) contain 605 of the 2,461 participants (**24.58%**). In Control and Digital, the top decile accounts for nearly 25% of all participants.
+- **Coefficient of Variation ($CV$):** With $CV = 0.702$ in Control, $0.478$ in Home Visits, and $0.633$ in Digital, and **0.642** overall (0.6419 enrolled, 0.6450 analysis), all arms far exceed the threshold ($CV > 0.23$) identified by Eldridge et al. (2006) where cluster-size variation substantially inflates design effects beyond standard equal-size approximations.
+- **Top 10% Concentration (Within-Arm vs Trial-Wide):**
+  - **Within-arm top 10%:** Control (7 clusters, 24.54% of arm sample), Home Visits (2 clusters, 17.67% of arm sample), Digital (8 clusters, 24.87% of arm sample).
+  - **Trial-wide top 10%:** Across the entire trial, the top 16 largest clusters contain 562 of the 2,461 enrolled participants (**22.84%**) and 494 of the 2,149 analysis participants (**22.99%**). Arm-specific top-decile shares must not be added across arms to represent the trial-wide decile share.
 
 Generated data files:
 - [`cluster_size_summary.csv`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/cluster_size_summary.csv)
@@ -133,9 +136,13 @@ In cluster-robust estimation (CR1), $\operatorname{Cov}\left(\hat{\beta}_{\text{
 
 | Contrast Name | Point Est. | Display | Standard Error | Barnard-Rubin $df$ | 95% Confidence Interval | CI Width | $t$-stat | $p$-value | V3.3 Reproduction Diff | Interpretation |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Home Visits vs Control** | $+0.1663$ | $+0.17$ | $0.0689$ | $155.9$ | $[+0.0302,\, +0.3024]$ | $0.2722$ | $2.413$ | $0.0170$ | $8.8 \times 10^{-7}$ | Reproduces V3.3 within $< 10^{-6}$. Significant. |
-| **Digital vs Control** | $+0.1066$ | $+0.11$ | $0.0447$ | $155.8$ | $[+0.0184,\, +0.1948]$ | $0.1764$ | $2.388$ | $0.0182$ | $2.2 \times 10^{-7}$ | Reproduces V3.3 within $< 10^{-6}$. Significant. |
+| **Home Visits vs Control** | $+0.1663$ | $+0.17$ | $0.0689$ | $155.9$ | $[+0.0302,\, +0.3024]$ | $0.2722$ | $2.413$ | $0.0170$ | $< 10^{-15}$ | Reproduces V3.3 within strict $< 10^{-6}$ tolerance. Significant. |
+| **Digital vs Control** | $+0.1066$ | $+0.11$ | $0.0447$ | $155.8$ | $[+0.0184,\, +0.1948]$ | $0.1764$ | $2.388$ | $0.0182$ | $< 10^{-15}$ | Reproduces V3.3 within strict $< 10^{-6}$ tolerance. Significant. |
 | **Home Visits vs Digital** | $+0.0596$ | $+0.06$ | $0.0682$ | $155.9$ | $[-0.0750,\, +0.1943]$ | $0.2693$ | $0.875$ | $0.3831$ | $0.0000$ | **Non-significant ($p = 0.38$)**. Wide CI $[-0.08, +0.19]$. |
+
+*Note on V3.3 Benchmark Verification:* Full-precision coefficients were read directly from `validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv`:
+- `hv` parameter: $0.16626152216742296$ (V4: $0.16626152216742296$, $\text{diff} = 8.3 \times 10^{-17} < 10^{-6}$)
+- `afini` parameter: $0.10663017547660632$ (V4: $0.10663017547660632$, $\text{diff} = 2.8 \times 10^{-17} < 10^{-6}$)
 
 Generated data files:
 - [`unadjusted_pairwise_contrasts.csv`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/unadjusted_pairwise_contrasts.csv)
@@ -242,20 +249,20 @@ Across the trial, cluster sizes range from $1$ to $42$ enrolled participants ($1
 - **Control:** $CV = 0.702$ (enrolled), $0.708$ (analysis)
 - **Digital:** $CV = 0.633$ (enrolled), $0.640$ (analysis)
 - **Home Visits:** $CV = 0.478$ (enrolled), $0.471$ (analysis)
-- **Total Trial:** $CV = 0.648$ (enrolled), $0.655$ (analysis)
+- **Total Trial:** $CV = 0.642$ (0.6419 enrolled, 0.6450 analysis)
 
-Under cluster-randomization theory (Eldridge et al. 2006), $CV > 0.23$ produces substantial variance inflation beyond standard equal-cluster power formulas. Furthermore, the largest 10% of clusters contain **24.58%** of all enrolled participants (nearly one-quarter of the entire trial), creating heavy cluster-level leverage points.
+Under cluster-randomization theory (Eldridge et al. 2006), $CV > 0.23$ produces substantial variance inflation beyond standard equal-cluster power formulas. Across the entire trial, the largest 10% of clusters (16 clusters) contain **22.84%** of enrolled participants (562 / 2,461) and **22.99%** of analysis participants (494 / 2,149). Within individual arms, the top deciles account for 24.54% (Control, 7 clusters), 17.67% (Home Visits, 2 clusters), and 24.87% (Digital, 8 clusters).
 
 ---
 
 ### Question 3: How much does clustering reduce effective sample size across the trial arms?
 **Answer:**  
 **Clustering reduces the trial's effective sample size by approximately 40% across all arms.**  
-At the empirical null-model ICC ($\rho = 0.03202$), design effects range between $1.624$ and $1.699$:
-- **Control:** Nominal $N = 970 \rightarrow N_{\text{eff}} = 588.0$ (loss of $382.0$ participants, $39.4\%$)
-- **Home Visits:** Nominal $N = 317 \rightarrow N_{\text{eff}} = 195.2$ (loss of $121.8$ participants, $38.4\%$)
-- **Digital:** Nominal $N = 1,174 \rightarrow N_{\text{eff}} = 690.9$ (loss of $483.1$ participants, $41.1\%$)
-- **Trial Total:** Nominal $N = 2,461 \rightarrow N_{\text{eff}} = 1,475.5$ (loss of $985.5$ participants, $40.0\%$)
+At the empirical null-model ICC ($\rho = 0.03202$), design effects range between $1.624$ and $1.699$ across arms, and $1.668$ (1.6679) for the overall trial:
+- **Control:** Nominal $N = 970 \rightarrow N_{\text{eff}} = 588.0$ (loss of $382.0$ participants, $39.38\%$; $60.62\%$ of nominal)
+- **Home Visits:** Nominal $N = 317 \rightarrow N_{\text{eff}} = 195.2$ (loss of $121.8$ participants, $38.43\%$; $61.57\%$ of nominal)
+- **Digital:** Nominal $N = 1,174 \rightarrow N_{\text{eff}} = 690.9$ (loss of $483.1$ participants, $41.15\%$; $58.85\%$ of nominal)
+- **Trial Total:** Nominal $N = 2,461 \rightarrow N_{\text{eff}} = 1,475.5$ (loss of $985.5$ participants, $40.04\%$; $59.96\%$ of nominal)
 
 If the true ICC were $0.05$, effective sample size would drop by **51.1%**; if $\rho = 0.10$, it would drop by **67.6%** ($N_{\text{eff}} = 797.5$).
 
@@ -363,7 +370,7 @@ All output files are located in `validation/V4_power_precision_audit/outputs/`:
 | [`small_sample_inference_comparison.csv`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/small_sample_inference_comparison.csv) | Sensitivity comparison of conventional CR1 / Barnard-Rubin vs conservative $df = \min(K_a, K_b) - 1$, with CR2 and bootstrap status. | 14 rows |
 | [`mde_sensitivity.csv`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/mde_sensitivity.csv) | Design-based Minimum Detectable Effects (80% and 90% power) for all pairwise comparisons across 5 ICC scenarios under standard and conservative $df$. | 15 rows |
 | [`power_sensitivity.csv`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/power_sensitivity.csv) | Prospective statistical power across effect sizes ($0.05, 0.06, 0.10, 0.15, 0.20, 0.25$ SD) and 5 ICC scenarios under standard and conservative $df$. | 90 rows |
-| [`v4_summary.json`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/v4_summary.json) | Complete machine-readable metadata summary of all findings, reconciliation checks, models, sensitivities, and evaluation question answers. | 175 lines |
+| [`v4_summary.json`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/v4_summary.json) | Complete machine-readable metadata summary of all findings, reconciliation checks, models, sensitivities, and evaluation question answers. | 188 lines |
 
 ---
 
@@ -381,6 +388,7 @@ All output files are located in `validation/V4_power_precision_audit/outputs/`:
 - **Reproduction Fidelity:**
   - Unadjusted HV vs Control: $\beta = 0.1669, SE = 0.0662$ (Exact match).
   - Unadjusted Digital vs Control: $\beta = 0.1394, SE = 0.0450$ (Exact match).
-  - Adjusted MI HV vs Control: $\beta = 0.1663, SE = 0.0689$ (Difference from V3.3: $8.8 \times 10^{-7}$).
-  - Adjusted MI Digital vs Control: $\beta = 0.1066, SE = 0.0447$ (Difference from V3.3: $2.2 \times 10^{-7}$).
+  - Adjusted MI HV vs Control: $\beta = 0.1663, SE = 0.0689$ (Difference from V3.3 benchmark: $< 10^{-15} < 10^{-6}$).
+  - Adjusted MI Digital vs Control: $\beta = 0.1066, SE = 0.0447$ (Difference from V3.3 benchmark: $< 10^{-15} < 10^{-6}$).
+  - Strict reproduction tolerance ($\text{diff} < 10^{-6}$): **VERIFIED & SATISFIED**.
   - Raw archive preserved intact: `doi_10_5061_dryad_nzs7h4551__v20260226.zip` untouched.
