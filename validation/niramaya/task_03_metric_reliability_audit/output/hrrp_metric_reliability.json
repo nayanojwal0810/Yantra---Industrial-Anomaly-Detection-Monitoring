@@ -1,0 +1,964 @@
+{
+  "audit_metadata": {
+    "task": "task_03_metric_reliability_audit",
+    "project": "Niramaya",
+    "timestamp_utc": "2026-10-31T14:10:39Z",
+    "timestamp_local": "2026-10-31 19:40:39 +0530",
+    "command": "python validation/niramaya/task_03_metric_reliability_audit/audit_hrrp_metric_reliability.py --data-file ../data/raw/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv --output-dir validation/niramaya/task_03_metric_reliability_audit/output",
+    "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
+    "python_executable": "C:\\Program Files\\Python313\\python.exe",
+    "os_platform": "Windows-11-10.0.26200-SP0",
+    "os_release": "Windows 11 (10.0.26200)",
+    "machine": "AMD64",
+    "working_dir": "D:\\Niramaya\\validation-repo",
+    "data_file": "D:\\Niramaya\\data\\raw\\FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
+    "output_dir": "D:\\Niramaya\\validation-repo\\validation\\niramaya\\task_03_metric_reliability_audit\\output",
+    "dataset_name": "FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
+    "cms_catalogue_source": "https://data.cms.gov/provider-data/dataset/9n3s-kdb3",
+    "cms_direct_url": "https://data.cms.gov/provider-data/sites/default/files/resources/a171bc36c488d3e0dc33ec63abb469a6_1770163617/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv"
+  },
+  "execution_status": "COMPLETED_SUCCESSFULLY",
+  "dataset_dimensions": {
+    "total_records_processed": 18330,
+    "total_columns": 12,
+    "expected_measures_count": 6
+  },
+  "field_audits": {
+    "Number of Discharges": {
+      "total_rows": 18330,
+      "blank_count": 0,
+      "numeric_count": 8242,
+      "numeric_integer_count": 8242,
+      "numeric_decimal_count": 0,
+      "nonnumeric_count": 10088,
+      "distinct_raw_values_count": 1045,
+      "nonnumeric_tokens_frequency": {
+        "N/A": 10088
+      },
+      "classification_breakdown": {
+        "N_A": 10088,
+        "NUMERIC_INTEGER": 8242
+      },
+      "min_numeric": "0",
+      "max_numeric": "3672",
+      "decimal_places_observed": []
+    },
+    "Footnote": {
+      "total_rows": 18330,
+      "blank_count": 11343,
+      "numeric_count": 6987,
+      "numeric_integer_count": 6987,
+      "numeric_decimal_count": 0,
+      "nonnumeric_count": 11343,
+      "distinct_raw_values_count": 5,
+      "nonnumeric_tokens_frequency": {
+        "": 11343
+      },
+      "classification_breakdown": {
+        "BLANK": 11343,
+        "NUMERIC_INTEGER": 6987
+      },
+      "min_numeric": "1",
+      "max_numeric": "29",
+      "decimal_places_observed": []
+    },
+    "Excess Readmission Ratio": {
+      "total_rows": 18330,
+      "blank_count": 0,
+      "numeric_count": 11720,
+      "numeric_integer_count": 0,
+      "numeric_decimal_count": 11720,
+      "nonnumeric_count": 6610,
+      "distinct_raw_values_count": 3253,
+      "nonnumeric_tokens_frequency": {
+        "N/A": 6610
+      },
+      "classification_breakdown": {
+        "NUMERIC_DECIMAL": 11720,
+        "N_A": 6610
+      },
+      "min_numeric": "0.4698",
+      "max_numeric": "1.6297",
+      "decimal_places_observed": [
+        4
+      ]
+    },
+    "Predicted Readmission Rate": {
+      "total_rows": 18330,
+      "blank_count": 0,
+      "numeric_count": 11720,
+      "numeric_integer_count": 0,
+      "numeric_decimal_count": 11720,
+      "nonnumeric_count": 6610,
+      "distinct_raw_values_count": 11261,
+      "nonnumeric_tokens_frequency": {
+        "N/A": 6610
+      },
+      "classification_breakdown": {
+        "NUMERIC_DECIMAL": 11720,
+        "N_A": 6610
+      },
+      "min_numeric": "1.9080",
+      "max_numeric": "28.1643",
+      "decimal_places_observed": [
+        4
+      ]
+    },
+    "Expected Readmission Rate": {
+      "total_rows": 18330,
+      "blank_count": 0,
+      "numeric_count": 11720,
+      "numeric_integer_count": 0,
+      "numeric_decimal_count": 11720,
+      "nonnumeric_count": 6610,
+      "distinct_raw_values_count": 11230,
+      "nonnumeric_tokens_frequency": {
+        "N/A": 6610
+      },
+      "classification_breakdown": {
+        "NUMERIC_DECIMAL": 11720,
+        "N_A": 6610
+      },
+      "min_numeric": "3.0876",
+      "max_numeric": "26.8654",
+      "decimal_places_observed": [
+        4
+      ]
+    },
+    "Number of Readmissions": {
+      "total_rows": 18330,
+      "blank_count": 0,
+      "numeric_count": 8037,
+      "numeric_integer_count": 8037,
+      "numeric_decimal_count": 0,
+      "nonnumeric_count": 10293,
+      "distinct_raw_values_count": 291,
+      "nonnumeric_tokens_frequency": {
+        "Too Few to Report": 3683,
+        "N/A": 6610
+      },
+      "classification_breakdown": {
+        "TOO_FEW_TO_REPORT": 3683,
+        "NUMERIC_INTEGER": 8037,
+        "N_A": 6610
+      },
+      "min_numeric": "11",
+      "max_numeric": "847",
+      "decimal_places_observed": []
+    }
+  },
+  "metric_availability_by_measure": {
+    "READM-30-AMI-HRRP": {
+      "measure_code": "READM-30-AMI-HRRP",
+      "measure_description": "Acute Myocardial Infarction 30-Day Readmission",
+      "total_records": 3055,
+      "distinct_hospitals": 3055,
+      "numeric_err_count": 1736,
+      "numeric_err_pct": 56.82,
+      "nonnumeric_err_count": 1319,
+      "blank_err_count": 0,
+      "numeric_predicted_rate_count": 1736,
+      "numeric_predicted_rate_pct": 56.82,
+      "numeric_expected_rate_count": 1736,
+      "numeric_expected_rate_pct": 56.82,
+      "all_three_numeric_count": 1736,
+      "all_three_numeric_pct": 56.82,
+      "numeric_discharges_count": 1307,
+      "numeric_discharges_pct": 42.78,
+      "numeric_readmissions_count": 1240,
+      "numeric_readmissions_pct": 40.59,
+      "err_numeric_discharges_nonnumeric_count": 496,
+      "err_numeric_readmissions_nonnumeric_count": 496,
+      "both_counts_nonnumeric_err_numeric_count": 496,
+      "nonblank_footnote_count": 1380,
+      "nonblank_footnote_pct": 45.17,
+      "discharges_na_count": 1748,
+      "readmissions_too_few_count": 496,
+      "readmissions_na_count": 1319,
+      "err_na_count": 1319
+    },
+    "READM-30-CABG-HRRP": {
+      "measure_code": "READM-30-CABG-HRRP",
+      "measure_description": "Coronary Artery Bypass Graft 30-Day Readmission",
+      "total_records": 3055,
+      "distinct_hospitals": 3055,
+      "numeric_err_count": 878,
+      "numeric_err_pct": 28.74,
+      "nonnumeric_err_count": 2177,
+      "blank_err_count": 0,
+      "numeric_predicted_rate_count": 878,
+      "numeric_predicted_rate_pct": 28.74,
+      "numeric_expected_rate_count": 878,
+      "numeric_expected_rate_pct": 28.74,
+      "all_three_numeric_count": 878,
+      "all_three_numeric_pct": 28.74,
+      "numeric_discharges_count": 381,
+      "numeric_discharges_pct": 12.47,
+      "numeric_readmissions_count": 363,
+      "numeric_readmissions_pct": 11.88,
+      "err_numeric_discharges_nonnumeric_count": 515,
+      "err_numeric_readmissions_nonnumeric_count": 515,
+      "both_counts_nonnumeric_err_numeric_count": 515,
+      "nonblank_footnote_count": 2211,
+      "nonblank_footnote_pct": 72.37,
+      "discharges_na_count": 2674,
+      "readmissions_too_few_count": 515,
+      "readmissions_na_count": 2177,
+      "err_na_count": 2177
+    },
+    "READM-30-COPD-HRRP": {
+      "measure_code": "READM-30-COPD-HRRP",
+      "measure_description": "Chronic Obstructive Pulmonary Disease 30-Day Readmission",
+      "total_records": 3055,
+      "distinct_hospitals": 3055,
+      "numeric_err_count": 2323,
+      "numeric_err_pct": 76.04,
+      "nonnumeric_err_count": 732,
+      "blank_err_count": 0,
+      "numeric_predicted_rate_count": 2323,
+      "numeric_predicted_rate_pct": 76.04,
+      "numeric_expected_rate_count": 2323,
+      "numeric_expected_rate_pct": 76.04,
+      "all_three_numeric_count": 2323,
+      "all_three_numeric_pct": 76.04,
+      "numeric_discharges_count": 1552,
+      "numeric_discharges_pct": 50.8,
+      "numeric_readmissions_count": 1545,
+      "numeric_readmissions_pct": 50.57,
+      "err_numeric_discharges_nonnumeric_count": 778,
+      "err_numeric_readmissions_nonnumeric_count": 778,
+      "both_counts_nonnumeric_err_numeric_count": 778,
+      "nonblank_footnote_count": 803,
+      "nonblank_footnote_pct": 26.28,
+      "discharges_na_count": 1503,
+      "readmissions_too_few_count": 778,
+      "readmissions_na_count": 732,
+      "err_na_count": 732
+    },
+    "READM-30-HF-HRRP": {
+      "measure_code": "READM-30-HF-HRRP",
+      "measure_description": "Heart Failure 30-Day Readmission",
+      "total_records": 3055,
+      "distinct_hospitals": 3055,
+      "numeric_err_count": 2621,
+      "numeric_err_pct": 85.79,
+      "nonnumeric_err_count": 434,
+      "blank_err_count": 0,
+      "numeric_predicted_rate_count": 2621,
+      "numeric_predicted_rate_pct": 85.79,
+      "numeric_expected_rate_count": 2621,
+      "numeric_expected_rate_pct": 85.79,
+      "all_three_numeric_count": 2621,
+      "all_three_numeric_pct": 85.79,
+      "numeric_discharges_count": 2324,
+      "numeric_discharges_pct": 76.07,
+      "numeric_readmissions_count": 2316,
+      "numeric_readmissions_pct": 75.81,
+      "err_numeric_discharges_nonnumeric_count": 305,
+      "err_numeric_readmissions_nonnumeric_count": 305,
+      "both_counts_nonnumeric_err_numeric_count": 305,
+      "nonblank_footnote_count": 512,
+      "nonblank_footnote_pct": 16.76,
+      "discharges_na_count": 731,
+      "readmissions_too_few_count": 305,
+      "readmissions_na_count": 434,
+      "err_na_count": 434
+    },
+    "READM-30-HIP-KNEE-HRRP": {
+      "measure_code": "READM-30-HIP-KNEE-HRRP",
+      "measure_description": "Elective Primary Total Hip/Knee Arthroplasty Readmission",
+      "total_records": 3055,
+      "distinct_hospitals": 3055,
+      "numeric_err_count": 1447,
+      "numeric_err_pct": 47.36,
+      "nonnumeric_err_count": 1608,
+      "blank_err_count": 0,
+      "numeric_predicted_rate_count": 1447,
+      "numeric_predicted_rate_pct": 47.36,
+      "numeric_expected_rate_count": 1447,
+      "numeric_expected_rate_pct": 47.36,
+      "all_three_numeric_count": 1447,
+      "all_three_numeric_pct": 47.36,
+      "numeric_discharges_count": 350,
+      "numeric_discharges_pct": 11.46,
+      "numeric_readmissions_count": 253,
+      "numeric_readmissions_pct": 8.28,
+      "err_numeric_discharges_nonnumeric_count": 1194,
+      "err_numeric_readmissions_nonnumeric_count": 1194,
+      "both_counts_nonnumeric_err_numeric_count": 1194,
+      "nonblank_footnote_count": 1658,
+      "nonblank_footnote_pct": 54.27,
+      "discharges_na_count": 2705,
+      "readmissions_too_few_count": 1194,
+      "readmissions_na_count": 1608,
+      "err_na_count": 1608
+    },
+    "READM-30-PN-HRRP": {
+      "measure_code": "READM-30-PN-HRRP",
+      "measure_description": "Pneumonia 30-Day Readmission",
+      "total_records": 3055,
+      "distinct_hospitals": 3055,
+      "numeric_err_count": 2715,
+      "numeric_err_pct": 88.87,
+      "nonnumeric_err_count": 340,
+      "blank_err_count": 0,
+      "numeric_predicted_rate_count": 2715,
+      "numeric_predicted_rate_pct": 88.87,
+      "numeric_expected_rate_count": 2715,
+      "numeric_expected_rate_pct": 88.87,
+      "all_three_numeric_count": 2715,
+      "all_three_numeric_pct": 88.87,
+      "numeric_discharges_count": 2328,
+      "numeric_discharges_pct": 76.2,
+      "numeric_readmissions_count": 2320,
+      "numeric_readmissions_pct": 75.94,
+      "err_numeric_discharges_nonnumeric_count": 395,
+      "err_numeric_readmissions_nonnumeric_count": 395,
+      "both_counts_nonnumeric_err_numeric_count": 395,
+      "nonblank_footnote_count": 423,
+      "nonblank_footnote_pct": 13.85,
+      "discharges_na_count": 727,
+      "readmissions_too_few_count": 395,
+      "readmissions_na_count": 340,
+      "err_na_count": 340
+    }
+  },
+  "record_vs_outcome_availability_summary": {
+    "total_hospital_condition_records": 18330,
+    "published_numeric_err_records": 11720,
+    "published_numeric_err_pct": 63.94,
+    "supporting_counts_available_records": 8037,
+    "supporting_counts_available_pct": 43.85,
+    "both_counts_masked_but_err_available": 3683
+  },
+  "err_mathematical_reconciliation": {
+    "formula": "Calculated ERR = Predicted Readmission Rate / Expected Readmission Rate",
+    "screening_tolerance": "0.0001",
+    "total_eligible_records": 11720,
+    "ineligible_records_count": 6610,
+    "ineligible_reasons": {
+      "Non-numeric rate or ERR field": 6610
+    },
+    "within_tolerance_count": 11720,
+    "within_tolerance_pct": 100.0,
+    "beyond_tolerance_count": 0,
+    "max_absolute_difference": "0.000064675598759313145524894",
+    "median_absolute_difference": "0.000024873382104670793472144",
+    "p95_absolute_difference": "0.0000481387788676608954820244",
+    "reconciliation_by_measure": {
+      "READM-30-AMI-HRRP": {
+        "eligible_records": 1736,
+        "within_tolerance_count": 1736,
+        "beyond_tolerance_count": 0,
+        "pct_within_tolerance": 100.0,
+        "max_difference": "0.0000563927520970260358037692",
+        "median_difference": "0.0000243255706709707170855430",
+        "p95_difference": "0.0000477184529047708354371943"
+      },
+      "READM-30-CABG-HRRP": {
+        "eligible_records": 878,
+        "within_tolerance_count": 878,
+        "beyond_tolerance_count": 0,
+        "pct_within_tolerance": 100.0,
+        "max_difference": "0.0000553811926059529586259304",
+        "median_difference": "0.000024254154280459376804465",
+        "p95_difference": "0.0000482970775653702482970776"
+      },
+      "READM-30-COPD-HRRP": {
+        "eligible_records": 2323,
+        "within_tolerance_count": 2323,
+        "beyond_tolerance_count": 0,
+        "pct_within_tolerance": 100.0,
+        "max_difference": "0.0000539566214303737753837040",
+        "median_difference": "0.0000256357725025609050015588",
+        "p95_difference": "0.0000479805908377336948765520"
+      },
+      "READM-30-HF-HRRP": {
+        "eligible_records": 2621,
+        "within_tolerance_count": 2621,
+        "beyond_tolerance_count": 0,
+        "pct_within_tolerance": 100.0,
+        "max_difference": "0.000054083288263926446727961",
+        "median_difference": "0.000024683010767639722944024",
+        "p95_difference": "0.0000480730395595518993261484"
+      },
+      "READM-30-HIP-KNEE-HRRP": {
+        "eligible_records": 1447,
+        "within_tolerance_count": 1447,
+        "beyond_tolerance_count": 0,
+        "pct_within_tolerance": 100.0,
+        "max_difference": "0.000064675598759313145524894",
+        "median_difference": "0.0000248429777039131467052298",
+        "p95_difference": "0.000051133932391955498502353"
+      },
+      "READM-30-PN-HRRP": {
+        "eligible_records": 2715,
+        "within_tolerance_count": 2715,
+        "beyond_tolerance_count": 0,
+        "pct_within_tolerance": 100.0,
+        "max_difference": "0.0000555426805716492854383932",
+        "median_difference": "0.000024945164968082828388053",
+        "p95_difference": "0.000047835090361445783132530"
+      }
+    },
+    "top_20_discrepancies": [
+      {
+        "Facility ID": "050485",
+        "Facility Name": "MEMORIALCARE LONG BEACH MEDICAL CENTER",
+        "State": "CA",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "1.3162",
+        "Predicted Readmission Rate": "8.2319",
+        "Expected Readmission Rate": "6.2546",
+        "Calculated ERR": "1.31613532",
+        "Absolute Difference": "0.000064675598759313145524894"
+      },
+      {
+        "Facility ID": "110161",
+        "Facility Name": "NORTHSIDE HOSPITAL",
+        "State": "GA",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "0.9816",
+        "Predicted Readmission Rate": "4.3430",
+        "Expected Readmission Rate": "4.4247",
+        "Calculated ERR": "0.98153547",
+        "Absolute Difference": "0.0000645286686103012633624879"
+      },
+      {
+        "Facility ID": "140161",
+        "Facility Name": "SAINT JAMES HOSPITAL",
+        "State": "IL",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "1.0426",
+        "Predicted Readmission Rate": "4.2525",
+        "Expected Readmission Rate": "4.0785",
+        "Calculated ERR": "1.04266274",
+        "Absolute Difference": "0.000062743655755792570798088"
+      },
+      {
+        "Facility ID": "140046",
+        "Facility Name": "GOOD SAMARITAN REGIONAL HLTH CENTER",
+        "State": "IL",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "0.9495",
+        "Predicted Readmission Rate": "4.7537",
+        "Expected Readmission Rate": "5.0062",
+        "Calculated ERR": "0.94956254",
+        "Absolute Difference": "0.0000625424473652670688346450"
+      },
+      {
+        "Facility ID": "100126",
+        "Facility Name": "HCA FLORIDA PASADENA HOSPITAL A PART OF HCA FLORID",
+        "State": "FL",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "1.4314",
+        "Predicted Readmission Rate": "8.4104",
+        "Expected Readmission Rate": "5.8759",
+        "Calculated ERR": "1.43133818",
+        "Absolute Difference": "0.000061822018754573767422863"
+      },
+      {
+        "Facility ID": "050785",
+        "Facility Name": "DOCS SURGICAL HOSPITAL",
+        "State": "CA",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "0.7671",
+        "Predicted Readmission Rate": "3.0006",
+        "Expected Readmission Rate": "3.9113",
+        "Calculated ERR": "0.76716181",
+        "Absolute Difference": "0.0000618132078848464704829596"
+      },
+      {
+        "Facility ID": "290003",
+        "Facility Name": "SUNRISE HOSPITAL AND MEDICAL CENTER",
+        "State": "NV",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "1.0843",
+        "Predicted Readmission Rate": "5.0789",
+        "Expected Readmission Rate": "4.6843",
+        "Calculated ERR": "1.08423884",
+        "Absolute Difference": "0.000061159618299425741306065"
+      },
+      {
+        "Facility ID": "390325",
+        "Facility Name": "OSS ORTHOPAEDIC HOSPITAL",
+        "State": "PA",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "0.6843",
+        "Predicted Readmission Rate": "3.2370",
+        "Expected Readmission Rate": "4.7308",
+        "Calculated ERR": "0.68423945",
+        "Absolute Difference": "0.0000605478988754544685888222"
+      },
+      {
+        "Facility ID": "330125",
+        "Facility Name": "ROCHESTER GENERAL HOSPITAL",
+        "State": "NY",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "1.0540",
+        "Predicted Readmission Rate": "6.0190",
+        "Expected Readmission Rate": "5.7103",
+        "Calculated ERR": "1.05406021",
+        "Absolute Difference": "0.000060206994378579058893578"
+      },
+      {
+        "Facility ID": "450388",
+        "Facility Name": "METHODIST HOSPITAL",
+        "State": "TX",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "0.9614",
+        "Predicted Readmission Rate": "4.3268",
+        "Expected Readmission Rate": "4.5008",
+        "Calculated ERR": "0.96134021",
+        "Absolute Difference": "0.0000597938144329896907216495"
+      },
+      {
+        "Facility ID": "060012",
+        "Facility Name": "ST MARY-CORWIN HOSPITAL",
+        "State": "CO",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "0.9188",
+        "Predicted Readmission Rate": "4.5410",
+        "Expected Readmission Rate": "4.9420",
+        "Calculated ERR": "0.91885876",
+        "Absolute Difference": "0.0000587616349656009712666936"
+      },
+      {
+        "Facility ID": "380061",
+        "Facility Name": "PROVIDENCE PORTLAND MEDICAL CENTER",
+        "State": "OR",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "0.9985",
+        "Predicted Readmission Rate": "5.7650",
+        "Expected Readmission Rate": "5.7740",
+        "Calculated ERR": "0.99844129",
+        "Absolute Difference": "0.0000587114651887772774506408"
+      },
+      {
+        "Facility ID": "260077",
+        "Facility Name": "MERCY HOSPITAL SOUTH",
+        "State": "MO",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "1.2410",
+        "Predicted Readmission Rate": "7.3738",
+        "Expected Readmission Rate": "5.9421",
+        "Calculated ERR": "1.24094175",
+        "Absolute Difference": "0.000058245401457397216472291"
+      },
+      {
+        "Facility ID": "140200",
+        "Facility Name": "ELMHURST MEMORIAL HOSPITAL",
+        "State": "IL",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "1.0717",
+        "Predicted Readmission Rate": "5.0574",
+        "Expected Readmission Rate": "4.7193",
+        "Calculated ERR": "1.07164198",
+        "Absolute Difference": "0.000058019197762380013985125"
+      },
+      {
+        "Facility ID": "320009",
+        "Facility Name": "LOVELACE MEDICAL CENTER",
+        "State": "NM",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "0.9009",
+        "Predicted Readmission Rate": "4.7069",
+        "Expected Readmission Rate": "5.2250",
+        "Calculated ERR": "0.90084211",
+        "Absolute Difference": "0.0000578947368421052631578947"
+      },
+      {
+        "Facility ID": "260190",
+        "Facility Name": "LEE'S SUMMIT MEDICAL CENTER",
+        "State": "MO",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "1.0161",
+        "Predicted Readmission Rate": "4.9464",
+        "Expected Readmission Rate": "4.8683",
+        "Calculated ERR": "1.01604256",
+        "Absolute Difference": "0.000057438941725037487418606"
+      },
+      {
+        "Facility ID": "500021",
+        "Facility Name": "ST CLARE HOSPITAL",
+        "State": "WA",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "0.8914",
+        "Predicted Readmission Rate": "4.9105",
+        "Expected Readmission Rate": "5.5091",
+        "Calculated ERR": "0.89134341",
+        "Absolute Difference": "0.0000565863752700078052676481"
+      },
+      {
+        "Facility ID": "260193",
+        "Facility Name": "ST MARY'S MEDICAL CENTER",
+        "State": "MO",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "0.9116",
+        "Predicted Readmission Rate": "4.0411",
+        "Expected Readmission Rate": "4.4327",
+        "Calculated ERR": "0.91165655",
+        "Absolute Difference": "0.0000565524398222302434182327"
+      },
+      {
+        "Facility ID": "040134",
+        "Facility Name": "ARKANSAS HEART HOSPITAL, LLC",
+        "State": "AR",
+        "Measure Name": "READM-30-AMI-HRRP",
+        "Published ERR": "0.9730",
+        "Predicted Readmission Rate": "10.7188",
+        "Expected Readmission Rate": "11.0156",
+        "Calculated ERR": "0.97305639",
+        "Absolute Difference": "0.0000563927520970260358037692"
+      },
+      {
+        "Facility ID": "340183",
+        "Facility Name": "NOVANT HEALTH HUNTERSVILLE MEDICAL CENTER",
+        "State": "NC",
+        "Measure Name": "READM-30-HIP-KNEE-HRRP",
+        "Published ERR": "0.9533",
+        "Predicted Readmission Rate": "4.6198",
+        "Expected Readmission Rate": "4.8464",
+        "Calculated ERR": "0.95324364",
+        "Absolute Difference": "0.0000563552327500825354902608"
+      }
+    ]
+  },
+  "numerical_range_and_plausibility": {
+    "excess_readmission_ratio": {
+      "total_numeric_values": 11720,
+      "zero_count": 0,
+      "negative_count": 0,
+      "below_one_count": 6070,
+      "equal_one_count": 7,
+      "above_one_count": 5643,
+      "min": "0.4698",
+      "max": "1.6297",
+      "percentiles": {
+        "p10": "0.9142",
+        "p25": "0.9582",
+        "p50": "0.9973",
+        "p75": "1.0423",
+        "p90": "1.0923",
+        "p95": "1.1318",
+        "p99": "1.2476"
+      }
+    },
+    "err_by_measure": {
+      "READM-30-AMI-HRRP": {
+        "count": 1736,
+        "min": "0.6839",
+        "max": "1.2639",
+        "below_one_count": 874,
+        "equal_one_count": 0,
+        "above_one_count": 862,
+        "percentiles": {
+          "p10": "0.9200",
+          "p25": "0.9608",
+          "p50": "0.9995",
+          "p75": "1.0422",
+          "p90": "1.0841",
+          "p95": "1.1150",
+          "p99": "1.1792"
+        }
+      },
+      "READM-30-CABG-HRRP": {
+        "count": 878,
+        "min": "0.7434",
+        "max": "1.4237",
+        "below_one_count": 439,
+        "equal_one_count": 1,
+        "above_one_count": 438,
+        "percentiles": {
+          "p10": "0.8851",
+          "p25": "0.9377",
+          "p50": "0.9999",
+          "p75": "1.0624",
+          "p90": "1.1164",
+          "p95": "1.1633",
+          "p99": "1.2464"
+        }
+      },
+      "READM-30-COPD-HRRP": {
+        "count": 2323,
+        "min": "0.8681",
+        "max": "1.2545",
+        "below_one_count": 1223,
+        "equal_one_count": 3,
+        "above_one_count": 1097,
+        "percentiles": {
+          "p10": "0.9486",
+          "p25": "0.9707",
+          "p50": "0.9969",
+          "p75": "1.0281",
+          "p90": "1.0596",
+          "p95": "1.0829",
+          "p99": "1.1348"
+        }
+      },
+      "READM-30-HF-HRRP": {
+        "count": 2621,
+        "min": "0.7137",
+        "max": "1.3606",
+        "below_one_count": 1338,
+        "equal_one_count": 1,
+        "above_one_count": 1282,
+        "percentiles": {
+          "p10": "0.9240",
+          "p25": "0.9606",
+          "p50": "0.9983",
+          "p75": "1.0414",
+          "p90": "1.0855",
+          "p95": "1.1092",
+          "p99": "1.1576"
+        }
+      },
+      "READM-30-HIP-KNEE-HRRP": {
+        "count": 1447,
+        "min": "0.4698",
+        "max": "1.6297",
+        "below_one_count": 754,
+        "equal_one_count": 0,
+        "above_one_count": 693,
+        "percentiles": {
+          "p10": "0.8285",
+          "p25": "0.9001",
+          "p50": "0.9916",
+          "p75": "1.0885",
+          "p90": "1.2038",
+          "p95": "1.2853",
+          "p99": "1.4782"
+        }
+      },
+      "READM-30-PN-HRRP": {
+        "count": 2715,
+        "min": "0.7967",
+        "max": "1.4255",
+        "below_one_count": 1442,
+        "equal_one_count": 2,
+        "above_one_count": 1271,
+        "percentiles": {
+          "p10": "0.9243",
+          "p25": "0.9595",
+          "p50": "0.9955",
+          "p75": "1.0388",
+          "p90": "1.0877",
+          "p95": "1.1201",
+          "p99": "1.1744"
+        }
+      }
+    },
+    "predicted_readmission_rate": {
+      "count": 11720,
+      "zero_count": 0,
+      "negative_count": 0,
+      "greater_than_100_count": 0,
+      "min": "1.9080",
+      "max": "28.1643",
+      "percentiles": {
+        "p10": "6.5597",
+        "p25": "12.5303",
+        "p50": "15.8602",
+        "p75": "18.4184",
+        "p90": "20.2757",
+        "p95": "21.2796",
+        "p99": "23.1307"
+      }
+    },
+    "expected_readmission_rate": {
+      "count": 11720,
+      "zero_count": 0,
+      "negative_count": 0,
+      "greater_than_100_count": 0,
+      "min": "3.0876",
+      "max": "26.8654",
+      "percentiles": {
+        "p10": "6.2042",
+        "p25": "12.6240",
+        "p50": "15.8570",
+        "p75": "18.5005",
+        "p90": "19.9307",
+        "p95": "20.6465",
+        "p99": "22.1052"
+      }
+    },
+    "number_of_discharges": {
+      "count": 8242,
+      "zero_count": 205,
+      "negative_count": 0,
+      "less_than_25_count": 205,
+      "min": 0,
+      "max": 3672
+    },
+    "number_of_readmissions": {
+      "count": 8037,
+      "zero_count": 0,
+      "negative_count": 0,
+      "min": 11,
+      "max": 847,
+      "readmissions_greater_than_discharges_count": 0
+    }
+  },
+  "footnote_analysis": {
+    "blank_footnote_count": 11343,
+    "blank_footnote_pct": 61.88,
+    "nonblank_footnote_count": 6987,
+    "nonblank_footnote_pct": 38.12,
+    "distribution": [
+      {
+        "footnote_code": "BLANK",
+        "description": "Blank (No footnote; standard reported metric or unannotated)",
+        "frequency": 11343,
+        "percentage": 61.8822,
+        "by_measure": {
+          "READM-30-AMI-HRRP": 1675,
+          "READM-30-CABG-HRRP": 844,
+          "READM-30-COPD-HRRP": 2252,
+          "READM-30-HF-HRRP": 2543,
+          "READM-30-HIP-KNEE-HRRP": 1397,
+          "READM-30-PN-HRRP": 2632
+        }
+      },
+      {
+        "footnote_code": "5",
+        "description": "The number of cases/patients is too small to tell how well the hospital is performing",
+        "frequency": 3255,
+        "percentage": 17.7578,
+        "by_measure": {
+          "READM-30-AMI-HRRP": 319,
+          "READM-30-CABG-HRRP": 1975,
+          "READM-30-COPD-HRRP": 199,
+          "READM-30-HF-HRRP": 196,
+          "READM-30-HIP-KNEE-HRRP": 397,
+          "READM-30-PN-HRRP": 169
+        }
+      },
+      {
+        "footnote_code": "1",
+        "description": "The number of cases/patients is too small to reliably tell how well the hospital is performing",
+        "frequency": 3150,
+        "percentage": 17.1849,
+        "by_measure": {
+          "READM-30-AMI-HRRP": 933,
+          "READM-30-CABG-HRRP": 184,
+          "READM-30-COPD-HRRP": 526,
+          "READM-30-HF-HRRP": 230,
+          "READM-30-HIP-KNEE-HRRP": 1114,
+          "READM-30-PN-HRRP": 163
+        }
+      },
+      {
+        "footnote_code": "29",
+        "description": "Data is currently not available / results are not available for this reporting period",
+        "frequency": 377,
+        "percentage": 2.0567,
+        "by_measure": {
+          "READM-30-AMI-HRRP": 61,
+          "READM-30-CABG-HRRP": 34,
+          "READM-30-COPD-HRRP": 71,
+          "READM-30-HF-HRRP": 78,
+          "READM-30-HIP-KNEE-HRRP": 50,
+          "READM-30-PN-HRRP": 83
+        }
+      },
+      {
+        "footnote_code": "7",
+        "description": "The number of cases/patients is too small to reliably tell how well the hospital is performing (or fewer than 25 eligible discharges)",
+        "frequency": 205,
+        "percentage": 1.1184,
+        "by_measure": {
+          "READM-30-AMI-HRRP": 67,
+          "READM-30-CABG-HRRP": 18,
+          "READM-30-COPD-HRRP": 7,
+          "READM-30-HF-HRRP": 8,
+          "READM-30-HIP-KNEE-HRRP": 97,
+          "READM-30-PN-HRRP": 8
+        }
+      }
+    ]
+  },
+  "status_pattern_analysis": [
+    {
+      "pattern": {
+        "Number of Discharges": "NUMERIC_INTEGER",
+        "Number of Readmissions": "NUMERIC_INTEGER",
+        "Excess Readmission Ratio": "NUMERIC_DECIMAL",
+        "Predicted Readmission Rate": "NUMERIC_DECIMAL",
+        "Expected Readmission Rate": "NUMERIC_DECIMAL",
+        "Footnote Status": "BLANK"
+      },
+      "frequency": 7798,
+      "percentage": 42.54
+    },
+    {
+      "pattern": {
+        "Number of Discharges": "N_A",
+        "Number of Readmissions": "N_A",
+        "Excess Readmission Ratio": "N_A",
+        "Predicted Readmission Rate": "N_A",
+        "Expected Readmission Rate": "N_A",
+        "Footnote Status": "NONBLANK"
+      },
+      "frequency": 6405,
+      "percentage": 34.94
+    },
+    {
+      "pattern": {
+        "Number of Discharges": "N_A",
+        "Number of Readmissions": "TOO_FEW_TO_REPORT",
+        "Excess Readmission Ratio": "NUMERIC_DECIMAL",
+        "Predicted Readmission Rate": "NUMERIC_DECIMAL",
+        "Expected Readmission Rate": "NUMERIC_DECIMAL",
+        "Footnote Status": "BLANK"
+      },
+      "frequency": 3545,
+      "percentage": 19.34
+    },
+    {
+      "pattern": {
+        "Number of Discharges": "NUMERIC_INTEGER",
+        "Number of Readmissions": "NUMERIC_INTEGER",
+        "Excess Readmission Ratio": "NUMERIC_DECIMAL",
+        "Predicted Readmission Rate": "NUMERIC_DECIMAL",
+        "Expected Readmission Rate": "NUMERIC_DECIMAL",
+        "Footnote Status": "NONBLANK"
+      },
+      "frequency": 239,
+      "percentage": 1.3
+    },
+    {
+      "pattern": {
+        "Number of Discharges": "NUMERIC_INTEGER",
+        "Number of Readmissions": "N_A",
+        "Excess Readmission Ratio": "N_A",
+        "Predicted Readmission Rate": "N_A",
+        "Expected Readmission Rate": "N_A",
+        "Footnote Status": "NONBLANK"
+      },
+      "frequency": 205,
+      "percentage": 1.12
+    },
+    {
+      "pattern": {
+        "Number of Discharges": "N_A",
+        "Number of Readmissions": "TOO_FEW_TO_REPORT",
+        "Excess Readmission Ratio": "NUMERIC_DECIMAL",
+        "Predicted Readmission Rate": "NUMERIC_DECIMAL",
+        "Expected Readmission Rate": "NUMERIC_DECIMAL",
+        "Footnote Status": "NONBLANK"
+      },
+      "frequency": 138,
+      "percentage": 0.75
+    }
+  ],
+  "factual_caveats_and_notes": [
+    "Record coverage (100% of 18,330 hospital-condition rows) differs substantially from outcome availability (63.94% numeric ERR).",
+    "Public outcome availability varies dramatically across clinical conditions: Pneumonia (88.9%) and Heart Failure (85.8%) have high coverage, while CABG (28.7%) has low coverage due to surgical volume concentration.",
+    "Suppression of readmission volume ('Too Few to Report', 3,683 rows) co-occurs with fully reported numeric ERR, Predicted Rate, and Expected Rate; volume suppression must not be treated as outcome invalidity.",
+    "Discharge count is 'N/A' in 3,683 rows where readmission count is 'Too Few to Report' but ERR is numeric, confirming that CMS risk-standardized ratios are published even when raw counts are masked for patient privacy.",
+    "Exactly 205 records report Number of Discharges = 0 with Footnote 7 ('fewer than 25 eligible discharges') and ERR = N/A.",
+    "100.0% of the 11,720 numeric ERR records mathematically reconcile with Predicted Rate / Expected Rate within the 0.0001 screening tolerance (maximum absolute discrepancy is 0.000065, reflecting standard publication rounding).",
+    "Zero numeric records exhibit negative values, zero rates, or readmissions exceeding discharges.",
+    "Numeric ERR availability is a measure of public data publication, not an indicator of official HRRP payment-reduction penalty eligibility."
+  ]
+}
