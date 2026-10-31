@@ -2,8 +2,8 @@
 
 > **Project:** Niramaya  
 > **Task:** Task 03 — HRRP Metric Availability and Numerical Reliability Audit (Targeted Correction)  
-> **Audit Date & Time (UTC):** 2026-10-31T14:23:10Z  
-> **Audit Date & Time (Local):** 2026-10-31 19:53:10 +0530  
+> **Audit Date & Time (UTC):** 2026-10-31T14:39:23Z  
+> **Audit Date & Time (Local):** 2026-10-31 20:09:23 +0530  
 > **Execution Command:** `python validation/niramaya/task_03_metric_reliability_audit/audit_hrrp_metric_reliability.py --data-file ../data/raw/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv --output-dir validation/niramaya/task_03_metric_reliability_audit/output`  
 
 ---
@@ -22,6 +22,7 @@ This audit evaluates the numerical availability, suppression mechanics, and math
 | **Maximum ERR Discrepancy** | 0.000064675598759313145524894 | Negligible (rounding artifact < 0.000065) |
 | **Numerical Range** | ERR: 0.4698 to 1.6297; Rates: 1.91% to 28.16% | Zero negative values; zero zero-rates |
 | **Discharges = 0 Records** | Exactly 205 rows with Discharges = 0 | All 205 carry Footnote 7 and ERR = N/A |
+| **Partial-Period Exceptions (Footnote 29)** | Exactly 377 rows carry Footnote 29 | CMS ECE exception; valid numeric ERR |
 | **Readmissions > Discharges** | 0 occurrences | Zero logical count contradictions |
 
 ---
@@ -32,6 +33,7 @@ This audit evaluates the numerical availability, suppression mechanics, and math
 - **Resolved Local Path:** `D:\Niramaya\data\raw\FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv`
 - **CMS Provider Data Catalogue URL:** [https://data.cms.gov/provider-data/dataset/9n3s-kdb3](https://data.cms.gov/provider-data/dataset/9n3s-kdb3)
 - **Direct CMS Resource URL:** [https://data.cms.gov/provider-data/sites/default/files/resources/a171bc36c488d3e0dc33ec63abb469a6_1770163617/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv](https://data.cms.gov/provider-data/sites/default/files/resources/a171bc36c488d3e0dc33ec63abb469a6_1770163617/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv)
+- **CMS Hospitals — About the Data:** [https://data.cms.gov/provider-data/topics/hospitals/about-data](https://data.cms.gov/provider-data/topics/hospitals/about-data)
 - **CMS Footnote Crosswalk Source:** [https://data.cms.gov/provider-data/dataset/y9us-9xdf](https://data.cms.gov/provider-data/dataset/y9us-9xdf)
 - **Total Records Processed:** 18,330
 - **Total Columns:** 12
@@ -169,15 +171,15 @@ The largest deviations are well below the 0.0001 screening threshold and result 
 
 ## 9. Footnote Distribution & Cross-Tabulation
 
-The Footnote field was audited using verified definitions from the official CMS Hospital Footnote Crosswalk (dataset y9us-9xdf):
+The Footnote field was audited using authoritative definitions from CMS Hospitals — About the data and the CMS Hospital Footnote Crosswalk (dataset y9us-9xdf):
 
-| Footnote Code | CMS Crosswalk Definition | Frequency | % Dataset |
-| :--- | :--- | :--- | :--- |
-| `BLANK` | Blank (No footnote; standard reported metric or unannotated) | 11,343 | 61.88% |
-| `5` | Results are not available for this reporting period. | 3,255 | 17.76% |
-| `1` | The number of cases/patients is too few to report. | 3,150 | 17.18% |
-| `29` | Unverified footnote code | 377 | 2.06% |
-| `7` | No cases met the criteria for this measure. | 205 | 1.12% |
+| Footnote Code | CMS Definition | Documented Application / Context | Frequency | % Dataset |
+| :--- | :--- | :--- | :--- | :--- |
+| `BLANK` | Blank (No footnote; standard reported metric or unannotated) | Standard public data publication without exception or suppression annotation. | 11,343 | 61.88% |
+| `5` | Results are not available for this reporting period. | Results were not available from CMS for the specified reporting period. | 3,255 | 17.76% |
+| `1` | The number of cases/patients is too few to report. | The hospital did not meet the minimum case threshold for public reporting, had too few cases to reliably assess performance, or data was suppressed to protect personal health information. | 3,150 | 17.18% |
+| `29` | This measure was calculated using partial performance period data due to a CMS-approved exception. | Results were based on less than the maximum possible performance period, but not all quarters, due to a CMS-approved Extraordinary Circumstances Exception affecting one or more quarters. | 377 | 2.06% |
+| `7` | No cases met the criteria for this measure. | No cases treated at the hospital met the inclusion criteria for the specific condition measure during the performance window. | 205 | 1.12% |
 
 ### Footnote Code vs Metric Status Cross-Tabulation
 
@@ -186,8 +188,8 @@ This cross-tabulation establishes the exact co-occurrence of footnote codes with
 | Footnote Code | Footnote Meaning | ERR Status | Discharges Status | Readmissions Status | Records | % Dataset |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `1` | The number of cases/patients is too few to report. | `Non-numeric (N/A)` | `Non-numeric (N/A)` | `Non-numeric (N/A)` | 3,150 | 17.18% |
-| `29` | Unverified footnote code | `Numeric` | `Numeric` | `Numeric` | 239 | 1.30% |
-| `29` | Unverified footnote code | `Numeric` | `Non-numeric (N/A)` | `Non-numeric (Too Few to Report)` | 138 | 0.75% |
+| `29` | This measure was calculated using partial performance period data due to a CMS-approved exception. | `Numeric` | `Numeric` | `Numeric` | 239 | 1.30% |
+| `29` | This measure was calculated using partial performance period data due to a CMS-approved exception. | `Numeric` | `Non-numeric (N/A)` | `Non-numeric (Too Few to Report)` | 138 | 0.75% |
 | `5` | Results are not available for this reporting period. | `Non-numeric (N/A)` | `Non-numeric (N/A)` | `Non-numeric (N/A)` | 3,255 | 17.76% |
 | `7` | No cases met the criteria for this measure. | `Non-numeric (N/A)` | `Numeric` | `Non-numeric (N/A)` | 205 | 1.12% |
 | `BLANK` | Blank (No footnote; standard reported metric or unannotated) | `Numeric` | `Numeric` | `Numeric` | 7,798 | 42.54% |
@@ -219,5 +221,5 @@ Across all 18,330 rows, the metric fields resolve into exactly six distinct repo
 - Exactly 205 records report Number of Discharges = 0 with Footnote 7 ('No cases met the criteria for this measure') and ERR = N/A. This is distinct from the statutory HRRP 25-eligible-discharge payment-reduction rule.
 - 100.0% of the 11,720 numeric ERR records mathematically reconcile with Predicted Rate / Expected Rate within the 0.0001 audit screening tolerance selected for this validation (maximum absolute discrepancy is 0.000065, consistent with publication rounding of 4-decimal published rates).
 - Observed numeric values range from 0.4698 to 1.6297 for ERR, 1.9080% to 28.1643% for Predicted Rate, 3.0876% to 26.8654% for Expected Rate, 0 to 3,672 for Discharges, and 11 to 847 for Readmissions. Zero negative rates, zero zero-rates, and zero instances of readmissions exceeding discharges were observed.
-- Footnote 29 appears on 377 rows (all with numeric ERR). It cannot be verified in the CMS Hospital Footnote Crosswalk (dataset y9us-9xdf) or Hospital Data Dictionary and is strictly documented as an unverified footnote code.
+- Exactly 377 records carry Footnote 29 ('This measure was calculated using partial performance period data due to a CMS-approved exception'). All 377 publish numeric ERR values (239 with numeric counts, 138 with withheld counts). These records represent valid published outcomes based on a partial reporting window (Extraordinary Circumstances Exception); future benchmarking should flag them and evaluate sensitivity with and without these records.
 - Numeric ERR availability reflects public CMS data publication, not eligibility for the official HRRP payment reduction penalty.

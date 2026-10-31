@@ -1,6 +1,6 @@
-Footnote Code,Description,Frequency,Percentage of Dataset,READM-30-AMI-HRRP Count,READM-30-CABG-HRRP Count,READM-30-COPD-HRRP Count,READM-30-HF-HRRP Count,READM-30-HIP-KNEE-HRRP Count,READM-30-PN-HRRP Count
-BLANK,Blank (No footnote; standard reported metric or unannotated),11343,61.88%,1675,844,2252,2543,1397,2632
-5,Results are not available for this reporting period.,3255,17.76%,319,1975,199,196,397,169
-1,The number of cases/patients is too few to report.,3150,17.18%,933,184,526,230,1114,163
-29,Unverified footnote code,377,2.06%,61,34,71,78,50,83
-7,No cases met the criteria for this measure.,205,1.12%,67,18,7,8,97,8
+Footnote Code,CMS Definition,Documented Application,Frequency,Percentage of Dataset,READM-30-AMI-HRRP Count,READM-30-CABG-HRRP Count,READM-30-COPD-HRRP Count,READM-30-HF-HRRP Count,READM-30-HIP-KNEE-HRRP Count,READM-30-PN-HRRP Count
+BLANK,Blank (No footnote; standard reported metric or unannotated),Standard public data publication without exception or suppression annotation.,11343,61.88%,1675,844,2252,2543,1397,2632
+5,Results are not available for this reporting period.,Results were not available from CMS for the specified reporting period.,3255,17.76%,319,1975,199,196,397,169
+1,The number of cases/patients is too few to report.,"The hospital did not meet the minimum case threshold for public reporting, had too few cases to reliably assess performance, or data was suppressed to protect personal health information.",3150,17.18%,933,184,526,230,1114,163
+29,This measure was calculated using partial performance period data due to a CMS-approved exception.,"Results were based on less than the maximum possible performance period, but not all quarters, due to a CMS-approved Extraordinary Circumstances Exception affecting one or more quarters.",377,2.06%,61,34,71,78,50,83
+7,No cases met the criteria for this measure.,No cases treated at the hospital met the inclusion criteria for the specific condition measure during the performance window.,205,1.12%,67,18,7,8,97,8

@@ -1,7 +1,7 @@
 Footnote Code,Footnote Description,ERR Status,Discharges Status,Readmissions Status,Record Count,Percentage of Dataset
 1,The number of cases/patients is too few to report.,Non-numeric (N/A),Non-numeric (N/A),Non-numeric (N/A),3150,17.1849
-29,Unverified footnote code,Numeric,Numeric,Numeric,239,1.3039
-29,Unverified footnote code,Numeric,Non-numeric (N/A),Non-numeric (Too Few to Report),138,0.7529
+29,This measure was calculated using partial performance period data due to a CMS-approved exception.,Numeric,Numeric,Numeric,239,1.3039
+29,This measure was calculated using partial performance period data due to a CMS-approved exception.,Numeric,Non-numeric (N/A),Non-numeric (Too Few to Report),138,0.7529
 5,Results are not available for this reporting period.,Non-numeric (N/A),Non-numeric (N/A),Non-numeric (N/A),3255,17.7578
 7,No cases met the criteria for this measure.,Non-numeric (N/A),Numeric,Non-numeric (N/A),205,1.1184
 BLANK,Blank (No footnote; standard reported metric or unannotated),Numeric,Numeric,Numeric,7798,42.5423

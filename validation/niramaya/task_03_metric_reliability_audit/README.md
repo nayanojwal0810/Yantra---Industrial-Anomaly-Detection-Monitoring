@@ -2,7 +2,7 @@
 
 ## Overview
 
-This directory contains the implementation, documentation, and factual execution deliverables for **Task 03: HRRP Metric Availability and Numerical Reliability Audit** of Project **Niramaya** (including targeted corrections addressing footnote definitions, reconciliation terminology, and statistical methods).
+This directory contains the implementation, documentation, and factual execution deliverables for **Task 03: HRRP Metric Availability and Numerical Reliability Audit** of Project **Niramaya** (incorporating final authoritative footnote definitions, reconciliation terminology, and standardized statistical methods).
 
 The objective of this task is to evaluate whether metric values across the complete FY 2026 CMS Hospital Readmissions Reduction Program (HRRP) dataset are sufficiently available, interpretable, and numerically consistent to support condition-specific hospital benchmarking.
 
@@ -14,15 +14,16 @@ The objective of this task is to evaluate whether metric values across the compl
 
 All Task 3 code and generated outputs are maintained strictly inside this directory. Pre-existing files and prior task deliverables remain completely untouched. Raw datasets are not committed to version control.
 
-## Input Dataset
+## Input Dataset & Authoritative Sources
 
-| Property | Value |
+| Resource | Source & Reference URL |
 | :--- | :--- |
-| **Local File Name** | `FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv` |
-| **Relative Path** | `../data/raw/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv` |
-| **CMS Catalogue Source** | [CMS HRRP Dataset (9n3s-kdb3)](https://data.cms.gov/provider-data/dataset/9n3s-kdb3) |
+| **Local Raw CSV** | `../data/raw/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv` |
+| **CMS HRRP Dataset** | [CMS HRRP Dataset (9n3s-kdb3)](https://data.cms.gov/provider-data/dataset/9n3s-kdb3) |
 | **Direct CMS CSV URL** | [CMS Direct Resource Link](https://data.cms.gov/provider-data/sites/default/files/resources/a171bc36c488d3e0dc33ec63abb469a6_1770163617/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv) |
+| **CMS Hospitals — About the Data** | [CMS Hospital Data Documentation](https://data.cms.gov/provider-data/topics/hospitals/about-data) |
 | **CMS Footnote Crosswalk** | [CMS Hospital Footnote Crosswalk (y9us-9xdf)](https://data.cms.gov/provider-data/dataset/y9us-9xdf) |
+| **CMS Hospital Data Dictionary** | [HOSPITAL_Data_Dictionary.pdf](https://data.cms.gov/provider-data/sites/default/files/data_dictionaries/hospital/HOSPITAL_Data_Dictionary.pdf) |
 
 ## Audit Script Execution
 
@@ -44,8 +45,8 @@ The script writes eight primary artifacts to `output/`:
 2. `hrrp_metric_reliability.md`: Human-readable Markdown report detailing factual findings across all 11 required audit areas.
 3. `metric_availability_by_measure.csv`: Condition-specific summary table (one row per measure) reporting counts and percentages for all availability indicators.
 4. `value_token_frequency.csv`: Exhaustive frequency table of all raw value tokens, normalized classifications, and dataset percentages.
-5. `footnote_distribution.csv`: Distribution table of every distinct Footnote code, verified CMS descriptions, dataset percentages, and measure-level counts.
-6. `footnote_status_crosstab.csv`: Detailed cross-tabulation mapping Footnote codes against ERR status, Discharges status, and Readmissions status.
+5. `footnote_distribution.csv`: Distribution table of every distinct Footnote code, authoritative CMS definitions, documented applications, dataset percentages, and measure-level counts.
+6. `footnote_status_crosstab.csv`: Detailed cross-tabulation mapping Footnote codes against ERR status, Discharges status, and Readmissions status across all 18,330 rows.
 7. `err_reconciliation_exceptions.csv`: Evidence artifact containing standard headers and 0 data rows (confirming 100% mathematical reconciliation within tolerance).
 8. `execution_environment.txt`: Execution environment details (Python version, operating system, platform architecture, percentile method, and command invocation).
 
@@ -80,16 +81,21 @@ The script writes eight primary artifacts to `output/`:
    - Discharges range from 0 to 3,672; Readmissions range from 11 to 847. Readmissions exceeding discharges: 0.
    - Exactly **205 rows** report `Number of Discharges = 0` with Footnote 7 ("No cases met the criteria for this measure") and ERR = N/A. This is distinct from the statutory HRRP 25-eligible-discharge payment-reduction rule.
 
-5. **Authoritative Footnote Crosswalk Analysis:**
-   - **Blank (`''`):** 11,343 rows (61.88%)
+5. **Authoritative CMS Footnote Definitions & Documented Applications:**
+   - **Blank (`''`):** 11,343 rows (61.88%) — Standard reported metric or unannotated.
    - **Footnote `5`:** 3,255 rows (17.76%) — *"Results are not available for this reporting period."*
-   - **Footnote `1`:** 3,150 rows (17.18%) — *"The number of cases/patients is too few to report."*
-   - **Footnote `29`:** 377 rows (2.06%) — *"Unverified footnote code"* (code 29 cannot be mapped in the CMS Hospital Footnote Crosswalk or Hospital Data Dictionary; its observed co-occurrence with numeric ERR is factually reported without inferred causation).
+   - **Footnote `1`:** 3,150 rows (17.18%) — *"The number of cases/patients is too few to report."* Documented applications include not meeting minimum reporting requirements, too few cases to reliably assess performance, and personal health information protection.
+   - **Footnote `29`:** 377 rows (2.06%) — *"This measure was calculated using partial performance period data due to a CMS-approved exception."* Results were based on less than the maximum possible performance period, but not all quarters, due to a CMS-approved Extraordinary Circumstances Exception (ECE) affecting one or more quarters.
    - **Footnote `7`:** 205 rows (1.12%) — *"No cases met the criteria for this measure."*
 
-6. **Footnote/Status Cross-Tabulation Co-occurrences:**
+6. **Footnote 29 Partial-Period Exception Analysis:**
+   - Footnote 29 occurs on exactly **377 rows**.
+   - All 377 rows publish valid numeric ERR, Predicted Rate, and Expected Rate values (239 with numeric counts, 138 with withheld counts).
+   - Footnote 29 identifies a partial-performance-period exception, not an invalid or missing outcome. These records are preserved; future benchmarking analyses should flag them and evaluate sensitivity with and without these records.
+
+7. **Footnote/Status Cross-Tabulation Co-occurrences:**
    - Footnotes 1 and 5 always co-occur with all metrics being N/A (3,150 and 3,255 rows).
    - Footnote 7 always co-occurs with Discharges = 0, ERR = N/A, and Readmissions = N/A (205 rows).
    - Footnote 29 always co-occurs with numeric ERR (239 fully numeric counts, 138 with withheld counts).
    - BLANK footnote always co-occurs with numeric ERR (7,798 fully numeric counts, 3,545 with withheld counts).
-   - All categories reconcile to exactly 18,330 source rows.
+   - All categories reconcile to exactly 18,330 source rows (100.0%).

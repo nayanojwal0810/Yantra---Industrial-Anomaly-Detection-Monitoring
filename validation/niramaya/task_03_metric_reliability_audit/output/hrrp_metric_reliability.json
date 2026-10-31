@@ -2,8 +2,8 @@
   "audit_metadata": {
     "task": "task_03_metric_reliability_audit",
     "project": "Niramaya",
-    "timestamp_utc": "2026-10-31T14:23:10Z",
-    "timestamp_local": "2026-10-31 19:53:10 +0530",
+    "timestamp_utc": "2026-10-31T14:39:23Z",
+    "timestamp_local": "2026-10-31 20:09:23 +0530",
     "command": "python validation/niramaya/task_03_metric_reliability_audit/audit_hrrp_metric_reliability.py --data-file ../data/raw/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv --output-dir validation/niramaya/task_03_metric_reliability_audit/output",
     "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
     "python_executable": "C:\\Program Files\\Python313\\python.exe",
@@ -16,6 +16,7 @@
     "dataset_name": "FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
     "cms_catalogue_source": "https://data.cms.gov/provider-data/dataset/9n3s-kdb3",
     "cms_direct_url": "https://data.cms.gov/provider-data/sites/default/files/resources/a171bc36c488d3e0dc33ec63abb469a6_1770163617/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
+    "cms_about_data_source": "https://data.cms.gov/provider-data/topics/hospitals/about-data",
     "cms_footnote_crosswalk_source": "https://data.cms.gov/provider-data/dataset/y9us-9xdf",
     "percentile_method": "Nearest-rank method: index = ceil(p * n / 100) - 1 (with index = 0 for p = 0); conventional median: average of two middle elements for even sample size"
   },
@@ -831,6 +832,7 @@
       {
         "footnote_code": "BLANK",
         "description": "Blank (No footnote; standard reported metric or unannotated)",
+        "documented_application": "Standard public data publication without exception or suppression annotation.",
         "frequency": 11343,
         "percentage": 61.8822,
         "by_measure": {
@@ -845,6 +847,7 @@
       {
         "footnote_code": "5",
         "description": "Results are not available for this reporting period.",
+        "documented_application": "Results were not available from CMS for the specified reporting period.",
         "frequency": 3255,
         "percentage": 17.7578,
         "by_measure": {
@@ -859,6 +862,7 @@
       {
         "footnote_code": "1",
         "description": "The number of cases/patients is too few to report.",
+        "documented_application": "The hospital did not meet the minimum case threshold for public reporting, had too few cases to reliably assess performance, or data was suppressed to protect personal health information.",
         "frequency": 3150,
         "percentage": 17.1849,
         "by_measure": {
@@ -872,7 +876,8 @@
       },
       {
         "footnote_code": "29",
-        "description": "Unverified footnote code",
+        "description": "This measure was calculated using partial performance period data due to a CMS-approved exception.",
+        "documented_application": "Results were based on less than the maximum possible performance period, but not all quarters, due to a CMS-approved Extraordinary Circumstances Exception affecting one or more quarters.",
         "frequency": 377,
         "percentage": 2.0567,
         "by_measure": {
@@ -887,6 +892,7 @@
       {
         "footnote_code": "7",
         "description": "No cases met the criteria for this measure.",
+        "documented_application": "No cases treated at the hospital met the inclusion criteria for the specific condition measure during the performance window.",
         "frequency": 205,
         "percentage": 1.1184,
         "by_measure": {
@@ -911,7 +917,7 @@
       },
       {
         "Footnote Code": "29",
-        "Footnote Description": "Unverified footnote code",
+        "Footnote Description": "This measure was calculated using partial performance period data due to a CMS-approved exception.",
         "ERR Status": "Numeric",
         "Discharges Status": "Numeric",
         "Readmissions Status": "Numeric",
@@ -920,7 +926,7 @@
       },
       {
         "Footnote Code": "29",
-        "Footnote Description": "Unverified footnote code",
+        "Footnote Description": "This measure was calculated using partial performance period data due to a CMS-approved exception.",
         "ERR Status": "Numeric",
         "Discharges Status": "Non-numeric (N/A)",
         "Readmissions Status": "Non-numeric (Too Few to Report)",
@@ -1047,7 +1053,7 @@
     "Exactly 205 records report Number of Discharges = 0 with Footnote 7 ('No cases met the criteria for this measure') and ERR = N/A. This is distinct from the statutory HRRP 25-eligible-discharge payment-reduction rule.",
     "100.0% of the 11,720 numeric ERR records mathematically reconcile with Predicted Rate / Expected Rate within the 0.0001 audit screening tolerance selected for this validation (maximum absolute discrepancy is 0.000065, consistent with publication rounding of 4-decimal published rates).",
     "Observed numeric values range from 0.4698 to 1.6297 for ERR, 1.9080% to 28.1643% for Predicted Rate, 3.0876% to 26.8654% for Expected Rate, 0 to 3,672 for Discharges, and 11 to 847 for Readmissions. Zero negative rates, zero zero-rates, and zero instances of readmissions exceeding discharges were observed.",
-    "Footnote 29 appears on 377 rows (all with numeric ERR). It cannot be verified in the CMS Hospital Footnote Crosswalk (dataset y9us-9xdf) or Hospital Data Dictionary and is strictly documented as an unverified footnote code.",
+    "Exactly 377 records carry Footnote 29 ('This measure was calculated using partial performance period data due to a CMS-approved exception'). All 377 publish numeric ERR values (239 with numeric counts, 138 with withheld counts). These records represent valid published outcomes based on a partial reporting window (Extraordinary Circumstances Exception); future benchmarking should flag them and evaluate sensitivity with and without these records.",
     "Numeric ERR availability reflects public CMS data publication, not eligibility for the official HRRP payment reduction penalty."
   ]
 }

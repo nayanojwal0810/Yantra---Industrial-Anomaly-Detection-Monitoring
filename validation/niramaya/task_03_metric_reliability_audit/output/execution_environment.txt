@@ -2,8 +2,8 @@ Execution Environment Record
 ============================
 Project: Niramaya
 Task: Task 03 - HRRP Metric Availability and Numerical Reliability Audit (Targeted Correction)
-Execution Timestamp (UTC): 2026-10-31T14:23:10Z
-Execution Timestamp (Local): 2026-10-31 19:53:10 +0530
+Execution Timestamp (UTC): 2026-10-31T14:39:23Z
+Execution Timestamp (Local): 2026-10-31 20:09:23 +0530
 Python Version: 3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]
 Python Executable: C:\Program Files\Python313\python.exe
 Operating System: Windows-11-10.0.26200-SP0

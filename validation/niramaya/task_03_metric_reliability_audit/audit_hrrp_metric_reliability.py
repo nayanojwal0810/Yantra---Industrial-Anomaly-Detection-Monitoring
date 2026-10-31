@@ -14,8 +14,9 @@ Targeted Corrections Implemented:
    - Footnote 1: "The number of cases/patients is too few to report."
    - Footnote 5: "Results are not available for this reporting period."
    - Footnote 7: "No cases met the criteria for this measure."
-   - Footnote 29: Formally designated as "Unverified footnote code" with unresolved
-     mapping documented.
+   - Footnote 29: Authoritative CMS definition: "This measure was calculated using
+     partial performance period data due to a CMS-approved exception." (Results based on
+     less than maximum performance period due to CMS Extraordinary Circumstances Exception).
 2. Neutral, Fact-Based Interpretations:
    - Rows with Discharges = 0 and Footnote 7 described strictly as "no cases met the
      criteria for this measure" (not conflated with the HRRP 25-eligible-discharge payment rule).
@@ -74,13 +75,21 @@ METRIC_FIELDS = [
     "Number of Readmissions",
 ]
 
-# Verified CMS Footnote Crosswalk definitions (CMS Provider Data Catalog, dataset y9us-9xdf)
+# Authoritative CMS Footnote Definitions (CMS Hospitals — About the data & Footnote Crosswalk y9us-9xdf)
 CMS_FOOTNOTE_DESCRIPTIONS = {
     "": "Blank (No footnote; standard reported metric or unannotated)",
     "1": "The number of cases/patients is too few to report.",
     "5": "Results are not available for this reporting period.",
     "7": "No cases met the criteria for this measure.",
-    "29": "Unverified footnote code",
+    "29": "This measure was calculated using partial performance period data due to a CMS-approved exception.",
+}
+
+CMS_FOOTNOTE_APPLICATIONS = {
+    "": "Standard public data publication without exception or suppression annotation.",
+    "1": "The hospital did not meet the minimum case threshold for public reporting, had too few cases to reliably assess performance, or data was suppressed to protect personal health information.",
+    "5": "Results were not available from CMS for the specified reporting period.",
+    "7": "No cases treated at the hospital met the inclusion criteria for the specific condition measure during the performance window.",
+    "29": "Results were based on less than the maximum possible performance period, but not all quarters, due to a CMS-approved Extraordinary Circumstances Exception affecting one or more quarters.",
 }
 
 
@@ -185,6 +194,7 @@ def run_metric_reliability_audit(data_filepath: str, output_dir: str, execution_
         "dataset_name": os.path.basename(data_filepath),
         "cms_catalogue_source": "https://data.cms.gov/provider-data/dataset/9n3s-kdb3",
         "cms_direct_url": "https://data.cms.gov/provider-data/sites/default/files/resources/a171bc36c488d3e0dc33ec63abb469a6_1770163617/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
+        "cms_about_data_source": "https://data.cms.gov/provider-data/topics/hospitals/about-data",
         "cms_footnote_crosswalk_source": "https://data.cms.gov/provider-data/dataset/y9us-9xdf",
         "percentile_method": "Nearest-rank method: index = ceil(p * n / 100) - 1 (with index = 0 for p = 0); conventional median: average of two middle elements for even sample size",
     }
@@ -614,12 +624,14 @@ def run_metric_reliability_audit(data_filepath: str, output_dir: str, execution_
     footnote_csv_rows = []
 
     for fn_val, fn_cnt in fn_counter.most_common():
-        desc = CMS_FOOTNOTE_DESCRIPTIONS.get(fn_val, "Unverified footnote code")
+        desc = CMS_FOOTNOTE_DESCRIPTIONS.get(fn_val, f"Code {fn_val}")
+        app = CMS_FOOTNOTE_APPLICATIONS.get(fn_val, "")
         pct = round((fn_cnt / total_records) * 100.0, 4)
 
         fn_entry = {
             "footnote_code": fn_val if fn_val else "BLANK",
             "description": desc,
+            "documented_application": app,
             "frequency": fn_cnt,
             "percentage": pct,
             "by_measure": {m: fn_by_measure[m][fn_val] for m in EXPECTED_MEASURES},
@@ -628,7 +640,8 @@ def run_metric_reliability_audit(data_filepath: str, output_dir: str, execution_
 
         csv_row = {
             "Footnote Code": fn_val if fn_val else "BLANK",
-            "Description": desc,
+            "CMS Definition": desc,
+            "Documented Application": app,
             "Frequency": fn_cnt,
             "Percentage of Dataset": f"{pct:.2f}%",
         }
@@ -657,7 +670,7 @@ def run_metric_reliability_audit(data_filepath: str, output_dir: str, execution_
     for (fn_c, e_s, d_s, r_s), cnt in sorted(fn_status_crosstab_counter.items(), key=lambda x: (x[0][0], -x[1])):
         fn_crosstab_rows.append({
             "Footnote Code": fn_c,
-            "Footnote Description": CMS_FOOTNOTE_DESCRIPTIONS.get(fn_c if fn_c != "BLANK" else "", "Unverified footnote code"),
+            "Footnote Description": CMS_FOOTNOTE_DESCRIPTIONS.get(fn_c if fn_c != "BLANK" else "", f"Code {fn_c}"),
             "ERR Status": e_s,
             "Discharges Status": d_s,
             "Readmissions Status": r_s,
@@ -702,7 +715,7 @@ def run_metric_reliability_audit(data_filepath: str, output_dir: str, execution_
         "Exactly 205 records report Number of Discharges = 0 with Footnote 7 ('No cases met the criteria for this measure') and ERR = N/A. This is distinct from the statutory HRRP 25-eligible-discharge payment-reduction rule.",
         "100.0% of the 11,720 numeric ERR records mathematically reconcile with Predicted Rate / Expected Rate within the 0.0001 audit screening tolerance selected for this validation (maximum absolute discrepancy is 0.000065, consistent with publication rounding of 4-decimal published rates).",
         "Observed numeric values range from 0.4698 to 1.6297 for ERR, 1.9080% to 28.1643% for Predicted Rate, 3.0876% to 26.8654% for Expected Rate, 0 to 3,672 for Discharges, and 11 to 847 for Readmissions. Zero negative rates, zero zero-rates, and zero instances of readmissions exceeding discharges were observed.",
-        "Footnote 29 appears on 377 rows (all with numeric ERR). It cannot be verified in the CMS Hospital Footnote Crosswalk (dataset y9us-9xdf) or Hospital Data Dictionary and is strictly documented as an unverified footnote code.",
+        "Exactly 377 records carry Footnote 29 ('This measure was calculated using partial performance period data due to a CMS-approved exception'). All 377 publish numeric ERR values (239 with numeric counts, 138 with withheld counts). These records represent valid published outcomes based on a partial reporting window (Extraordinary Circumstances Exception); future benchmarking should flag them and evaluate sensitivity with and without these records.",
         "Numeric ERR availability reflects public CMS data publication, not eligibility for the official HRRP payment reduction penalty.",
     ]
 
@@ -901,6 +914,7 @@ def generate_markdown_report(audit: Dict[str, Any]) -> str:
         f"| **Maximum ERR Discrepancy** | {reconcil['max_absolute_difference']} | Negligible (rounding artifact < 0.000065) |",
         f"| **Numerical Range** | ERR: 0.4698 to 1.6297; Rates: 1.91% to 28.16% | Zero negative values; zero zero-rates |",
         f"| **Discharges = 0 Records** | Exactly 205 rows with Discharges = 0 | All 205 carry Footnote 7 and ERR = N/A |",
+        f"| **Partial-Period Exceptions (Footnote 29)** | Exactly 377 rows carry Footnote 29 | CMS ECE exception; valid numeric ERR |",
         f"| **Readmissions > Discharges** | 0 occurrences | Zero logical count contradictions |",
         "",
         "---",
@@ -911,6 +925,7 @@ def generate_markdown_report(audit: Dict[str, Any]) -> str:
         f"- **Resolved Local Path:** `{meta['data_file']}`",
         f"- **CMS Provider Data Catalogue URL:** [{meta['cms_catalogue_source']}]({meta['cms_catalogue_source']})",
         f"- **Direct CMS Resource URL:** [{meta['cms_direct_url']}]({meta['cms_direct_url']})",
+        f"- **CMS Hospitals — About the Data:** [{meta['cms_about_data_source']}]({meta['cms_about_data_source']})",
         f"- **CMS Footnote Crosswalk Source:** [{meta['cms_footnote_crosswalk_source']}]({meta['cms_footnote_crosswalk_source']})",
         f"- **Total Records Processed:** {dim['total_records_processed']:,}",
         f"- **Total Columns:** {dim['total_columns']}",
@@ -1077,15 +1092,17 @@ def generate_markdown_report(audit: Dict[str, Any]) -> str:
         "",
         "## 9. Footnote Distribution & Cross-Tabulation",
         "",
-        "The Footnote field was audited using verified definitions from the official CMS Hospital Footnote Crosswalk (dataset y9us-9xdf):",
+        "The Footnote field was audited using authoritative definitions from CMS Hospitals — About the data and the CMS Hospital Footnote Crosswalk (dataset y9us-9xdf):",
         "",
-        "| Footnote Code | CMS Crosswalk Definition | Frequency | % Dataset |",
-        "| :--- | :--- | :--- | :--- |",
+        "| Footnote Code | CMS Definition | Documented Application / Context | Frequency | % Dataset |",
+        "| :--- | :--- | :--- | :--- | :--- |",
     ])
 
     for entry in fn["distribution"]:
         code_disp = entry["footnote_code"]
-        lines.append(f"| `{code_disp}` | {entry['description']} | {entry['frequency']:,} | {entry['percentage']:.2f}% |")
+        desc = entry["description"]
+        app = entry.get("documented_application", "")
+        lines.append(f"| `{code_disp}` | {desc} | {app} | {entry['frequency']:,} | {entry['percentage']:.2f}% |")
 
     lines.extend([
         "",
