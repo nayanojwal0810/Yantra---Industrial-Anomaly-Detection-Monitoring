@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Task V2 / V2.1 — Experimental Design & Baseline Balance Validation
+Task V2 / V2.1 / V2.2 — Experimental Design & Baseline Balance Validation
 Project: Niyati
 Study: Digital support systems to improve child development in Peru:
        A cluster-randomized controlled open label trial
@@ -12,7 +12,8 @@ assignment integrity, cluster-size distributions, province-stratified allocation
 cluster-level and participant-level baseline balance, published Table 1
 reconciliation, baseline missingness, and randomization-covariate availability.
 Includes Task V2.1 targeted corrections for province allocation reporting,
-intervention exposure distinction, geographic neutral wording, and undefined SMD handling.
+intervention exposure distinction, geographic neutral wording, undefined SMD handling,
+and Task V2.2 corrections for province subtotal share denominators.
 """
 
 from datetime import datetime, timezone
@@ -354,7 +355,7 @@ def audit_province_stratified_allocation(df: pd.DataFrame, cluster_df: pd.DataFr
     """
     Constructs cross-tabulation distinguishing descriptive modal-province cluster
     allocation from actual participant counts calculated directly from participant-level
-    recorded provincia and arm_itt. Does not calculate misleading ratios.
+    recorded provincia and arm_itt. Clarifies province subtotal share denominators.
     """
     rows = []
     
@@ -397,12 +398,15 @@ def audit_province_stratified_allocation(df: pd.DataFrame, cluster_df: pd.DataFr
                 "province_name": p_name,
                 "arm_code": str(a),
                 "arm_name": ARM_MAP[a],
+                "row_type": "ARM",
                 "modal_province_clusters": cl_count,
                 "total_clusters_in_province": p_cl_tot,
                 "modal_cluster_share_within_province_pct": cl_share,
+                "province_share_of_total_clusters_pct": np.nan,
                 "actual_recorded_participants": pt_count,
                 "total_participants_in_province": p_pt_tot,
                 "participant_share_within_province_pct": pt_share,
+                "province_share_of_total_participants_pct": np.nan,
                 "stratification_notes": notes
             })
             
@@ -413,12 +417,15 @@ def audit_province_stratified_allocation(df: pd.DataFrame, cluster_df: pd.DataFr
             "province_name": p_name,
             "arm_code": "SUBTOTAL",
             "arm_name": "All Arms Combined",
+            "row_type": "PROVINCE_SUBTOTAL",
             "modal_province_clusters": p_cl_tot,
             "total_clusters_in_province": p_cl_tot,
-            "modal_cluster_share_within_province_pct": cl_prov_share,
+            "modal_cluster_share_within_province_pct": 100.0,
+            "province_share_of_total_clusters_pct": cl_prov_share,
             "actual_recorded_participants": p_pt_tot,
             "total_participants_in_province": p_pt_tot,
-            "participant_share_within_province_pct": pt_prov_share,
+            "participant_share_within_province_pct": 100.0,
+            "province_share_of_total_participants_pct": pt_prov_share,
             "stratification_notes": f"Total populated units and participants recorded in {p_name}."
         })
 
@@ -427,12 +434,15 @@ def audit_province_stratified_allocation(df: pd.DataFrame, cluster_df: pd.DataFr
         "province_name": "All Provinces Combined",
         "arm_code": "TOTAL",
         "arm_name": "All Arms Combined",
+        "row_type": "OVERALL_TOTAL",
         "modal_province_clusters": total_modal_clusters,
         "total_clusters_in_province": total_modal_clusters,
         "modal_cluster_share_within_province_pct": 100.0,
+        "province_share_of_total_clusters_pct": 100.0,
         "actual_recorded_participants": total_actual_participants,
         "total_participants_in_province": total_actual_participants,
         "participant_share_within_province_pct": 100.0,
+        "province_share_of_total_participants_pct": 100.0,
         "stratification_notes": "Trial-wide total (159 modal clusters, 2,461 actual recorded participants)."
     })
 
@@ -1052,7 +1062,7 @@ def audit_randomization_covariate_availability() -> pd.DataFrame:
 # -----------------------------------------------------------------------------
 def run_v2_design_audit() -> None:
     print("=" * 70)
-    print("STARTING TASK V2 / V2.1: EXPERIMENTAL DESIGN & BASELINE BALANCE VALIDATION")
+    print("STARTING TASK V2 / V2.1 / V2.2: EXPERIMENTAL DESIGN & BASELINE BALANCE VALIDATION")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print(f"Project Directory: {REPO_ROOT}")
     print(f"Raw Data Archive: {RAW_ZIP_PATH}")
@@ -1084,7 +1094,7 @@ def run_v2_design_audit() -> None:
     print("\n[Step 4] Executing Validation C (Province-Stratified Allocation)...")
     prov_alloc_df = audit_province_stratified_allocation(df, cluster_df)
     prov_alloc_csv_path = OUTPUT_DIR / "cluster_allocation_by_province.csv"
-    prov_alloc_df.to_csv(prov_alloc_csv_path, index=False)
+    prov_alloc_df.to_csv(prov_alloc_csv_path, index=False, float_format="%.2f")
     print(f" -> Generated {prov_alloc_csv_path.name} ({len(prov_alloc_df)} rows).")
 
     # Step 5: Validation D — Baseline Balance (Cluster-level & Participant-level)
@@ -1126,7 +1136,7 @@ def run_v2_design_audit() -> None:
     prov_code_map = {"Cajamarca": 1, "Cajabamba": 2, "San Marcos": 10}
 
     v2_summary = {
-        "audit_version": "V2.1",
+        "audit_version": "V2.2",
         "audit_timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "python_version": sys.version,
         "pandas_version": pd.__version__,
@@ -1246,7 +1256,7 @@ def run_v2_design_audit() -> None:
     print(f" -> Generated {summary_json_path.name}.")
 
     print("\n" + "=" * 70)
-    print("TASK V2 / V2.1 AUDIT EXECUTION COMPLETED SUCCESSFULLY!")
+    print("TASK V2 / V2.1 / V2.2 AUDIT EXECUTION COMPLETED SUCCESSFULLY!")
     print(f"All outputs generated in: {OUTPUT_DIR}")
     print("=" * 70)
 

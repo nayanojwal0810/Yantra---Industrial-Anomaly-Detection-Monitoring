@@ -1,4 +1,4 @@
-# Task V2 / V2.1: Experimental Design & Baseline Balance Validation
+# Task V2 / V2.1 / V2.2: Experimental Design & Baseline Balance Validation
 
 **Project:** Niyati  
 **Study Title:** Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial  
@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary
 
-This report presents the forensic audit and validation of the experimental design, cluster assignment integrity, cluster-size distributions, province-stratified allocation, baseline covariate balance, published Table 1 reconciliation, and protocol covariate availability for Task V2 and the targeted corrections of Task V2.1.
+This report presents the forensic audit and validation of the experimental design, cluster assignment integrity, cluster-size distributions, province-stratified allocation, baseline covariate balance, published Table 1 reconciliation, and protocol covariate availability for Task V2 and the targeted corrections of Tasks V2.1 and V2.2.
 
 ### Key Audit Findings:
 1. **Cluster Count & Participant Reconciliation:**
@@ -37,9 +37,13 @@ This report presents the forensic audit and validation of the experimental desig
 4. **Province-Stratified Allocation:**
    - The province-by-arm table distinguishes descriptive modal-province cluster classifications (summing to 159 clusters) from actual participant counts calculated directly from original participant-level records by recorded province (Cajamarca: 1,275; Cajabamba: 805; San Marcos: 381; summing to 2,461 participants).
    - Modal cluster allocation shares within provinces consistently mirror the planned trial-wide ~72:20:72 community ratio:
-     - Cajamarca: 42.05% Control ($n=37$), 11.36% Home visits ($n=10$), 46.59% Afini ($n=41$)
-     - Cajabamba: 43.18% Control ($n=19$), 13.64% Home visits ($n=6$), 43.18% Afini ($n=19$)
-     - San Marcos: 44.44% Control ($n=12$), 11.11% Home visits ($n=3$), 44.44% Afini ($n=12$)
+     - Cajamarca: 42.05% Control ($n=37$), 11.36% Home visits ($n=10$), 46.59% Afini ($n=41$) [subtotal: 100.00% within province; 55.35% of total trial clusters]
+     - Cajabamba: 43.18% Control ($n=19$), 13.64% Home visits ($n=6$), 43.18% Afini ($n=19$) [subtotal: 100.00% within province; 27.67% of total trial clusters]
+     - San Marcos: 44.44% Control ($n=12$), 11.11% Home visits ($n=3$), 44.44% Afini ($n=12$) [subtotal: 100.00% within province; 16.98% of total trial clusters]
+   - Actual participant shares within recorded provinces:
+     - Cajamarca: 37.41% Control ($n=477$), 11.84% Home visits ($n=151$), 50.75% Afini ($n=647$) [subtotal: 100.00% within province; 51.81% of total trial participants]
+     - Cajabamba: 42.98% Control ($n=346$), 12.80% Home visits ($n=103$), 44.22% Afini ($n=356$) [subtotal: 100.00% within province; 32.71% of total trial participants]
+     - San Marcos: 38.58% Control ($n=147$), 16.54% Home visits ($n=63$), 44.88% Afini ($n=171$) [subtotal: 100.00% within province; 15.48% of total trial participants]
 5. **Baseline Covariate Balance:**
    - **Cluster-Level Balance (Primary Diagnostic):** Treating each cluster as one randomized unit ($N=159$), 11 of 13 baseline variables exhibit at least one pairwise absolute SMD of 0.20 or higher. The largest differences occur mainly in comparisons involving the Home Visits arm, which has 19 populated clusters. The small number of Home Visit clusters makes balance estimates less stable, though small sample size does not prove or fully explain the observed differences. These differences should be considered when specifying adjusted treatment-effect models in later analysis, without choosing or implementing those models in this task.
    - **Participant-Level Balance (Secondary Diagnostic):** Weighted at the participant level ($N=2,461$), balance is high: 12 of 13 baseline variables have maximum $|SMD| < 0.20$. Only household SES index (`bl_qses_index`) shows $|SMD| \ge 0.20$ ($|SMD| = 0.211$ between Control and Afini).
@@ -140,26 +144,31 @@ Enrolled cluster sizes exhibit natural variability (CV between 0.48 and 0.70). T
 
 The trial protocol specified randomization stratified by province. The province-by-arm table distinguishes descriptive modal-province cluster allocations from actual participant counts calculated directly from original participant-level records, cataloged in [cluster_allocation_by_province.csv](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_allocation_by_province.csv).
 
-| Province Name | Trial Arm | Modal-Province Clusters | Cluster Share within Province (%) | Actual Recorded Participants | Participant Share within Province (%) | Stratification Notes |
-| :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Cajamarca** | Control (1) | 37 | 42.05% | 477 | 37.41% | Direct participant-level count |
-| | Home visits (2) | 10 | 11.36% | 151 | 11.84% | Direct participant-level count |
-| | Afini (3) | 41 | 46.59% | 647 | 50.75% | Includes 1 participant in Cluster 104 recorded in Cajamarca |
-| | **Subtotal** | **88** | **55.35%** | **1,275** | **51.81%** | Total units & participants in Cajamarca |
-| **Cajabamba** | Control (1) | 19 | 43.18% | 346 | 42.98% | Direct participant-level count |
-| | Home visits (2) | 6 | 13.64% | 103 | 12.80% | Direct participant-level count |
-| | Afini (3) | 19 | 43.18% | 356 | 44.22% | Descriptive modal cluster; excludes 1 Cajamarca participant |
-| | **Subtotal** | **44** | **27.67%** | **805** | **32.71%** | Total units & participants in Cajabamba |
-| **San Marcos** | Control (1) | 12 | 44.44% | 147 | 38.58% | Direct participant-level count |
-| | Home visits (2) | 3 | 11.11% | 63 | 16.54% | Direct participant-level count |
-| | Afini (3) | 12 | 44.44% | 171 | 44.88% | Direct participant-level count |
-| | **Subtotal** | **27** | **16.98%** | **381** | **15.48%** | Total units & participants in San Marcos |
-| **All Combined**| **Total** | **159** | **100.00%** | **2,461** | **100.00%** | Trial-wide totals |
+### Explicit Allocation Structure & Share Denominators:
+- **Within-Province Shares:** Measure the proportion of each arm within a given province (denominator = province subtotal). For subtotal rows, within-province shares are 100.00%.
+- **Province-Wide Shares of Total:** Measure each province's contribution to the overall trial (denominator = total trial clusters [159] or total enrolled participants [2,461]). These are displayed for subtotal rows and the overall total row, and left blank for arm-level rows.
+
+| Province Name | Trial Arm | Row Type | Modal Clusters | Cluster Share within Modal Province (%) | Province Share of Total Clusters (%) | Actual Recorded Participants | Participant Share within Recorded Province (%) | Province Share of Total Participants (%) | Stratification Notes |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Cajamarca** | Control (1) | `ARM` | 37 | 42.05% | — | 477 | 37.41% | — | Direct participant-level count |
+| | Home visits (2) | `ARM` | 10 | 11.36% | — | 151 | 11.84% | — | Direct participant-level count |
+| | Afini (3) | `ARM` | 41 | 46.59% | — | 647 | 50.75% | — | Includes 1 participant in Cluster 104 recorded in Cajamarca |
+| | **Subtotal** | `PROVINCE_SUBTOTAL` | **88** | **100.00%** | **55.35%** | **1,275** | **100.00%** | **51.81%** | Total units & participants in Cajamarca |
+| **Cajabamba** | Control (1) | `ARM` | 19 | 43.18% | — | 346 | 42.98% | — | Direct participant-level count |
+| | Home visits (2) | `ARM` | 6 | 13.64% | — | 103 | 12.80% | — | Direct participant-level count |
+| | Afini (3) | `ARM` | 19 | 43.18% | — | 356 | 44.22% | — | Descriptive modal cluster; excludes 1 Cajamarca participant |
+| | **Subtotal** | `PROVINCE_SUBTOTAL` | **44** | **100.00%** | **27.67%** | **805** | **100.00%** | **32.71%** | Total units & participants in Cajabamba |
+| **San Marcos** | Control (1) | `ARM` | 12 | 44.44% | — | 147 | 38.58% | — | Direct participant-level count |
+| | Home visits (2) | `ARM` | 3 | 11.11% | — | 63 | 16.54% | — | Direct participant-level count |
+| | Afini (3) | `ARM` | 12 | 44.44% | — | 171 | 44.88% | — | Direct participant-level count |
+| | **Subtotal** | `PROVINCE_SUBTOTAL` | **27** | **100.00%** | **16.98%** | **381** | **100.00%** | **15.48%** | Total units & participants in San Marcos |
+| **All Combined**| **Total** | `OVERALL_TOTAL` | **159** | **100.00%** | **100.00%** | **2,461** | **100.00%** | **100.00%** | Trial-wide totals |
 
 ### Stratification Verification & Caveats:
-1. The observed province labels correspond to the three protocol provinces: Cajamarca, Cajabamba, and San Marcos.
-2. The proportion of clusters allocated to each arm is stable across all three provinces (~42–44% Control, ~11–14% Home visits, ~43–47% Afini), mirroring the planned trial-wide ~72:20:72 community ratio.
-3. **Cluster Allocation is Descriptive Only:** Because Cluster 104 spans two provinces (33 participants in Cajabamba, 1 in Cajamarca), the original province stratum for this cluster cannot be definitively established from released participant data alone. To avoid misleading calculations, mean cluster size is not computed by dividing actual participant counts by modal-province cluster counts.
+1. **Stratification Factor:** The observed province labels correspond to the three protocol provinces: Cajamarca, Cajabamba, and San Marcos.
+2. **Allocation Balance:** The proportion of clusters allocated to each arm is stable across all three provinces (~42–44% Control, ~11–14% Home visits, ~43–47% Afini), mirroring the planned trial-wide ~72:20:72 community ratio.
+3. **Cluster Allocation is Descriptive Only:** Because Cluster 104 spans two provinces (33 participants in Cajabamba, 1 in Cajamarca), the original province stratum for this cluster cannot be definitively established from released participant data alone. Classifying Cluster 104 under Cajabamba by plurality is a descriptive convention only and does not establish its original randomization stratum. To avoid misleading calculations, mean cluster size is not computed by dividing actual participant counts by modal-province cluster counts.
+4. **Denominators Reconciled:** Within each province, arm shares sum to 100.00% (within rounding). Across provinces, subtotal cluster shares sum to 100.00% (55.35% + 27.67% + 16.98%), and subtotal participant shares sum to 100.00% (51.81% + 32.71% + 15.48%).
 
 ---
 
@@ -292,7 +301,7 @@ The trial protocol describes using constrained randomization based on study prov
 All output files are generated in `validation/V2_experimental_design/outputs/`:
 - [`cluster_assignment_integrity.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_assignment_integrity.csv): 159-cluster dataset with treatment assignment, province, district, participant count, and integrity flags.
 - [`cluster_size_distribution.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_size_distribution.csv): Parametric and non-parametric cluster-size statistics overall, by arm, and by province x arm.
-- [`cluster_allocation_by_province.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_allocation_by_province.csv): Province-stratified allocation cross-tabulation distinguishing modal-province cluster counts from actual participant counts.
+- [`cluster_allocation_by_province.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_allocation_by_province.csv): Province-stratified allocation cross-tabulation distinguishing modal-province cluster counts from actual participant counts, with explicit within-province and trial-wide share denominators.
 - [`cluster_covariate_balance.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_covariate_balance.csv): Primary cluster-level baseline balance diagnostics with pairwise SMDs across randomized units.
 - [`participant_baseline_balance.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/participant_baseline_balance.csv): Secondary participant-weighted baseline balance diagnostics with pairwise SMDs.
 - [`published_table1_reconciliation.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/published_table1_reconciliation.csv): Replication and comparison of all 17 published Table 1 baseline summary statistics.
