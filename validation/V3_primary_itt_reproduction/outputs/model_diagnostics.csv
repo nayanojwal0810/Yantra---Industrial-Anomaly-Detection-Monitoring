@@ -1,0 +1,10 @@
+diagnostic_category,metric_name,metric_value,benchmark_or_reference,notes
+Outcome Distribution,GSED Z-score Mean (Overall),-0.0000,0.0000 (standardized within 10-day age bands),"N = 2149, SD = 0.9878, Min = -7.9911, Max = 3.2813"
+Outcome Distribution,GSED Z-score Mean (Control),-0.0872,Reference group mean,"N = 864, SD = 1.0367"
+Outcome Distribution,GSED Z-score Mean (Home visits),0.0797,Raw difference vs Control = +0.1669,"N = 297, SD = 0.8522"
+Outcome Distribution,GSED Z-score Mean (Afini),0.0523,Raw difference vs Control = +0.1395,"N = 988, SD = 0.9772"
+Clustering & Random Effects,Intraclass Correlation (ICC) - Null Model,0.03202,Stata line 244 (mixed gsed_Z || cluster:; estat icc),"Cluster variance = 0.03154, Residual variance = 0.95336. ICC indicates ~3.2% between-cluster variation."
+Clustering & Random Effects,Intraclass Correlation (ICC) - Treatment-Conditioned,0.02830,Stata line 266 (mixed gsed_Z hv afini || cluster:),"Cluster variance = 0.02775, Residual variance = 0.95300. ICC indicates ~2.8% between-cluster variation."
+Unadjusted Model Goodness-of-Fit,R-squared,0.0053,Small R-squared typical in individual-level trials,Residual standard deviation = 0.9856
+Inference Specification,Variance Estimator,Cluster-robust CRV1 (cluster),"reg gsed_Z hv afini, cluster(cluster)",159 clusters; degrees of freedom = 158 (G - 1) for unadjusted model.
+Sample Size Discrepancy,Outcome Exclusions Discrepancy,20 participants (UNRESOLVED),Published Table 2 note (332) vs actual data/code (312),Released data contains 307 missing raw scores + 5 singleton age-band drops = 312 exclusions. Preserved as UNRESOLVED.

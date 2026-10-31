@@ -1,0 +1,110 @@
+{
+  "task_version": "V3.0",
+  "timestamp_utc": "2026-10-31T05:45:19.847699+00:00",
+  "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
+  "pandas_version": "3.0.3",
+  "numpy_version": "2.4.6",
+  "scipy_version": "1.17.1",
+  "statsmodels_version": "0.15.0",
+  "dataset_metadata": {
+    "source_doi": "10.5061/dryad.nzs7h4551",
+    "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",
+    "raw_archive": "doi_10_5061_dryad_nzs7h4551__v20260226.zip",
+    "dta_file": "digitalECD_26Feb2026.dta",
+    "do_file": "Trial_Analysis_Replication_File_26Feb2026.do"
+  },
+  "primary_outcome_reconciliation": {
+    "enrolled_participants": 2461,
+    "recorded_raw_gsed": 2154,
+    "missing_raw_gsed": 307,
+    "singleton_age_band_drops": 5,
+    "valid_derived_gsed_z": 2149,
+    "total_recreated_exclusions": 312,
+    "published_table2_sample_size": 2149,
+    "sample_size_match": true,
+    "published_footnote_exclusions": 332,
+    "unresolved_exclusion_discrepancy_gap": 20,
+    "exclusion_discrepancy_status": "UNRESOLVED"
+  },
+  "analysis_sample_by_arm": {
+    "Control": {
+      "enrolled": 970,
+      "valid_derived_gsed_z": 864,
+      "total_exclusions": 106,
+      "contributing_clusters": 68,
+      "total_clusters": 68
+    },
+    "Home visits": {
+      "enrolled": 317,
+      "valid_derived_gsed_z": 297,
+      "total_exclusions": 20,
+      "contributing_clusters": 19,
+      "total_clusters": 19
+    },
+    "Afini": {
+      "enrolled": 1174,
+      "valid_derived_gsed_z": 988,
+      "total_exclusions": 186,
+      "contributing_clusters": 72,
+      "total_clusters": 72
+    }
+  },
+  "unadjusted_model_results": {
+    "specification": "reg gsed_Z hv afini, cluster(cluster)",
+    "n_obs": 2149,
+    "n_clusters": 159,
+    "df_cluster": 158,
+    "r_squared": 0.005320850956953338,
+    "hv_vs_control": {
+      "published_coef": 0.17,
+      "python_coef": 0.1669,
+      "published_ci": "0.04 to 0.30",
+      "python_ci": "0.04 to 0.30",
+      "match_status": "MATCH_AT_PUBLISHED_PRECISION"
+    },
+    "digital_vs_control": {
+      "published_coef": 0.14,
+      "python_coef": 0.1394,
+      "published_ci": "0.05 to 0.23",
+      "python_ci": "0.05 to 0.23",
+      "match_status": "MATCH_AT_PUBLISHED_PRECISION"
+    }
+  },
+  "adjusted_model_results": {
+    "specification": "mi estimate, post: reg gsed_Z hv afini $covariates, cluster(cluster)",
+    "n_obs": 2149,
+    "n_clusters": 159,
+    "m_imputations": 50,
+    "seed_used": 20260226,
+    "covariates_count": 15,
+    "hv_vs_control": {
+      "published_coef": 0.17,
+      "python_coef": 0.1654,
+      "published_ci": "0.03 to 0.30",
+      "python_ci": "0.03 to 0.30",
+      "match_status": "MATCH_AT_PUBLISHED_PRECISION"
+    },
+    "digital_vs_control": {
+      "published_coef": 0.11,
+      "python_coef": 0.1056,
+      "published_ci": "0.02 to 0.19",
+      "python_ci": "0.02 to 0.19",
+      "match_status": "MATCH_AT_PUBLISHED_PRECISION"
+    }
+  },
+  "intraclass_correlation": {
+    "icc_null_model": 0.03202467162573494,
+    "icc_conditional_model": 0.028296062235094357,
+    "cluster_variance_null": 0.031540987841637946,
+    "residual_variance_null": 0.9533555385068693
+  },
+  "discrepancy_preservation": {
+    "observed_valid_gsed_z": 2149,
+    "published_table2_n": 2149,
+    "observed_exclusions": 312,
+    "published_footnote_exclusions": 332,
+    "unresolved_gap": 20,
+    "status": "UNRESOLVED",
+    "notes": "Preserved without altering data or assumptions."
+  }
+}

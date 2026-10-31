@@ -1,0 +1,9 @@
+# Python dependencies for Task V3: Primary Outcome & ITT Results Reproduction
+# Project: Niyati
+# Environment: Python 3.13.3 (Windows x86_64)
+
+pandas>=2.2.0,<=3.1.0
+numpy>=1.26.0,<=2.5.0
+scipy>=1.14.0,<=1.18.0
+statsmodels>=0.14.0,<=0.16.0
+scikit-learn>=1.4.0,<=1.10.0

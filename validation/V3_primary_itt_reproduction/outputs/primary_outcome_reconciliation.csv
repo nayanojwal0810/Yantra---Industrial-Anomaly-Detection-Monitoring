@@ -1,0 +1,7 @@
+metric_name,v1_audited_value,v3_reproduced_value,difference,reconciliation_status,methodological_notes
+Enrolled participants,2461,2461,0,MATCH,Total observations in authoritative trial dataset.
+Recorded raw GSED scores,2154,2154,0,MATCH,Participants with non-missing el_gsed_dscore.
+Missing raw GSED scores,307,307,0,MATCH,No endline GSED assessment recorded in raw dataset.
+Singleton age-band drops,5,5,0,MATCH,Participants in 10-day age bands with n=1 (sample SD undefined with ddof=1).
+Valid derived GSED scores,2149,2149,0,MATCH,"Valid estimation sample matching published Table 2 N exactly (N = 2,149)."
+Total recreated outcome exclusions,312,312,0,MATCH,Sum of missing raw scores (307) and singleton drops (5). Gap of 20 vs 332 note remains UNRESOLVED.

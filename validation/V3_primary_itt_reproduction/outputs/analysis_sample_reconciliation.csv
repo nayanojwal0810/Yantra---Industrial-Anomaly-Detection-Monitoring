@@ -1,0 +1,5 @@
+arm_code,arm_name,enrolled_participants,recorded_raw_gsed,missing_raw_gsed,singleton_age_band_drops,valid_derived_gsed_z,analysis_sample_share_pct,total_exclusions,contributing_clusters,total_populated_clusters,cluster_retention_rate_pct,sample_notes
+1,Control,970,864,106,0,864,40.2,106,68,68,100.0,All 68 clusters contribute at least one valid outcome.
+2,Home visits,317,299,18,2,297,13.82,20,19,19,100.0,All 19 clusters contribute at least one valid outcome.
+3,Afini,1174,991,183,3,988,45.97,186,72,72,100.0,All 72 clusters contribute at least one valid outcome.
+TOTAL,All Arms Combined,2461,2154,307,5,2149,100.0,312,159,159,100.0,Actual exclusions = 312 (307 missing raw + 5 singletons). Published Table 2 note reports 332 exclusions (discrepancy of 20 preserved as UNRESOLVED).
