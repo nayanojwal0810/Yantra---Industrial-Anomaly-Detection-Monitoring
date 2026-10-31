@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Task V5.1: Correct Missingness Definitions, Statistical Models & Evidence Claims
-================================================================================
+Task V5.2.1: Final P-Value Narrative Precision Correction
+=========================================================
 Project: Niyati
 Repository: nayanojwal0810/Yantra---Industrial-Anomaly-Detection-Monitoring
 Branch: project2/urja-validation
@@ -42,6 +42,20 @@ REPO_ROOT = SCRIPT_DIR.parent.parent
 RAW_ZIP_PATH = REPO_ROOT / "data" / "raw" / "doi_10_5061_dryad_nzs7h4551__v20260226.zip"
 OUTPUT_DIR = SCRIPT_DIR / "outputs"
 DTA_FILENAME = "digitalECD_26Feb2026.dta"
+
+
+def format_p_value(p: float) -> str:
+    """
+    Format a p-value for narrative notes and strings:
+    - If None or NaN, returns empty string.
+    - If p < 0.0001, uses scientific notation (e.g., 2.65e-07, 2.72e-68).
+    - Otherwise, formats with standard 4 decimal places (e.g., 0.0015).
+    """
+    if p is None or pd.isna(p):
+        return ""
+    if p < 0.0001:
+        return f"{p:.2e}"
+    return f"{p:.4f}"
 
 
 def load_authoritative_dataset() -> pd.DataFrame:
@@ -334,8 +348,8 @@ def audit_outcome_missingness_by_arm(df: pd.DataFrame) -> pd.DataFrame:
             or_ci_u = round(float(logit_raw_ci.loc["hv", 1]), 3)
             or_p = float(logit_raw.pvalues["hv"])
             interp = (
-                f"Significantly lower raw missingness than Control (diff = -5.25 pp, p={p_val:.4f}; "
-                f"conservative df=18 p={p_cons:.4f}). Odds Ratio = {or_val:.3f} (50.9% lower odds of raw missingness)."
+                f"Significantly lower raw missingness than Control (diff = -5.25 pp, p={format_p_value(p_val)}; "
+                f"conservative df=18 p={format_p_value(p_cons)}). Odds Ratio = {or_val:.3f} (50.9% lower odds of raw missingness)."
             )
         else: # arm_code == 3
             diff_ctrl = float(lpm_raw.params["afini"]) * 100.0
@@ -349,8 +363,8 @@ def audit_outcome_missingness_by_arm(df: pd.DataFrame) -> pd.DataFrame:
             or_ci_u = round(float(logit_raw_ci.loc["afini", 1]), 3)
             or_p = float(logit_raw.pvalues["afini"])
             interp = (
-                f"Significantly higher raw missingness than Control (diff = +4.66 pp, p={p_val:.4f}; "
-                f"conservative df=67 p={p_cons:.4f}). Odds Ratio = {or_val:.3f} (50.5% higher odds of raw missingness)."
+                f"Significantly higher raw missingness than Control (diff = +4.66 pp, p={format_p_value(p_val)}; "
+                f"conservative df=67 p={format_p_value(p_cons)}). Odds Ratio = {or_val:.3f} (50.5% higher odds of raw missingness)."
             )
 
         records.append({
@@ -411,7 +425,7 @@ def audit_outcome_missingness_by_arm(df: pd.DataFrame) -> pd.DataFrame:
         "odds_ratio_p_value": p_diff_logit_raw,
         "statistical_interpretation": (
             f"Marked differential attrition in raw GSED: Home visits missingness is 9.91 percentage points lower than Digital "
-            f"(5.68% vs 15.59%, z = -5.876, p < 1e-6; conservative df=18 p = 1.5e-5). Odds Ratio = {or_diff_raw:.3f} "
+            f"(5.68% vs 15.59%, z = -5.876, p={format_p_value(p_diff_raw_cr1)}; conservative df=18 p={format_p_value(p_diff_raw_cons)}). Odds Ratio = {or_diff_raw:.3f} "
             f"(67.4% lower odds of raw missingness in Home visits compared to Digital)."
         )
     })
@@ -677,8 +691,8 @@ def audit_missingness_association_models(df: pd.DataFrame) -> pd.DataFrame:
             "p_value": float(p_val),
             "sample_size_n": len(sub),
             "model_specification_notes": (
-                f"Statistically significant raw association with raw missingness (p={p_val:.4f})."
-                if p_val < 0.05 else f"Non-significant raw association (p={p_val:.4f})."
+                f"Statistically significant raw association with raw missingness (p={format_p_value(p_val)})."
+                if p_val < 0.05 else f"Non-significant raw association (p={format_p_value(p_val)})."
             )
         })
 
@@ -747,7 +761,7 @@ def audit_missingness_association_models(df: pd.DataFrame) -> pd.DataFrame:
             "p_value": float(p_val),
             "sample_size_n": len(df),
             "model_specification_notes": (
-                f"Unadjusted Odds Ratio = {or_arm[p]:.3f} [95% CI: {ci_arm.loc[p, 0]:.3f}, {ci_arm.loc[p, 1]:.3f}], p={p_val:.4f}."
+                f"Unadjusted Odds Ratio = {or_arm[p]:.3f} [95% CI: {ci_arm.loc[p, 0]:.3f}, {ci_arm.loc[p, 1]:.3f}], p={format_p_value(p_val)}."
             )
         })
 
@@ -1019,8 +1033,16 @@ def build_v5_summary_json(
     afini_row = arm_df[arm_df["arm_name"] == "Afini"].iloc[0]
     contrast_row = arm_df[arm_df["arm_name"].str.contains("Direct Contrast")].iloc[0]
 
+    # Collect all non-missing numeric p-values across arm_df and models_df
+    arm_p_vals = []
+    for col in ["p_value_cr1", "p_value_conservative_df", "odds_ratio_p_value"]:
+        vals = pd.to_numeric(arm_df[col], errors="coerce").dropna().tolist()
+        arm_p_vals.extend(vals)
+    model_p_vals = pd.to_numeric(models_df["p_value"], errors="coerce").dropna().tolist()
+    all_numeric_p_values = arm_p_vals + model_p_vals
+
     v5_summary = {
-        "task_version": "V5.2",
+        "task_version": "V5.2.1",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "project": "Niyati",
         "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",
@@ -1218,9 +1240,10 @@ def build_v5_summary_json(
                 len(cl_df[cl_df["stratum_and_metric"].str.contains("Control (Secondary", regex=False)]) == 1
             ),
             "p_values_strictly_positive": bool(
-                float(contrast_row["p_value_cr1"]) > 0.0 and
-                float(models_df[(models_df["model_id"].str.contains("Model 3")) & (models_df["predictor_variable"] == "bl_mo_age")]["p_value"].iloc[0]) > 0.0
+                len(all_numeric_p_values) == 64 and
+                all(isinstance(p, (int, float)) and p > 0.0 for p in all_numeric_p_values)
             ),
+            "total_p_values_validated_count": len(all_numeric_p_values),
             "no_participant_ids_exported": True
         }
     }
@@ -1230,7 +1253,7 @@ def build_v5_summary_json(
 
 def main():
     print("=" * 75)
-    print("STARTING TASK V5.2: FINAL CLUSTER SUMMARY, P-VALUE PRECISION & EVIDENCE-TEXT CORRECTIONS")
+    print("STARTING TASK V5.2.1: FINAL P-VALUE NARRATIVE PRECISION CORRECTION")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print(f"Repository Root: {REPO_ROOT}")
     print(f"Raw Archive: {RAW_ZIP_PATH}")

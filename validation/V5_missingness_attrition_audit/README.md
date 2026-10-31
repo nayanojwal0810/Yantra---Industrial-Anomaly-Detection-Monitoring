@@ -1,4 +1,4 @@
-# Task V5.2: Missing Outcomes, Attrition & Missing-Data Feasibility Audit
+# Task V5.2.1: Missing Outcomes, Attrition & Missing-Data Feasibility Audit
 
 **Project:** Niyati  
 **Repository:** `nayanojwal0810/Yantra---Industrial-Anomaly-Detection-Monitoring`  
@@ -33,12 +33,16 @@ This audit independently investigates the structure of missing outcomes, endline
    - **Afini (Digital):** Suffered the highest raw GSED missingness at **$15.59\%$** ($183 / 1,174$).
    - **Control:** Intermediate raw GSED missingness at **$10.93\%$** ($106 / 970$).
    - **Home Visits:** Lowest raw GSED missingness at **$5.68\%$** ($18 / 317$).
-   - In cluster-robust linear probability models (CR1), Digital raw missingness was $+4.66$ percentage points higher than Control ($SE = 1.69\%, p = 0.0058$; conservative $df=67$, $p = 0.0075$; Odds Ratio $= 1.505$ [95% CI: $1.118, 2.026$], $p = 0.0070$).
-   - Home Visits raw missingness was $-5.25$ percentage points lower than Control ($SE = 1.65\%, p = 0.0015$; conservative $df=18$, $p = 0.0052$; Odds Ratio $= 0.491$ [95% CI: $0.301, 0.799$], $p = 0.0042$).
-   - The direct contrast between active modalities is substantial: Home Visits achieved a **$9.91$ percentage point lower raw missingness rate** than Digital ($5.68\%$ vs $15.59\%$, $SE = 1.69\%, z = -5.876, p = 4.19 \times 10^{-9}$; conservative $df=18$, $p = 1.45 \times 10^{-5}$), corresponding to a $67.4\%$ reduction in the odds of missingness (Odds Ratio $= 0.326$ [95% CI: $0.205, 0.518$], $p = 2.14 \times 10^{-6}$).
+   - In cluster-robust linear probability models (CR1), Digital raw missingness was $+4.66$ percentage points higher than Control ($SE = 1.69\%, p_{\text{LPM}} = 0.0058$; conservative $df=67$, $p_{\text{cons}} = 0.0075$; Odds Ratio $= 1.505$ [95% CI: $1.118, 2.026$], $p_{\text{Logit}} = 0.0070$).
+   - Home Visits raw missingness was $-5.25$ percentage points lower than Control ($SE = 1.65\%, p_{\text{LPM}} = 0.0015$; conservative $df=18$, $p_{\text{cons}} = 0.0052$; Odds Ratio $= 0.491$ [95% CI: $0.301, 0.799$], $p_{\text{Logit}} = 0.0042$).
+   - The direct contrast between active modalities is substantial: Home Visits achieved a **$9.91$ percentage point lower raw missingness rate** than Digital ($5.68\%$ vs $15.59\%$, $SE = 1.69\%, z = -5.876, p_{\text{LPM}} = 4.19 \times 10^{-9}$; conservative $df=18$, $p_{\text{cons}} = 1.45 \times 10^{-5}$), corresponding to a $67.4\%$ reduction in the odds of missingness (Odds Ratio $= 0.326$ [95% CI: $0.205, 0.518$], $p_{\text{Logit}} = 2.14 \times 10^{-6}$).
 3. **Evidence Against Missing Completely at Random (MCAR):**
    - Observed associations between outcome missingness, treatment assignment, and baseline characteristics provide strong evidence against MCAR.
-   - In multivariable models ($N = 2,373$ complete baseline cases), raw GSED missingness is significantly predicted by younger maternal age ($p = 3.31 \times 10^{-6}$, AOR $= 0.9493$ [95% CI: $0.9280, 0.9711$], $p = 6.98 \times 10^{-6}$), low birth weight ($p = 0.0386$, AOR $= 1.5957$ [95% CI: $1.0731, 2.3729$], $p = 0.0210$), and fewer household adults ($p = 0.0065$, AOR $= 0.8555$ [95% CI: $0.7568, 0.9671$], $p = 0.0126$), alongside treatment assignment.
+   - In multivariable models ($N = 2,373$ complete baseline cases), raw GSED missingness is significantly predicted by:
+     - **Younger maternal age:** LPM coef $= -0.0051$ ($p_{\text{LPM}} = 3.31 \times 10^{-6}$); AOR $= 0.9493$ [95% CI: $0.9280, 0.9711$] ($p_{\text{Logit}} = 6.98 \times 10^{-6}$).
+     - **Low birth weight:** LPM coef $= +0.0585$ ($p_{\text{LPM}} = 0.0386$); AOR $= 1.5957$ [95% CI: $1.0731, 2.3729$] ($p_{\text{Logit}} = 0.0210$).
+     - **Fewer household adults:** LPM coef $= -0.0151$ ($p_{\text{LPM}} = 0.0065$); AOR $= 0.8555$ [95% CI: $0.7568, 0.9671$] ($p_{\text{Logit}} = 0.0126$).
+     - **Treatment assignment:** Home Visits significantly reduces missingness (LPM coef $= -0.0548$, $p_{\text{LPM}} = 0.0021$; AOR $= 0.4225$, $p_{\text{Logit}} = 0.0066$), while Afini significantly increases missingness (LPM coef $= +0.0590$, $p_{\text{LPM}} = 0.0007$; AOR $= 1.7043$, $p_{\text{Logit}} = 0.0009$).
 4. **Feasibility of Missing-Data Strategies for Niyati:**
    - **Complete-case analysis** (the published Table 2 approach) is vulnerable to selection bias because attrited children were disproportionately from vulnerable households and from the Digital arm.
    - **Multiple Imputation under MAR** is technically feasible for full-cohort sensitivity analysis ($N = 2,461$) because $71.34\%$ of raw-GSED attriters ($219 / 307$) have fully intact baseline profiles across all 13 baseline variables. However, MAR is an inherently untestable assumption. Child deaths ($10$ cases) represent survival truncation rather than ordinary continuous missingness; post-death developmental scores cannot be imputed as if the child were alive. Furthermore, V3 diagnostics concerned baseline covariate imputation in the assessed complete cases; they do not constitute validation of a full-cohort primary-outcome imputation model.

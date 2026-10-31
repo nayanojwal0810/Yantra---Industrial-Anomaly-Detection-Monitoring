@@ -1,6 +1,6 @@
 {
-  "task_version": "V5.2",
-  "timestamp_utc": "2026-10-31T09:47:10.758337+00:00",
+  "task_version": "V5.2.1",
+  "timestamp_utc": "2026-10-31T10:13:17.725293+00:00",
   "project": "Niyati",
   "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",
   "dataset_metadata": {
@@ -192,6 +192,7 @@
     "arm_counts_970_317_1174": true,
     "secondary_cluster_summary_includes_control": true,
     "p_values_strictly_positive": true,
+    "total_p_values_validated_count": 64,
     "no_participant_ids_exported": true
   }
 }
