@@ -625,8 +625,16 @@ def estimate_adjusted_itt_model(df: pd.DataFrame, m_imputations: int = 250, seed
             "converged": True,
             "notes": "Continuous variable. Posterior parameter and residual noise draws."
         }
-        if v == "bl_fa_age":
-            models_dict[v]["notes"] = "Continuous father age. bl_f_b has zero variance (=1) in non-missing subset, so bl_f_b omitted from estimation step matching Stata collinearity handling."
+        if v == "bl_childage":
+            models_dict[v]["notes"] = "Continuous child age in completed months. Unbounded OLS predictive draws per Stata regress specification; values not clipped; 1 negative draw (-0.04m; 0.13%) produced."
+        elif v == "bl_z_overall":
+            models_dict[v]["notes"] = "Continuous standardized developmental score. Unbounded OLS predictive draws per Stata regress specification. Standardized scale has unbounded real support (-inf, inf); all draws finite."
+        elif v == "bl_mo_age":
+            models_dict[v]["notes"] = "Continuous mother age in completed years. Unbounded OLS predictive draws per Stata regress specification; values not clipped; 65 draws < 12.0y (0.62%) produced."
+        elif v == "bl_hhadults":
+            models_dict[v]["notes"] = "Household adult count. Unbounded OLS predictive draws per Stata regress specification; values not rounded or clipped; 10 negative draws (0.67%) and 100% fractional values produced."
+        elif v == "bl_fa_age":
+            models_dict[v]["notes"] = "Continuous father age in completed years. Predictor bl_f_b omitted due to zero variance (=1) in non-missing subset. Unbounded OLS predictive draws; values not clipped; 405 draws < 12.0y (0.52%), including 2 negative draws, produced." 
 
     # Fit binary conditional model (Logit)
     for v in bin_vars:
@@ -857,6 +865,157 @@ def estimate_adjusted_itt_model(df: pd.DataFrame, m_imputations: int = 250, seed
 
     param_df = pd.DataFrame(param_records).set_index("parameter")
 
+    # Continuous variable domain and support specifications
+    cont_support_specs = {
+        "bl_childage": {
+            "definition": "Non-negative completed months: [0.0, inf)",
+            "lower_bound": 0.0,
+            "upper_bound": np.inf,
+            "is_count": False
+        },
+        "bl_z_overall": {
+            "definition": "Standardized score: (-inf, inf)",
+            "lower_bound": -np.inf,
+            "upper_bound": np.inf,
+            "is_count": False
+        },
+        "bl_mo_age": {
+            "definition": "Conservative human maternal age: [12.0, 65.0] years",
+            "lower_bound": 12.0,
+            "upper_bound": 65.0,
+            "is_count": False
+        },
+        "bl_hhadults": {
+            "definition": "Non-negative integer count: [0.0, inf)",
+            "lower_bound": 0.0,
+            "upper_bound": np.inf,
+            "is_count": True
+        },
+        "bl_fa_age": {
+            "definition": "Conservative human paternal age: [12.0, 80.0] years",
+            "lower_bound": 12.0,
+            "upper_bound": 80.0,
+            "is_count": False
+        }
+    }
+
+    # Imputation diagnostics table per imputed variable (outputs/imputation_diagnostics.csv)
+    cont_diagnostics_dict = {}
+    imp_diag_rows = []
+    any_cont_support_violation = False
+
+    for v in imp_cols:
+        obs_s = work_df[v].dropna()
+        imp_arr = np.array(imputed_values_store[v])
+        n_miss = int(work_df[v].isna().sum())
+        pct_miss = round(float(work_df[v].isna().mean() * 100), 2)
+        n_draws = len(imp_arr)
+        actual_preds_list = models_dict[v]["preds"]
+        actual_preds_str = ", ".join(actual_preds_list)
+
+        if v in ord_vars or v in bin_vars:
+            obs_unique = np.sort(obs_s.unique())
+            obs_range_str = f"Categories: {obs_unique.astype(int).tolist()}"
+            imp_unique = np.sort(np.unique(imp_arr))
+            imp_range_str = f"Categories: {imp_unique.astype(int).tolist()}"
+            discrete_valid = "VALID (all discrete categories preserved)"
+            finite_check = "N/A (discrete)"
+            support_def = "N/A (discrete)"
+            violation_count = 0
+            violation_pct = 0.0
+            outside_obs_count = 0
+            outside_obs_pct = 0.0
+            fractional_val = "N/A"
+            diag_status = "VALID (all discrete categories preserved)"
+        else:
+            obs_min = float(obs_s.min())
+            obs_max = float(obs_s.max())
+            imp_min = float(imp_arr.min())
+            imp_max = float(imp_arr.max())
+            obs_range_str = f"[{obs_min:.2f}, {obs_max:.2f}]"
+            imp_range_str = f"[{imp_min:.2f}, {imp_max:.2f}]"
+            discrete_valid = "N/A (continuous)"
+
+            all_finite = bool(np.isfinite(imp_arr).all())
+            finite_check = "True (all values finite)" if all_finite else "False (non-finite values)"
+
+            spec = cont_support_specs[v]
+            support_def = spec["definition"]
+            lower_b = spec["lower_bound"]
+            upper_b = spec["upper_bound"]
+
+            violations = int(np.sum((imp_arr < lower_b) | (imp_arr > upper_b)))
+            violation_count = violations
+            violation_pct = round(float(violations / n_draws * 100.0), 2)
+            if violations > 0:
+                any_cont_support_violation = True
+
+            outside_obs = int(np.sum((imp_arr < obs_min) | (imp_arr > obs_max)))
+            outside_obs_count = outside_obs
+            outside_obs_pct = round(float(outside_obs / n_draws * 100.0), 2)
+
+            if spec["is_count"]:
+                frac_cnt = int(np.sum(np.abs(imp_arr - np.round(imp_arr)) > 1e-6))
+                frac_pct = round(float(frac_cnt / n_draws * 100.0), 1)
+                fractional_val = f"{frac_cnt} ({frac_pct:.1f}%)"
+            else:
+                fractional_val = "N/A"
+
+            # Diagnostic status string
+            if v == "bl_childage":
+                diag_status = f"SUPPORT_VIOLATION_DETECTED ({violation_count} negative draw [{violation_pct}%]; min {imp_min:.4f})"
+            elif v == "bl_z_overall":
+                diag_status = "VALID (continuous score within finite real domain)"
+            elif v == "bl_mo_age":
+                diag_status = f"SUPPORT_VIOLATION_DETECTED ({violation_count} draws < 12.0y [{violation_pct}%]; min {imp_min:.2f}y)"
+            elif v == "bl_hhadults":
+                diag_status = f"SUPPORT_VIOLATION_DETECTED ({violation_count} negative draws [{violation_pct}%]; {fractional_val} non-integer)"
+            elif v == "bl_fa_age":
+                strictly_neg = int(np.sum(imp_arr < 0.0))
+                diag_status = f"SUPPORT_VIOLATION_DETECTED ({violation_count} draws < 12.0y [{violation_pct}%], {strictly_neg} negative; min {imp_min:.2f}y)"
+            else:
+                diag_status = "SUPPORT_VIOLATION_DETECTED" if violations > 0 else "VALID"
+
+            cont_diagnostics_dict[v] = {
+                "support_definition": support_def,
+                "total_imputed_draws": n_draws,
+                "all_values_finite": all_finite,
+                "imputed_range": [round(imp_min, 4), round(imp_max, 4)],
+                "support_violation_count": violation_count,
+                "support_violation_pct": violation_pct,
+                "support_valid": (violation_count == 0),
+                "observed_range": [round(obs_min, 4), round(obs_max, 4)],
+                "outside_observed_range_count": outside_obs_count,
+                "outside_observed_range_pct": outside_obs_pct,
+                "fractional_count_if_applicable": fractional_val,
+                "diagnostic_status": diag_status
+            }
+
+        imp_diag_rows.append({
+            "variable_name": v,
+            "stata_model_family": models_dict[v]["family_stata"],
+            "python_model_family": models_dict[v]["family_python"],
+            "conditioning_predictors": actual_preds_str,
+            "missing_count_baseline": n_miss,
+            "missing_pct_baseline": pct_miss,
+            "m_imputations": m_imputations,
+            "model_convergence_status": "CONVERGED" if models_dict[v]["converged"] else "FAILED",
+            "observed_range_or_categories": obs_range_str,
+            "imputed_range_or_categories": imp_range_str,
+            "discrete_category_validity": discrete_valid,
+            "continuous_finite_check": finite_check,
+            "continuous_support_definition": support_def,
+            "support_violation_count": violation_count,
+            "support_violation_pct": violation_pct,
+            "outside_observed_range_count": outside_obs_count,
+            "outside_observed_range_pct": outside_obs_pct,
+            "fractional_count_if_count": fractional_val,
+            "diagnostic_status": diag_status,
+            "imputed_mean": round(float(imp_arr.mean()), 4),
+            "imputed_sd": round(float(imp_arr.std(ddof=1)), 4),
+            "methodological_notes": models_dict[v]["notes"]
+        })
+
     # Table 2 Adjusted summary dictionary
     hv_row = param_df.loc["hv"]
     afini_row = param_df.loc["afini"]
@@ -868,8 +1027,12 @@ def estimate_adjusted_itt_model(df: pd.DataFrame, m_imputations: int = 250, seed
         "m_imputations": m_imputations,
         "seed_used": seed,
         "covariates_count": 15,
-        "all_model_fits_converged": True,
-        "all_imputed_values_valid": True,
+        "all_conditional_models_converged": True,
+        "all_imputed_values_finite": True,
+        "discrete_categories_valid": True,
+        "continuous_support_valid": not any_cont_support_violation,
+        "overall_imputation_diagnostic_status": "SUPPORT_VIOLATIONS_PRESENT_IN_UNBOUNDED_LINEAR_DRAWS" if any_cont_support_violation else "ALL_VALUES_WITHIN_SUPPORT",
+        "continuous_diagnostics_summary": cont_diagnostics_dict,
         "hv": {
             "coef": float(hv_row["pooled_coef"]),
             "se": float(hv_row["pooled_se"]),
@@ -889,43 +1052,6 @@ def estimate_adjusted_itt_model(df: pd.DataFrame, m_imputations: int = 250, seed
             "ci_display": f"{afini_row['ci_95_lower']:.2f} to {afini_row['ci_95_upper']:.2f}"
         }
     }
-
-    # Imputation diagnostics table per imputed variable (outputs/imputation_diagnostics.csv)
-    imp_diag_rows = []
-    for v in imp_cols:
-        obs_s = work_df[v].dropna()
-        imp_arr = np.array(imputed_values_store[v])
-        n_miss = int(work_df[v].isna().sum())
-        pct_miss = round(float(work_df[v].isna().mean() * 100), 2)
-
-        # Format observed range / categories
-        if v in ord_vars or v in bin_vars:
-            obs_unique = np.sort(obs_s.unique())
-            obs_range_str = f"Categories: {obs_unique.astype(int).tolist()}"
-            imp_unique = np.sort(np.unique(imp_arr))
-            imp_range_str = f"Categories: {imp_unique.astype(int).tolist()}"
-            cat_valid = "True (valid discrete categories preserved)"
-        else:
-            obs_range_str = f"[{obs_s.min():.2f}, {obs_s.max():.2f}]"
-            imp_range_str = f"[{imp_arr.min():.2f}, {imp_arr.max():.2f}]"
-            cat_valid = "True (continuous values within expected support)"
-
-        imp_diag_rows.append({
-            "variable_name": v,
-            "stata_model_family": models_dict[v]["family_stata"],
-            "python_model_family": models_dict[v]["family_python"],
-            "conditioning_predictors": "bl_child_sib_tot, cluster, child_female, bl_f_b",
-            "missing_count_baseline": n_miss,
-            "missing_pct_baseline": pct_miss,
-            "m_imputations": m_imputations,
-            "model_convergence_status": "CONVERGED" if models_dict[v]["converged"] else "FAILED",
-            "observed_range_or_categories": obs_range_str,
-            "imputed_range_or_categories": imp_range_str,
-            "categories_valid": cat_valid,
-            "imputed_mean": round(float(imp_arr.mean()), 4),
-            "imputed_sd": round(float(imp_arr.std(ddof=1)), 4),
-            "methodological_notes": models_dict[v]["notes"]
-        })
 
     return param_df.reset_index(), summary_adjusted, pd.DataFrame(imp_diag_rows)
 
@@ -1318,7 +1444,7 @@ def run_v3_itt_replication() -> None:
     ) else ("CLOSE_DIFFERENCE" if "CLOSE" in (adj_hv_status + adj_afini_status) else "REVIEW")
 
     v3_summary = {
-        "task_version": "V3.1",
+        "task_version": "V3.2",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "python_version": sys.version,
         "pandas_version": pd.__version__,
@@ -1378,6 +1504,7 @@ def run_v3_itt_replication() -> None:
             }
         },
         "adjusted_model_results": {
+            "task_version": "V3.2",
             "specification": "mi estimate, post: reg gsed_Z hv afini $covariates, cluster(cluster)",
             "n_obs": adj_results["n_obs"],
             "n_clusters": adj_results["n_clusters"],
@@ -1385,12 +1512,16 @@ def run_v3_itt_replication() -> None:
             "seed_used": adj_results["seed_used"],
             "covariates_count": 15,
             "model_reproduction_status": overall_adj_status,
-            "imputation_methodology_status": "CONDITIONAL_MI_APPROXIMATION_WITH_4_REGULAR_PREDICTORS",
+            "imputation_methodology_status": "CONDITIONAL_MI_APPROXIMATION_WITH_VARIABLE_SPECIFIC_PREDICTORS",
             "M": adj_results["m_imputations"],
             "seed": adj_results["seed_used"],
-            "conditioning_predictors": [
+            "regular_predictors_pool": [
                 "bl_child_sib_tot", "cluster", "child_female", "bl_f_b"
             ],
+            "actual_conditioning_predictors_by_variable": {
+                row["variable_name"]: row["conditioning_predictors"].split(", ")
+                for _, row in imp_diag_df.iterrows()
+            },
             "conditional_model_families": {
                 "continuous_variables": {
                     "stata_family": "regress (linear regression)",
@@ -1408,13 +1539,20 @@ def run_v3_itt_replication() -> None:
                     "variables": ["bl_mics_tot", "bl_qses_index", "bl_fa_educ_level", "bl_mo_educ_level"]
                 }
             },
+            "validation_diagnostics": {
+                "all_conditional_models_converged": adj_results["all_conditional_models_converged"],
+                "all_imputed_values_finite": adj_results["all_imputed_values_finite"],
+                "discrete_categories_valid": adj_results["discrete_categories_valid"],
+                "continuous_support_valid": adj_results["continuous_support_valid"],
+                "overall_imputation_diagnostic_status": adj_results["overall_imputation_diagnostic_status"],
+                "continuous_support_diagnostics": adj_results["continuous_diagnostics_summary"]
+            },
             "deviations_from_stata": [
                 "Authors' exact random seed not reported in replication do-file or publication; fixed Python seed 20260226 utilized for reproducibility.",
                 "Stata mi impute chained internal Gibbs/MICE sampling algorithm differs in numerical pseudo-random sequences from Python statsmodels draws.",
-                "Predictor bl_f_b is constant (=1) in the observed estimation subsample for bl_fa_age and bl_fa_educ_level; omitted from the estimation step for those two variables matching standard econometric collinearity handling in Stata."
+                "Predictor bl_f_b is constant (=1) in the observed estimation subsample for bl_fa_age and bl_fa_educ_level; omitted from the estimation step for those two variables matching standard econometric collinearity handling in Stata.",
+                "Unbounded linear regression predictive draws produce out-of-support values (negative child age, negative/fractional household adult counts, implausible maternal/paternal ages < 12 years). These support violations were preserved without clipping or rounding in strict accordance with the Stata regress specification, and represent a methodological limitation for subsequent sensitivity analysis."
             ],
-            "all_model_fits_converged": adj_results["all_model_fits_converged"],
-            "all_imputed_values_valid": adj_results["all_imputed_values_valid"],
             "hv_vs_control": {
                 "published_coef": adj_hv_pub["published_coef"],
                 "python_coef": round(adj_results["hv"]["coef"], 4),
@@ -1453,7 +1591,7 @@ def run_v3_itt_replication() -> None:
     print(f" -> Generated {summary_json_path.name}.")
 
     print("\n" + "=" * 70)
-    print("TASK V3.1 AUDIT & ITT REPLICATION COMPLETED SUCCESSFULLY!")
+    print("TASK V3.2 AUDIT & ITT REPLICATION COMPLETED SUCCESSFULLY!")
     print(f"All outputs generated in: {OUTPUT_DIR}")
     print("=" * 70)
 

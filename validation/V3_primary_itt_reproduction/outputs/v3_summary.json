@@ -1,6 +1,6 @@
 {
-  "task_version": "V3.1",
-  "timestamp_utc": "2026-10-31T06:13:02.331016+00:00",
+  "task_version": "V3.2",
+  "timestamp_utc": "2026-10-31T06:32:15.335991+00:00",
   "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
   "pandas_version": "3.0.3",
   "numpy_version": "2.4.6",
@@ -72,6 +72,7 @@
     }
   },
   "adjusted_model_results": {
+    "task_version": "V3.2",
     "specification": "mi estimate, post: reg gsed_Z hv afini $covariates, cluster(cluster)",
     "n_obs": 2149,
     "n_clusters": 159,
@@ -79,15 +80,75 @@
     "seed_used": 20260226,
     "covariates_count": 15,
     "model_reproduction_status": "APPROXIMATE_MI_MATCH_AT_PUBLISHED_PRECISION",
-    "imputation_methodology_status": "CONDITIONAL_MI_APPROXIMATION_WITH_4_REGULAR_PREDICTORS",
+    "imputation_methodology_status": "CONDITIONAL_MI_APPROXIMATION_WITH_VARIABLE_SPECIFIC_PREDICTORS",
     "M": 250,
     "seed": 20260226,
-    "conditioning_predictors": [
+    "regular_predictors_pool": [
       "bl_child_sib_tot",
       "cluster",
       "child_female",
       "bl_f_b"
     ],
+    "actual_conditioning_predictors_by_variable": {
+      "bl_childage": [
+        "bl_child_sib_tot",
+        "cluster",
+        "child_female",
+        "bl_f_b"
+      ],
+      "bl_z_overall": [
+        "bl_child_sib_tot",
+        "cluster",
+        "child_female",
+        "bl_f_b"
+      ],
+      "bl_mo_age": [
+        "bl_child_sib_tot",
+        "cluster",
+        "child_female",
+        "bl_f_b"
+      ],
+      "bl_hhadults": [
+        "bl_child_sib_tot",
+        "cluster",
+        "child_female",
+        "bl_f_b"
+      ],
+      "bl_fa_age": [
+        "bl_child_sib_tot",
+        "cluster",
+        "child_female"
+      ],
+      "bl_mics_tot": [
+        "bl_child_sib_tot",
+        "cluster",
+        "child_female",
+        "bl_f_b"
+      ],
+      "bl_qses_index": [
+        "bl_child_sib_tot",
+        "cluster",
+        "child_female",
+        "bl_f_b"
+      ],
+      "bl_fa_educ_level": [
+        "bl_child_sib_tot",
+        "cluster",
+        "child_female"
+      ],
+      "bl_mo_educ_level": [
+        "bl_child_sib_tot",
+        "cluster",
+        "child_female",
+        "bl_f_b"
+      ],
+      "bl_low_bweight": [
+        "bl_child_sib_tot",
+        "cluster",
+        "child_female",
+        "bl_f_b"
+      ]
+    },
     "conditional_model_families": {
       "continuous_variables": {
         "stata_family": "regress (linear regression)",
@@ -118,13 +179,121 @@
         ]
       }
     },
+    "validation_diagnostics": {
+      "all_conditional_models_converged": true,
+      "all_imputed_values_finite": true,
+      "discrete_categories_valid": true,
+      "continuous_support_valid": false,
+      "overall_imputation_diagnostic_status": "SUPPORT_VIOLATIONS_PRESENT_IN_UNBOUNDED_LINEAR_DRAWS",
+      "continuous_support_diagnostics": {
+        "bl_childage": {
+          "support_definition": "Non-negative completed months: [0.0, inf)",
+          "total_imputed_draws": 750,
+          "all_values_finite": true,
+          "imputed_range": [
+            -0.0368,
+            11.9146
+          ],
+          "support_violation_count": 1,
+          "support_violation_pct": 0.13,
+          "support_valid": false,
+          "observed_range": [
+            3.0,
+            9.0
+          ],
+          "outside_observed_range_count": 98,
+          "outside_observed_range_pct": 13.07,
+          "fractional_count_if_applicable": "N/A",
+          "diagnostic_status": "SUPPORT_VIOLATION_DETECTED (1 negative draw [0.13%]; min -0.0368)"
+        },
+        "bl_z_overall": {
+          "support_definition": "Standardized score: (-inf, inf)",
+          "total_imputed_draws": 750,
+          "all_values_finite": true,
+          "imputed_range": [
+            -1.714,
+            2.0775
+          ],
+          "support_violation_count": 0,
+          "support_violation_pct": 0.0,
+          "support_valid": true,
+          "observed_range": [
+            -3.371,
+            2.2651
+          ],
+          "outside_observed_range_count": 0,
+          "outside_observed_range_pct": 0.0,
+          "fractional_count_if_applicable": "N/A",
+          "diagnostic_status": "VALID (continuous score within finite real domain)"
+        },
+        "bl_mo_age": {
+          "support_definition": "Conservative human maternal age: [12.0, 65.0] years",
+          "total_imputed_draws": 10500,
+          "all_values_finite": true,
+          "imputed_range": [
+            3.3194,
+            57.0315
+          ],
+          "support_violation_count": 65,
+          "support_violation_pct": 0.62,
+          "support_valid": false,
+          "observed_range": [
+            14.0,
+            49.0
+          ],
+          "outside_observed_range_count": 195,
+          "outside_observed_range_pct": 1.86,
+          "fractional_count_if_applicable": "N/A",
+          "diagnostic_status": "SUPPORT_VIOLATION_DETECTED (65 draws < 12.0y [0.62%]; min 3.32y)"
+        },
+        "bl_hhadults": {
+          "support_definition": "Non-negative integer count: [0.0, inf)",
+          "total_imputed_draws": 1500,
+          "all_values_finite": true,
+          "imputed_range": [
+            -1.1901,
+            6.1526
+          ],
+          "support_violation_count": 10,
+          "support_violation_pct": 0.67,
+          "support_valid": false,
+          "observed_range": [
+            0.0,
+            11.0
+          ],
+          "outside_observed_range_count": 10,
+          "outside_observed_range_pct": 0.67,
+          "fractional_count_if_applicable": "1500 (100.0%)",
+          "diagnostic_status": "SUPPORT_VIOLATION_DETECTED (10 negative draws [0.67%]; 1500 (100.0%) non-integer)"
+        },
+        "bl_fa_age": {
+          "support_definition": "Conservative human paternal age: [12.0, 80.0] years",
+          "total_imputed_draws": 77750,
+          "all_values_finite": true,
+          "imputed_range": [
+            -0.5853,
+            71.2549
+          ],
+          "support_violation_count": 405,
+          "support_violation_pct": 0.52,
+          "support_valid": false,
+          "observed_range": [
+            13.0,
+            76.0
+          ],
+          "outside_observed_range_count": 611,
+          "outside_observed_range_pct": 0.79,
+          "fractional_count_if_applicable": "N/A",
+          "diagnostic_status": "SUPPORT_VIOLATION_DETECTED (405 draws < 12.0y [0.52%], 2 negative; min -0.59y)"
+        }
+      }
+    },
     "deviations_from_stata": [
       "Authors' exact random seed not reported in replication do-file or publication; fixed Python seed 20260226 utilized for reproducibility.",
       "Stata mi impute chained internal Gibbs/MICE sampling algorithm differs in numerical pseudo-random sequences from Python statsmodels draws.",
-      "Predictor bl_f_b is constant (=1) in the observed estimation subsample for bl_fa_age and bl_fa_educ_level; omitted from the estimation step for those two variables matching standard econometric collinearity handling in Stata."
+      "Predictor bl_f_b is constant (=1) in the observed estimation subsample for bl_fa_age and bl_fa_educ_level; omitted from the estimation step for those two variables matching standard econometric collinearity handling in Stata.",
+      "Unbounded linear regression predictive draws produce out-of-support values (negative child age, negative/fractional household adult counts, implausible maternal/paternal ages < 12 years). These support violations were preserved without clipping or rounding in strict accordance with the Stata regress specification, and represent a methodological limitation for subsequent sensitivity analysis."
     ],
-    "all_model_fits_converged": true,
-    "all_imputed_values_valid": true,
     "hv_vs_control": {
       "published_coef": 0.17,
       "python_coef": 0.1663,
