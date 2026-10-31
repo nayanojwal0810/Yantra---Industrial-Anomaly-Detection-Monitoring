@@ -1,6 +1,6 @@
 {
-  "task_version": "V4.1",
-  "timestamp_utc": "2026-10-31T07:50:57.090644+00:00",
+  "task_version": "V4.2",
+  "timestamp_utc": "2026-10-31T08:09:26.447267+00:00",
   "project": "Niyati",
   "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",
   "dataset_metadata": {
@@ -30,14 +30,19 @@
     "v3_reproduction_details": {
       "benchmark_source_file": "validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv",
       "hv_benchmark_coef": 0.1662615221674229,
-      "hv_v4_coef": 0.1663,
+      "hv_v4_coef": 0.16626152216742282,
       "hv_difference": 8.326672684688674e-17,
       "hv_reproduced_within_1e6": true,
       "afini_benchmark_coef": 0.1066301754766063,
-      "afini_v4_coef": 0.1066,
+      "afini_v4_coef": 0.10663017547660633,
       "afini_difference": 2.7755575615628914e-17,
       "afini_reproduced_within_1e6": true,
-      "reproduction_tolerance": 1e-06
+      "derived_hv_vs_digital_v3": 0.0596313466908166,
+      "derived_hv_vs_digital_v4": 0.05963134669081647,
+      "derived_hv_vs_digital_difference": 1.3183898417423734e-16,
+      "derived_hv_vs_digital_consistent_within_1e6": true,
+      "reproduction_tolerance": 1e-06,
+      "note_on_direct_contrast": "Direct active contrast (HV vs Digital) was not independently reported in V3.3; benchmark is algebraically derived from V3.3 treatment coefficients (hv - afini). All comparisons are verified to agree within the specified 1e-6 numerical tolerance."
     },
     "no_retrospective_observed_power_reported": true
   },

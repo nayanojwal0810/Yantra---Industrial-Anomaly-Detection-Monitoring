@@ -679,13 +679,16 @@ def estimate_adjusted_pairwise_contrasts(df_with_z: pd.DataFrame, m_imputations:
 
     v3_hv_coef = float(v3_param_map["hv"])
     v3_afini_coef = float(v3_param_map["afini"])
+    v3_derived_diff = v3_hv_coef - v3_afini_coef
 
     diff_hv_v3 = abs(pool_hv["coef"] - v3_hv_coef)
     diff_afini_v3 = abs(pool_afini["coef"] - v3_afini_coef)
+    diff_derived_v3 = abs(pool_diff["coef"] - v3_derived_diff)
 
     hv_reproduced_1e6 = bool(diff_hv_v3 < 1e-6)
     afini_reproduced_1e6 = bool(diff_afini_v3 < 1e-6)
-    all_v3_reproduced_1e6 = bool(hv_reproduced_1e6 and afini_reproduced_1e6)
+    derived_diff_ok_1e6 = bool(diff_derived_v3 < 1e-6)
+    all_v3_reproduced_1e6 = bool(hv_reproduced_1e6 and afini_reproduced_1e6 and derived_diff_ok_1e6)
 
     contrast_records = [
         {
@@ -709,7 +712,11 @@ def estimate_adjusted_pairwise_contrasts(df_with_z: pd.DataFrame, m_imputations:
             "sample_size_n": 2149,
             "contributing_clusters": 159,
             "statistical_interpretation": "Statistically significant improvement relative to Control (p=0.0170).",
-            "v3_reproduction_diff": round(diff_hv_v3, 10),
+            "v3_benchmark_type": "DIRECT_TREATMENT_COEFFICIENT",
+            "v3_benchmark_value": v3_hv_coef,
+            "v3_difference": diff_hv_v3,
+            "v3_benchmark_status": "EXACT_REPRODUCTION (<1e-6)" if hv_reproduced_1e6 else "FAIL_TOLERANCE",
+            "v3_reproduction_diff": diff_hv_v3,
             "v3_reproduction_status": "EXACT_REPRODUCTION (<1e-6)" if hv_reproduced_1e6 else "FAIL_TOLERANCE"
         },
         {
@@ -733,7 +740,11 @@ def estimate_adjusted_pairwise_contrasts(df_with_z: pd.DataFrame, m_imputations:
             "sample_size_n": 2149,
             "contributing_clusters": 159,
             "statistical_interpretation": "Statistically significant improvement relative to Control (p=0.0182).",
-            "v3_reproduction_diff": round(diff_afini_v3, 10),
+            "v3_benchmark_type": "DIRECT_TREATMENT_COEFFICIENT",
+            "v3_benchmark_value": v3_afini_coef,
+            "v3_difference": diff_afini_v3,
+            "v3_benchmark_status": "EXACT_REPRODUCTION (<1e-6)" if afini_reproduced_1e6 else "FAIL_TOLERANCE",
+            "v3_reproduction_diff": diff_afini_v3,
             "v3_reproduction_status": "EXACT_REPRODUCTION (<1e-6)" if afini_reproduced_1e6 else "FAIL_TOLERANCE"
         },
         {
@@ -762,8 +773,12 @@ def estimate_adjusted_pairwise_contrasts(df_with_z: pd.DataFrame, m_imputations:
                 f"is wide (0.27 SD span) and cannot exclude either substantial Home Visits superiority (+0.19 SD) "
                 f"or Digital superiority (-0.08 SD). Does NOT establish equivalence or non-inferiority."
             ),
-            "v3_reproduction_diff": 0.0,
-            "v3_reproduction_status": "EXACT_REPRODUCTION (<1e-6)"
+            "v3_benchmark_type": "ALGEBRAICALLY_DERIVED_CONTRAST",
+            "v3_benchmark_value": v3_derived_diff,
+            "v3_difference": diff_derived_v3,
+            "v3_benchmark_status": "DERIVED_FROM_V3_TREATMENT_COEFFICIENTS_WITHIN_1E-6" if derived_diff_ok_1e6 else "FAIL_TOLERANCE",
+            "v3_reproduction_diff": diff_derived_v3,
+            "v3_reproduction_status": "DERIVED_FROM_V3_TREATMENT_COEFFICIENTS_WITHIN_1E-6" if derived_diff_ok_1e6 else "FAIL_TOLERANCE"
         }
     ]
 
@@ -773,8 +788,10 @@ def estimate_adjusted_pairwise_contrasts(df_with_z: pd.DataFrame, m_imputations:
         "pool_hv": pool_hv, "pool_afini": pool_afini, "pool_diff": pool_diff,
         "v3_hv_coef": v3_hv_coef,
         "v3_afini_coef": v3_afini_coef,
+        "v3_derived_diff": v3_derived_diff,
         "diff_hv_v3": diff_hv_v3,
         "diff_afini_v3": diff_afini_v3,
+        "diff_derived_v3": diff_derived_v3,
         "v3_reproduced_within_1e6": all_v3_reproduced_1e6
     }
 
@@ -1147,7 +1164,7 @@ def build_v4_summary_json(
     v3_reproduced_1e6 = bool(mi_stores.get("v3_reproduced_within_1e6", False))
 
     v4_summary = {
-        "task_version": "V4.1",
+        "task_version": "V4.2",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "project": "Niyati",
         "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",
@@ -1181,15 +1198,24 @@ def build_v4_summary_json(
             "v3_adjusted_estimates_reproduced_within_1e6": v3_reproduced_1e6,
             "v3_reproduction_details": {
                 "benchmark_source_file": "validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv",
-                "hv_benchmark_coef": mi_stores.get("v3_hv_coef"),
-                "hv_v4_coef": float(adj_df[adj_df["contrast_name"] == "Home Visits vs Control"]["point_estimate"].iloc[0]),
-                "hv_difference": float(mi_stores.get("diff_hv_v3", 0.0)),
-                "hv_reproduced_within_1e6": bool(mi_stores.get("diff_hv_v3", 1.0) < 1e-6),
-                "afini_benchmark_coef": mi_stores.get("v3_afini_coef"),
-                "afini_v4_coef": float(adj_df[adj_df["contrast_name"] == "Digital vs Control"]["point_estimate"].iloc[0]),
-                "afini_difference": float(mi_stores.get("diff_afini_v3", 0.0)),
-                "afini_reproduced_within_1e6": bool(mi_stores.get("diff_afini_v3", 1.0) < 1e-6),
-                "reproduction_tolerance": 1e-6
+                "hv_benchmark_coef": mi_stores["v3_hv_coef"],
+                "hv_v4_coef": float(mi_stores["pool_hv"]["coef"]),
+                "hv_difference": float(mi_stores["diff_hv_v3"]),
+                "hv_reproduced_within_1e6": bool(mi_stores["diff_hv_v3"] < 1e-6),
+                "afini_benchmark_coef": mi_stores["v3_afini_coef"],
+                "afini_v4_coef": float(mi_stores["pool_afini"]["coef"]),
+                "afini_difference": float(mi_stores["diff_afini_v3"]),
+                "afini_reproduced_within_1e6": bool(mi_stores["diff_afini_v3"] < 1e-6),
+                "derived_hv_vs_digital_v3": float(mi_stores["v3_derived_diff"]),
+                "derived_hv_vs_digital_v4": float(mi_stores["pool_diff"]["coef"]),
+                "derived_hv_vs_digital_difference": float(mi_stores["diff_derived_v3"]),
+                "derived_hv_vs_digital_consistent_within_1e6": bool(mi_stores["diff_derived_v3"] < 1e-6),
+                "reproduction_tolerance": 1e-6,
+                "note_on_direct_contrast": (
+                    "Direct active contrast (HV vs Digital) was not independently reported in V3.3; "
+                    "benchmark is algebraically derived from V3.3 treatment coefficients (hv - afini). "
+                    "All comparisons are verified to agree within the specified 1e-6 numerical tolerance."
+                )
             },
             "no_retrospective_observed_power_reported": True
         },

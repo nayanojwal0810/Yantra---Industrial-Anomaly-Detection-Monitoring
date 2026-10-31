@@ -126,23 +126,24 @@ In cluster-robust estimation (CR1), $\operatorname{Cov}\left(\hat{\beta}_{\text{
 
 ### Table 4.1: Pairwise Contrasts — Unadjusted Model ($N=2,149, K=159, df=158$)
 
-| Contrast Name | Point Est. | Display | Standard Error | 95% Confidence Interval | CI Width | $t$-stat | $p$-value | Interpretation |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Home Visits vs Control** | $+0.1669$ | $+0.17$ | $0.0662$ | $[+0.0361,\, +0.2977]$ | $0.2616$ | $2.520$ | $0.0127$ | Statistically significant ($p < 0.05$). |
-| **Digital vs Control** | $+0.1394$ | $+0.14$ | $0.0450$ | $[+0.0506,\, +0.2283]$ | $0.1777$ | $3.099$ | $0.0023$ | Statistically significant ($p < 0.01$). |
-| **Home Visits vs Digital** | $+0.0275$ | $+0.03$ | $0.0652$ | $[-0.1012,\, +0.1562]$ | $0.2574$ | $0.422$ | $0.6738$ | **Non-significant ($p = 0.67$)**. Wide CI $[-0.10, +0.16]$. |
+| Contrast Name | Point Est. | Display | Standard Error | Barnard-Rubin $df$ | 95% Confidence Interval | CI Width | $t$-stat | $p$-value | Benchmark Type | V3.3 Benchmark | Diff. vs Benchmark | Status |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- | :---: | :---: | :--- |
+| **Home Visits vs Control** | $+0.1663$ | $+0.17$ | $0.0689$ | $155.9$ | $[+0.0302,\, +0.3024]$ | $0.2722$ | $2.413$ | $0.0170$ | Direct Treatment Coefficient (`hv`) | $0.1662615$ | $8.33 \times 10^{-17}$ | `EXACT_REPRODUCTION (<1e-6)` |
+| **Digital vs Control** | $+0.1066$ | $+0.11$ | $0.0447$ | $155.8$ | $[+0.0184,\, +0.1948]$ | $0.1764$ | $2.388$ | $0.0182$ | Direct Treatment Coefficient (`afini`) | $0.1066302$ | $2.78 \times 10^{-17}$ | `EXACT_REPRODUCTION (<1e-6)` |
+| **Home Visits vs Digital** | $+0.0596$ | $+0.06$ | $0.0682$ | $155.9$ | $[-0.0750,\, +0.1943]$ | $0.2693$ | $0.875$ | $0.3831$ | Derived Contrast (`hv - afini`) | $0.0596313$ | $1.32 \times 10^{-16}$ | `DERIVED_FROM_V3_TREATMENT_COEFFICIENTS_WITHIN_1E-6` |
 
-### Table 4.2: Pairwise Contrasts — Adjusted Model (Multiple Imputation $M=250$, Seed `20260226`)
-
-| Contrast Name | Point Est. | Display | Standard Error | Barnard-Rubin $df$ | 95% Confidence Interval | CI Width | $t$-stat | $p$-value | V3.3 Reproduction Diff | Interpretation |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Home Visits vs Control** | $+0.1663$ | $+0.17$ | $0.0689$ | $155.9$ | $[+0.0302,\, +0.3024]$ | $0.2722$ | $2.413$ | $0.0170$ | $< 10^{-15}$ | Reproduces V3.3 within strict $< 10^{-6}$ tolerance. Significant. |
-| **Digital vs Control** | $+0.1066$ | $+0.11$ | $0.0447$ | $155.8$ | $[+0.0184,\, +0.1948]$ | $0.1764$ | $2.388$ | $0.0182$ | $< 10^{-15}$ | Reproduces V3.3 within strict $< 10^{-6}$ tolerance. Significant. |
-| **Home Visits vs Digital** | $+0.0596$ | $+0.06$ | $0.0682$ | $155.9$ | $[-0.0750,\, +0.1943]$ | $0.2693$ | $0.875$ | $0.3831$ | $0.0000$ | **Non-significant ($p = 0.38$)**. Wide CI $[-0.08, +0.19]$. |
-
-*Note on V3.3 Benchmark Verification:* Full-precision coefficients were read directly from `validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv`:
-- `hv` parameter: $0.16626152216742296$ (V4: $0.16626152216742296$, $\text{diff} = 8.3 \times 10^{-17} < 10^{-6}$)
-- `afini` parameter: $0.10663017547660632$ (V4: $0.10663017547660632$, $\text{diff} = 2.8 \times 10^{-17} < 10^{-6}$)
+*Note on V3.3 Benchmark Verification & Distinct Contrast Classification:*
+- Full-precision benchmark coefficients are read directly from `validation/V3_primary_itt_reproduction/outputs/pooled_parameter_diagnostics.csv`:
+  - `hv` parameter: $0.1662615221674229$ (V4: $0.16626152216742282$, absolute difference $= 8.33 \times 10^{-17} < 10^{-6}$). Direct reproduction of independently reported V3.3 treatment coefficient.
+  - `afini` parameter: $0.1066301754766063$ (V4: $0.10663017547660633$, absolute difference $= 2.78 \times 10^{-17} < 10^{-6}$). Direct reproduction of independently reported V3.3 treatment coefficient.
+- **Direct Active Contrast (Home Visits vs Digital):**
+  - V3.3 did not independently estimate or report the direct active-intervention contrast between Home Visits and Digital.
+  - The V3.3 benchmark is therefore derived algebraically from the two independently estimated treatment coefficients:
+    $$\beta_{\text{V3, derived}} = \beta_{\text{HV}} - \beta_{\text{Digital}} = 0.1662615221674229 - 0.1066301754766063 = 0.0596313466908166\text{ SD}$$
+  - The V4 estimated contrast is $0.05963134669081647\text{ SD}$.
+  - Absolute numerical difference: $|0.05963134669081647 - 0.0596313466908166| = 1.32 \times 10^{-16} < 10^{-6}$.
+  - Status is explicitly reported as `DERIVED_FROM_V3_TREATMENT_COEFFICIENTS_WITHIN_1E-6`. It is strictly not described as an independent V3.3 reproduction.
+  - Substantive interpretation: Non-significant difference ($p = 0.3831$). The wide 95% CI $[-0.0750, +0.1943]$ (span $0.27$ SD) cannot rule out either substantial Home Visits superiority ($+0.19$ SD) or Digital superiority ($-0.08$ SD). Does NOT establish equivalence or non-inferiority.
 
 Generated data files:
 - [`unadjusted_pairwise_contrasts.csv`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/unadjusted_pairwise_contrasts.csv)
@@ -370,7 +371,7 @@ All output files are located in `validation/V4_power_precision_audit/outputs/`:
 | [`small_sample_inference_comparison.csv`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/small_sample_inference_comparison.csv) | Sensitivity comparison of conventional CR1 / Barnard-Rubin vs conservative $df = \min(K_a, K_b) - 1$, with CR2 and bootstrap status. | 14 rows |
 | [`mde_sensitivity.csv`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/mde_sensitivity.csv) | Design-based Minimum Detectable Effects (80% and 90% power) for all pairwise comparisons across 5 ICC scenarios under standard and conservative $df$. | 15 rows |
 | [`power_sensitivity.csv`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/power_sensitivity.csv) | Prospective statistical power across effect sizes ($0.05, 0.06, 0.10, 0.15, 0.20, 0.25$ SD) and 5 ICC scenarios under standard and conservative $df$. | 90 rows |
-| [`v4_summary.json`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/v4_summary.json) | Complete machine-readable metadata summary of all findings, reconciliation checks, models, sensitivities, and evaluation question answers. | 188 lines |
+| [`v4_summary.json`](file:///D:/Niyati/validation/V4_power_precision_audit/outputs/v4_summary.json) | Complete machine-readable metadata summary of all findings, reconciliation checks, models, sensitivities, and evaluation question answers. | 193 lines |
 
 ---
 
@@ -385,10 +386,11 @@ All output files are located in `validation/V4_power_precision_audit/outputs/`:
 - **External Tooling Status:**
   - R runtime / `clubSandwich`: Not installed locally (documented; conservative $df$ sensitivity executed).
   - `wildboottest`: Not installed locally (documented; econometric limitations recorded).
-- **Reproduction Fidelity:**
+- **Reproduction Fidelity & Benchmark Verification:**
   - Unadjusted HV vs Control: $\beta = 0.1669, SE = 0.0662$ (Exact match).
   - Unadjusted Digital vs Control: $\beta = 0.1394, SE = 0.0450$ (Exact match).
-  - Adjusted MI HV vs Control: $\beta = 0.1663, SE = 0.0689$ (Difference from V3.3 benchmark: $< 10^{-15} < 10^{-6}$).
-  - Adjusted MI Digital vs Control: $\beta = 0.1066, SE = 0.0447$ (Difference from V3.3 benchmark: $< 10^{-15} < 10^{-6}$).
+  - Adjusted MI HV vs Control: $\beta = 0.1663, SE = 0.0689$ (Difference from V3.3 direct benchmark: $8.33 \times 10^{-17} < 10^{-6}$; exact reproduction of independently reported treatment coefficient).
+  - Adjusted MI Digital vs Control: $\beta = 0.1066, SE = 0.0447$ (Difference from V3.3 direct benchmark: $2.78 \times 10^{-17} < 10^{-6}$; exact reproduction of independently reported treatment coefficient).
+  - Adjusted MI Home Visits vs Digital: $\beta = 0.0596, SE = 0.0682$ (Difference from algebraically derived V3.3 contrast: $1.32 \times 10^{-16} < 10^{-6}$; verified consistent with derived treatment coefficients, not claimed as an independent V3.3 result).
   - Strict reproduction tolerance ($\text{diff} < 10^{-6}$): **VERIFIED & SATISFIED**.
   - Raw archive preserved intact: `doi_10_5061_dryad_nzs7h4551__v20260226.zip` untouched.
