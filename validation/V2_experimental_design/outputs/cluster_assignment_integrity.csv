@@ -1,0 +1,160 @@
+cluster_id,arm_code,arm_name,province_modal,province_modal_code,district_modal,enrolled_participants,treatment_arm_count,single_arm_integrity,province_count,district_count,geographic_integrity_notes
+1,1,Control,Cajamarca,1,1,20,1,VERIFIED,1,1,Single province and single district
+2,1,Control,Cajamarca,1,1,13,1,VERIFIED,1,1,Single province and single district
+3,3,Afini,Cajamarca,1,1,10,1,VERIFIED,1,1,Single province and single district
+4,2,Home visits,Cajamarca,1,1,10,1,VERIFIED,1,1,Single province and single district
+5,3,Afini,Cajamarca,1,1,34,1,VERIFIED,1,1,Single province and single district
+6,3,Afini,Cajamarca,1,1,39,1,VERIFIED,1,1,Single province and single district
+7,1,Control,Cajamarca,1,1,8,1,VERIFIED,1,1,Single province and single district
+8,2,Home visits,Cajamarca,1,1,16,1,VERIFIED,1,1,Single province and single district
+9,3,Afini,Cajamarca,1,1,19,1,VERIFIED,1,1,Single province and single district
+10,3,Afini,Cajamarca,1,1,20,1,VERIFIED,1,1,Single province and single district
+11,1,Control,Cajamarca,1,1,19,1,VERIFIED,1,1,Single province and single district
+12,2,Home visits,Cajamarca,1,1,28,1,VERIFIED,1,1,Single province and single district
+13,3,Afini,Cajamarca,1,1,39,1,VERIFIED,1,1,Single province and single district
+14,1,Control,Cajamarca,1,1,27,1,VERIFIED,1,1,Single province and single district
+15,1,Control,Cajamarca,1,1,34,1,VERIFIED,1,1,Single province and single district
+16,3,Afini,Cajamarca,1,1,30,1,VERIFIED,1,1,Single province and single district
+17,1,Control,Cajamarca,1,1,6,1,VERIFIED,1,1,Single province and single district
+18,3,Afini,Cajamarca,1,1,22,1,VERIFIED,1,1,Single province and single district
+19,3,Afini,Cajamarca,1,1,29,1,VERIFIED,1,1,Single province and single district
+20,1,Control,Cajamarca,1,1,32,1,VERIFIED,1,1,Single province and single district
+21,3,Afini,Cajamarca,1,1,22,1,VERIFIED,1,1,Single province and single district
+22,1,Control,Cajamarca,1,1,18,1,VERIFIED,1,1,Single province and single district
+23,1,Control,Cajamarca,1,1,5,1,VERIFIED,1,1,Single province and single district
+24,3,Afini,Cajamarca,1,1,19,1,VERIFIED,1,1,Single province and single district
+25,1,Control,Cajamarca,1,1,18,1,VERIFIED,1,1,Single province and single district
+26,3,Afini,Cajamarca,1,1,13,1,VERIFIED,1,1,Single province and single district
+27,1,Control,Cajamarca,1,1,7,1,VERIFIED,1,1,Single province and single district
+28,1,Control,Cajamarca,1,1,14,1,VERIFIED,1,1,Single province and single district
+29,1,Control,Cajamarca,1,1,6,1,VERIFIED,1,1,Single province and single district
+30,1,Control,Cajamarca,1,1,19,1,VERIFIED,1,1,Single province and single district
+31,3,Afini,Cajamarca,1,1,8,1,VERIFIED,1,1,Single province and single district
+32,3,Afini,Cajamarca,1,1,8,1,VERIFIED,1,1,Single province and single district
+33,1,Control,Cajamarca,1,1,5,1,VERIFIED,1,1,Single province and single district
+34,3,Afini,Cajamarca,1,1,1,1,VERIFIED,1,1,Single province and single district
+35,2,Home visits,Cajamarca,1,1,12,1,VERIFIED,1,1,Single province and single district
+36,1,Control,Cajamarca,1,1,12,1,VERIFIED,1,1,Single province and single district
+37,3,Afini,Cajamarca,1,1,19,1,VERIFIED,1,1,Single province and single district
+38,2,Home visits,Cajamarca,1,1,18,1,VERIFIED,1,1,Single province and single district
+39,3,Afini,Cajamarca,1,1,10,1,VERIFIED,1,1,Single province and single district
+40,1,Control,Cajamarca,1,1,4,1,VERIFIED,1,1,Single province and single district
+41,3,Afini,Cajamarca,1,5,29,1,VERIFIED,1,2,"Spans 2 districts (28 in dist 5, 1 in dist 1)"
+42,3,Afini,Cajamarca,1,5,6,1,VERIFIED,1,1,Single province and single district
+43,1,Control,Cajamarca,1,5,17,1,VERIFIED,1,1,Single province and single district
+44,3,Afini,Cajamarca,1,6,12,1,VERIFIED,1,1,Single province and single district
+45,1,Control,Cajamarca,1,6,15,1,VERIFIED,1,1,Single province and single district
+46,1,Control,Cajamarca,1,6,8,1,VERIFIED,1,1,Single province and single district
+47,1,Control,Cajamarca,1,6,10,1,VERIFIED,1,2,"Spans 2 districts (9 in dist 6, 1 in dist 7)"
+48,1,Control,Cajamarca,1,6,1,1,VERIFIED,1,1,Single province and single district
+49,3,Afini,Cajamarca,1,6,5,1,VERIFIED,1,2,"Spans 2 districts (3 in dist 6, 2 in dist 7)"
+50,1,Control,Cajamarca,1,7,19,1,VERIFIED,1,1,Single province and single district
+52,3,Afini,Cajamarca,1,7,4,1,VERIFIED,1,1,Single province and single district
+53,3,Afini,Cajamarca,1,7,9,1,VERIFIED,1,1,Single province and single district
+54,3,Afini,Cajamarca,1,8,12,1,VERIFIED,1,1,Single province and single district
+55,1,Control,Cajamarca,1,8,7,1,VERIFIED,1,1,Single province and single district
+56,2,Home visits,Cajamarca,1,8,26,1,VERIFIED,1,1,Single province and single district
+57,1,Control,Cajamarca,1,8,11,1,VERIFIED,1,1,Single province and single district
+58,3,Afini,Cajamarca,1,8,18,1,VERIFIED,1,1,Single province and single district
+59,1,Control,Cajamarca,1,8,25,1,VERIFIED,1,1,Single province and single district
+60,1,Control,Cajamarca,1,8,19,1,VERIFIED,1,2,"Spans 2 districts (18 in dist 8, 1 in dist 1)"
+61,3,Afini,Cajamarca,1,8,25,1,VERIFIED,1,1,Single province and single district
+62,3,Afini,Cajamarca,1,8,18,1,VERIFIED,1,1,Single province and single district
+63,3,Afini,Cajamarca,1,8,18,1,VERIFIED,1,1,Single province and single district
+64,2,Home visits,Cajamarca,1,8,10,1,VERIFIED,1,1,Single province and single district
+69,3,Afini,Cajamarca,1,8,35,1,VERIFIED,1,2,"Spans 2 districts (34 in dist 8, 1 in dist 1)"
+70,3,Afini,Cajamarca,1,8,6,1,VERIFIED,1,1,Single province and single district
+71,1,Control,Cajamarca,1,8,14,1,VERIFIED,1,1,Single province and single district
+72,1,Control,Cajamarca,1,8,19,1,VERIFIED,1,1,Single province and single district
+73,1,Control,Cajamarca,1,8,1,1,VERIFIED,1,1,Single province and single district
+74,1,Control,Cajamarca,1,8,7,1,VERIFIED,1,1,Single province and single district
+75,3,Afini,Cajamarca,1,8,3,1,VERIFIED,1,1,Single province and single district
+76,3,Afini,Cajamarca,1,8,16,1,VERIFIED,1,1,Single province and single district
+77,1,Control,Cajamarca,1,8,13,1,VERIFIED,1,1,Single province and single district
+78,2,Home visits,Cajamarca,1,8,20,1,VERIFIED,1,1,Single province and single district
+79,3,Afini,Cajamarca,1,8,11,1,VERIFIED,1,1,Single province and single district
+80,3,Afini,Cajamarca,1,8,15,1,VERIFIED,1,2,"Spans 2 districts (14 in dist 8, 1 in dist 1)"
+81,2,Home visits,Cajamarca,1,10,8,1,VERIFIED,1,1,Single province and single district
+82,1,Control,Cajamarca,1,10,3,1,VERIFIED,1,1,Single province and single district
+83,2,Home visits,Cajamarca,1,10,3,1,VERIFIED,1,2,"Spans 2 districts (2 in dist 10, 1 in dist 1)"
+84,3,Afini,Cajamarca,1,11,6,1,VERIFIED,1,1,Single province and single district
+85,1,Control,Cajamarca,1,11,7,1,VERIFIED,1,1,Single province and single district
+86,3,Afini,Cajamarca,1,11,9,1,VERIFIED,1,1,Single province and single district
+87,1,Control,Cajamarca,1,11,1,1,VERIFIED,1,1,Single province and single district
+88,3,Afini,Cajamarca,1,11,6,1,VERIFIED,1,1,Single province and single district
+89,3,Afini,Cajamarca,1,11,5,1,VERIFIED,1,1,Single province and single district
+90,3,Afini,Cajamarca,1,11,13,1,VERIFIED,1,1,Single province and single district
+91,3,Afini,Cajamarca,1,11,15,1,VERIFIED,1,2,"Spans 2 districts (14 in dist 11, 1 in dist 1)"
+92,3,Afini,Cajamarca,1,11,8,1,VERIFIED,1,1,Single province and single district
+93,1,Control,Cajamarca,1,11,13,1,VERIFIED,1,2,"Spans 2 districts (11 in dist 11, 2 in dist 6)"
+94,1,Control,Cajabamba,2,1,28,1,VERIFIED,1,1,Single province and single district
+95,3,Afini,Cajabamba,2,1,29,1,VERIFIED,1,1,Single province and single district
+96,3,Afini,Cajabamba,2,1,37,1,VERIFIED,1,1,Single province and single district
+97,3,Afini,Cajabamba,2,1,13,1,VERIFIED,1,1,Single province and single district
+98,3,Afini,Cajabamba,2,1,14,1,VERIFIED,1,1,Single province and single district
+99,1,Control,Cajabamba,2,1,31,1,VERIFIED,1,1,Single province and single district
+100,1,Control,Cajabamba,2,1,42,1,VERIFIED,1,2,"Spans 2 districts (41 in dist 1, 1 in dist 2)"
+101,3,Afini,Cajabamba,2,1,42,1,VERIFIED,1,1,Single province and single district
+102,3,Afini,Cajabamba,2,1,20,1,VERIFIED,1,1,Single province and single district
+103,3,Afini,Cajabamba,2,1,13,1,VERIFIED,1,2,"Spans 2 districts (12 in dist 1, 1 in dist 2)"
+104,3,Afini,Cajabamba,2,1,34,1,VERIFIED,2,1,"Spans 2 provinces (33 in Cajabamba, 1 in Cajamarca)"
+105,1,Control,Cajabamba,2,1,35,1,VERIFIED,1,1,Single province and single district
+106,3,Afini,Cajabamba,2,1,7,1,VERIFIED,1,1,Single province and single district
+107,3,Afini,Cajabamba,2,1,18,1,VERIFIED,1,1,Single province and single district
+108,1,Control,Cajabamba,2,1,35,1,VERIFIED,1,1,Single province and single district
+109,1,Control,Cajabamba,2,1,23,1,VERIFIED,1,1,Single province and single district
+110,2,Home visits,Cajabamba,2,1,28,1,VERIFIED,1,1,Single province and single district
+111,1,Control,Cajabamba,2,1,12,1,VERIFIED,1,1,Single province and single district
+112,3,Afini,Cajabamba,2,2,14,1,VERIFIED,1,1,Single province and single district
+113,1,Control,Cajabamba,2,2,25,1,VERIFIED,1,1,Single province and single district
+114,1,Control,Cajabamba,2,2,7,1,VERIFIED,1,1,Single province and single district
+115,3,Afini,Cajabamba,2,2,23,1,VERIFIED,1,1,Single province and single district
+116,1,Control,Cajabamba,2,2,21,1,VERIFIED,1,1,Single province and single district
+117,1,Control,Cajabamba,2,2,23,1,VERIFIED,1,1,Single province and single district
+118,3,Afini,Cajabamba,2,2,27,1,VERIFIED,1,2,"Spans 2 districts (26 in dist 2, 1 in dist 1)"
+119,1,Control,Cajabamba,2,2,2,1,VERIFIED,1,1,Single province and single district
+120,2,Home visits,Cajabamba,2,2,6,1,VERIFIED,1,1,Single province and single district
+121,2,Home visits,Cajabamba,2,2,5,1,VERIFIED,1,1,Single province and single district
+122,3,Afini,Cajabamba,2,3,11,1,VERIFIED,1,1,Single province and single district
+123,1,Control,Cajabamba,2,3,7,1,VERIFIED,1,1,Single province and single district
+124,1,Control,Cajabamba,2,3,4,1,VERIFIED,1,1,Single province and single district
+125,1,Control,Cajabamba,2,3,2,1,VERIFIED,1,1,Single province and single district
+126,3,Afini,Cajabamba,2,3,10,1,VERIFIED,1,1,Single province and single district
+127,3,Afini,Cajabamba,2,3,6,1,VERIFIED,1,1,Single province and single district
+128,1,Control,Cajabamba,2,3,18,1,VERIFIED,1,1,Single province and single district
+129,3,Afini,Cajabamba,2,3,31,1,VERIFIED,1,2,"Spans 2 districts (25 in dist 3, 6 in dist 2)"
+130,1,Control,Cajabamba,2,3,1,1,VERIFIED,1,1,Single province and single district
+131,3,Afini,Cajabamba,2,3,3,1,VERIFIED,1,1,Single province and single district
+132,3,Afini,Cajabamba,2,3,5,1,VERIFIED,1,1,Single province and single district
+133,2,Home visits,Cajabamba,2,3,16,1,VERIFIED,1,1,Single province and single district
+134,1,Control,Cajabamba,2,3,5,1,VERIFIED,1,1,Single province and single district
+135,1,Control,Cajabamba,2,3,25,1,VERIFIED,1,1,Single province and single district
+136,2,Home visits,Cajabamba,2,3,23,1,VERIFIED,1,1,Single province and single district
+137,2,Home visits,Cajabamba,2,4,25,1,VERIFIED,1,2,"Spans 2 districts (24 in dist 4, 1 in dist 2)"
+138,2,Home visits,San Marcos,10,1,21,1,VERIFIED,1,1,Single province and single district
+139,3,Afini,San Marcos,10,1,13,1,VERIFIED,1,1,Single province and single district
+140,2,Home visits,San Marcos,10,1,21,1,VERIFIED,1,1,Single province and single district
+141,1,Control,San Marcos,10,1,7,1,VERIFIED,1,1,Single province and single district
+142,3,Afini,San Marcos,10,1,28,1,VERIFIED,1,1,Single province and single district
+143,3,Afini,San Marcos,10,1,6,1,VERIFIED,1,2,"Spans 2 districts (4 in dist 1, 2 in dist 4)"
+144,1,Control,San Marcos,10,1,6,1,VERIFIED,1,1,Single province and single district
+145,3,Afini,San Marcos,10,1,12,1,VERIFIED,1,1,Single province and single district
+146,1,Control,San Marcos,10,1,29,1,VERIFIED,1,1,Single province and single district
+147,2,Home visits,San Marcos,10,1,21,1,VERIFIED,1,2,"Spans 2 districts (20 in dist 1, 1 in dist 10)"
+148,1,Control,San Marcos,10,1,13,1,VERIFIED,1,1,Single province and single district
+149,3,Afini,San Marcos,10,1,14,1,VERIFIED,1,1,Single province and single district
+150,1,Control,San Marcos,10,2,22,1,VERIFIED,1,1,Single province and single district
+151,3,Afini,San Marcos,10,2,9,1,VERIFIED,1,1,Single province and single district
+152,1,Control,San Marcos,10,3,23,1,VERIFIED,1,1,Single province and single district
+153,1,Control,San Marcos,10,3,14,1,VERIFIED,1,1,Single province and single district
+154,3,Afini,San Marcos,10,3,32,1,VERIFIED,1,1,Single province and single district
+155,1,Control,San Marcos,10,4,3,1,VERIFIED,1,1,Single province and single district
+156,1,Control,San Marcos,10,4,8,1,VERIFIED,1,1,Single province and single district
+157,1,Control,San Marcos,10,5,6,1,VERIFIED,1,2,"Spans 2 districts (5 in dist 5, 1 in dist 1)"
+158,3,Afini,San Marcos,10,6,11,1,VERIFIED,1,1,Single province and single district
+159,1,Control,San Marcos,10,6,3,1,VERIFIED,1,1,Single province and single district
+160,3,Afini,San Marcos,10,6,6,1,VERIFIED,1,1,Single province and single district
+161,3,Afini,San Marcos,10,6,6,1,VERIFIED,1,1,Single province and single district
+162,1,Control,San Marcos,10,6,13,1,VERIFIED,1,1,Single province and single district
+163,3,Afini,San Marcos,10,7,11,1,VERIFIED,1,1,Single province and single district
+164,3,Afini,San Marcos,10,7,23,1,VERIFIED,1,1,Single province and single district

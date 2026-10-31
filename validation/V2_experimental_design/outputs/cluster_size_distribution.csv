@@ -1,0 +1,14 @@
+stratum_type,arm_code,arm_name,province,populated_clusters,total_participants,min_cluster_size,q25_cluster_size,median_cluster_size,mean_cluster_size,q75_cluster_size,max_cluster_size,std_cluster_size,cv_cluster_size
+Overall,ALL,All Arms Combined,All Provinces Combined,159,2461,1,7.0,13.0,15.48,22.0,42,9.94,0.6419
+Treatment Arm,1,Control,All Provinces Combined,68,970,1,6.0,13.0,14.26,20.25,42,10.01,0.7019
+Treatment Arm,2,Home visits,All Provinces Combined,19,317,3,10.0,18.0,16.68,22.0,28,7.98,0.4783
+Treatment Arm,3,Afini,All Provinces Combined,72,1174,1,8.0,13.0,16.31,22.25,42,10.32,0.6327
+Province x Arm,1,Control,Cajamarca,37,477,1,7.0,13.0,12.89,19.0,34,8.32,0.6451
+Province x Arm,2,Home visits,Cajamarca,10,151,3,10.0,14.0,15.1,19.5,28,8.01,0.5302
+Province x Arm,3,Afini,Cajamarca,41,646,1,8.0,13.0,15.76,20.0,39,10.13,0.6427
+Province x Arm,1,Control,Cajabamba,19,346,1,6.0,21.0,18.21,26.5,42,12.96,0.7117
+Province x Arm,2,Home visits,Cajabamba,6,103,5,8.5,19.5,17.17,24.5,28,9.87,0.5748
+Province x Arm,3,Afini,Cajabamba,19,357,3,10.5,14.0,18.79,28.0,42,11.63,0.619
+Province x Arm,1,Control,San Marcos,12,147,3,6.0,10.5,12.25,16.0,29,8.48,0.6919
+Province x Arm,2,Home visits,San Marcos,3,63,21,21.0,21.0,21.0,21.0,21,0.0,0.0
+Province x Arm,3,Afini,San Marcos,12,171,6,8.25,11.5,14.25,16.25,32,8.74,0.6133

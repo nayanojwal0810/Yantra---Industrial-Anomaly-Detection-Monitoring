@@ -1,0 +1,205 @@
+{
+  "audit_version": "V2.0",
+  "audit_timestamp_utc": "2026-10-31T04:55:55.736533+00:00",
+  "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
+  "pandas_version": "3.0.3",
+  "numpy_version": "2.4.6",
+  "dataset_metadata": {
+    "source_doi": "10.5061/dryad.nzs7h4551",
+    "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",
+    "primary_archive": "doi_10_5061_dryad_nzs7h4551__v20260226.zip",
+    "dta_file": "digitalECD_26Feb2026.dta"
+  },
+  "study_design_reconciliation": {
+    "planned_communities_protocol": {
+      "Control": 72,
+      "Home visits": 20,
+      "Afini": 72,
+      "Total": 164
+    },
+    "published_results_communities": {
+      "Control": 68,
+      "Home visits": 19,
+      "Afini": 72,
+      "Total": 159
+    },
+    "published_results_participants": {
+      "Control": 970,
+      "Home visits": 317,
+      "Afini": 1174,
+      "Total": 2461
+    },
+    "observed_populated_clusters": 159,
+    "observed_enrolled_participants": 2461,
+    "clusters_reconciliation_match": true,
+    "participants_reconciliation_match": true,
+    "missing_cluster_ids_in_range_1_to_164": [
+      51,
+      65,
+      66,
+      67,
+      68
+    ],
+    "missing_cluster_ids_notes": "Five cluster IDs in the 1..164 range have zero enrolled households. Per published paper, 4 Control-allocated and 1 Home Visit-allocated community had zero enrollment. Treatment assignments of absent cluster IDs cannot and should not be inferred from numeric gaps alone."
+  },
+  "assignment_integrity_checks": {
+    "total_populated_clusters": 159,
+    "material_integrity_issues_count": 0,
+    "clusters_with_mixed_arm_assignments": 0,
+    "single_arm_integrity_status": "PERFECT_ISOLATION_VERIFIED",
+    "clusters_spanning_multiple_provinces_count": 1,
+    "clusters_spanning_multiple_provinces_details": [
+      {
+        "cluster_id": 104,
+        "notes": "Spans 2 provinces (33 in Cajabamba, 1 in Cajamarca)"
+      }
+    ],
+    "clusters_spanning_multiple_districts_count": 17,
+    "missing_cluster_ids_in_data": 0,
+    "missing_treatment_assignments_in_data": 0,
+    "invalid_treatment_arm_codes": 0
+  },
+  "cluster_size_distributions": {
+    "overall": {
+      "clusters": 159,
+      "participants": 2461,
+      "min": 1,
+      "q25": 7.0,
+      "median": 13.0,
+      "mean": 15.48,
+      "q75": 22.0,
+      "max": 42,
+      "std": 9.94,
+      "cv": 0.6419
+    },
+    "by_arm": {
+      "Control": {
+        "clusters": 68,
+        "participants": 970,
+        "min": 1,
+        "q25": 6.0,
+        "median": 13.0,
+        "mean": 14.26,
+        "q75": 20.25,
+        "max": 42,
+        "std": 10.01,
+        "cv": 0.7019
+      },
+      "Home visits": {
+        "clusters": 19,
+        "participants": 317,
+        "min": 3,
+        "q25": 10.0,
+        "median": 18.0,
+        "mean": 16.68,
+        "q75": 22.0,
+        "max": 28,
+        "std": 7.98,
+        "cv": 0.4783
+      },
+      "Afini": {
+        "clusters": 72,
+        "participants": 1174,
+        "min": 1,
+        "q25": 8.0,
+        "median": 13.0,
+        "mean": 16.31,
+        "q75": 22.25,
+        "max": 42,
+        "std": 10.32,
+        "cv": 0.6327
+      }
+    }
+  },
+  "province_stratified_allocation": {
+    "provinces": [
+      "Cajamarca",
+      "Cajabamba",
+      "San Marcos"
+    ],
+    "cluster_allocation_by_province_and_arm": {
+      "Cajamarca": {
+        "Control": 37,
+        "Home visits": 10,
+        "Afini": 41
+      },
+      "Cajabamba": {
+        "Control": 19,
+        "Home visits": 6,
+        "Afini": 19
+      },
+      "San Marcos": {
+        "Control": 12,
+        "Home visits": 3,
+        "Afini": 12
+      }
+    },
+    "participant_allocation_by_province_and_arm": {
+      "Cajamarca": {
+        "Control": 477,
+        "Home visits": 151,
+        "Afini": 646
+      },
+      "Cajabamba": {
+        "Control": 346,
+        "Home visits": 103,
+        "Afini": 357
+      },
+      "San Marcos": {
+        "Control": 147,
+        "Home visits": 63,
+        "Afini": 171
+      }
+    }
+  },
+  "maximum_absolute_smd_by_variable": {
+    "cluster_level_primary": {
+      "bl_mo_educ_level": 0.5103,
+      "bl_fa_educ_level": 0.4938,
+      "bl_fa_age": 0.3908,
+      "bl_qses_index": 0.3526,
+      "bl_mo_age": 0.3448,
+      "bl_low_bweight": 0.2767,
+      "bl_hhadults": 0.2543,
+      "bl_mics_tot": 0.2484,
+      "child_female": 0.2437,
+      "bl_z_overall": 0.2155,
+      "bl_f_b": 0.2071,
+      "bl_child_sib_tot": 0.1311,
+      "bl_childage": 0.1247
+    },
+    "participant_level_secondary": {
+      "bl_qses_index": 0.211,
+      "bl_z_overall": 0.1949,
+      "bl_mo_educ_level": 0.1881,
+      "bl_fa_educ_level": 0.1848,
+      "bl_hhadults": 0.1205,
+      "bl_mo_age": 0.1174,
+      "bl_fa_age": 0.1132,
+      "bl_low_bweight": 0.0985,
+      "bl_child_sib_tot": 0.0902,
+      "bl_mics_tot": 0.0777,
+      "child_female": 0.0473,
+      "bl_childage": 0.0298,
+      "bl_f_b": 0.0078
+    }
+  },
+  "table1_reconciliation_summary": {
+    "total_table1_items_checked": 17,
+    "total_matched_with_rounding": 17,
+    "total_requiring_review": 0,
+    "overall_table1_reconciliation_status": "FULL_MATCH_WITH_ROUNDING"
+  },
+  "variable_availability_summary": {
+    "total_protocol_randomization_covariates_evaluated": 7,
+    "available_in_released_dataset": 3,
+    "absent_from_released_dataset": 4,
+    "absent_covariates_list": [
+      "Cluster population size",
+      "Cluster number of births",
+      "Cluster altitude",
+      "Household cell-phone ownership"
+    ],
+    "notes": "Cluster population size, annual births, altitude, and baseline cell phone ownership are absent from the released dataset. Only province (stratification factor) and participant-level education/SES are observed."
+  }
+}

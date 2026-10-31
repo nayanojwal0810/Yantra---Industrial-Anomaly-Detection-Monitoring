@@ -1,0 +1,14 @@
+province_name,arm_code,arm_name,populated_clusters,total_clusters_in_province,cluster_share_within_province_pct,enrolled_participants,total_participants_in_province,participant_share_within_province_pct,mean_cluster_size,stratification_notes
+Cajamarca,1,Control,37,88,42.05,477,1274,37.44,12.89,Consistent with province-stratified cluster allocation.
+Cajamarca,2,Home visits,10,88,11.36,151,1274,11.85,15.1,Consistent with province-stratified cluster allocation.
+Cajamarca,3,Afini,41,88,46.59,646,1274,50.71,15.76,Consistent with province-stratified cluster allocation.
+Cajamarca,SUBTOTAL,All Arms Combined,88,88,100.0,1274,1274,100.0,14.48,Total populated units across Cajamarca.
+Cajabamba,1,Control,19,44,43.18,346,806,42.93,18.21,Consistent with province-stratified cluster allocation.
+Cajabamba,2,Home visits,6,44,13.64,103,806,12.78,17.17,Consistent with province-stratified cluster allocation.
+Cajabamba,3,Afini,19,44,43.18,357,806,44.29,18.79,"Consistent with province-stratified cluster allocation. Includes Cluster 104 (33 participants in Cajabamba, 1 in Cajamarca)."
+Cajabamba,SUBTOTAL,All Arms Combined,44,44,100.0,806,806,100.0,18.32,Total populated units across Cajabamba.
+San Marcos,1,Control,12,27,44.44,147,381,38.58,12.25,Consistent with province-stratified cluster allocation.
+San Marcos,2,Home visits,3,27,11.11,63,381,16.54,21.0,Consistent with province-stratified cluster allocation.
+San Marcos,3,Afini,12,27,44.44,171,381,44.88,14.25,Consistent with province-stratified cluster allocation.
+San Marcos,SUBTOTAL,All Arms Combined,27,27,100.0,381,381,100.0,14.11,Total populated units across San Marcos.
+All Provinces Combined,TOTAL,All Arms Combined,159,159,100.0,2461,2461,100.0,15.48,"Trial-wide total (159 populated clusters, 2,461 enrolled participants)."

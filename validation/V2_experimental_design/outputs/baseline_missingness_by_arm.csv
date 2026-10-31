@@ -1,0 +1,53 @@
+variable_name,variable_description,arm_code,arm_name,total_participants,non_missing_count,missing_count,missing_pct,denominator_explanation
+child_female,Child sex (female indicator),1,Control,970,970,0,0.0,Denominator is 970 enrolled participants in Control.
+child_female,Child sex (female indicator),2,Home visits,317,317,0,0.0,Denominator is 317 enrolled participants in Home visits.
+child_female,Child sex (female indicator),3,Afini,1174,1174,0,0.0,Denominator is 1174 enrolled participants in Afini.
+child_female,Child sex (female indicator),ALL,All Arms Combined,2461,2461,0,0.0,Denominator is 2461 enrolled participants in All Arms Combined.
+bl_low_bweight,Low birth weight indicator,1,Control,970,957,13,1.34,Denominator is 970 enrolled participants in Control.
+bl_low_bweight,Low birth weight indicator,2,Home visits,317,308,9,2.84,Denominator is 317 enrolled participants in Home visits.
+bl_low_bweight,Low birth weight indicator,3,Afini,1174,1149,25,2.13,Denominator is 1174 enrolled participants in Afini.
+bl_low_bweight,Low birth weight indicator,ALL,All Arms Combined,2461,2414,47,1.91,Denominator is 2461 enrolled participants in All Arms Combined.
+bl_childage,Child age in months,1,Control,970,969,1,0.1,Denominator is 970 enrolled participants in Control.
+bl_childage,Child age in months,2,Home visits,317,316,1,0.32,Denominator is 317 enrolled participants in Home visits.
+bl_childage,Child age in months,3,Afini,1174,1173,1,0.09,Denominator is 1174 enrolled participants in Afini.
+bl_childage,Child age in months,ALL,All Arms Combined,2461,2458,3,0.12,Denominator is 2461 enrolled participants in All Arms Combined.
+bl_z_overall,Baseline CREDI z-score,1,Control,970,969,1,0.1,Denominator is 970 enrolled participants in Control.
+bl_z_overall,Baseline CREDI z-score,2,Home visits,317,316,1,0.32,Denominator is 317 enrolled participants in Home visits.
+bl_z_overall,Baseline CREDI z-score,3,Afini,1174,1173,1,0.09,Denominator is 1174 enrolled participants in Afini.
+bl_z_overall,Baseline CREDI z-score,ALL,All Arms Combined,2461,2458,3,0.12,Denominator is 2461 enrolled participants in All Arms Combined.
+bl_mo_age,Mother age in years,1,Control,970,954,16,1.65,Denominator is 970 enrolled participants in Control.
+bl_mo_age,Mother age in years,2,Home visits,317,312,5,1.58,Denominator is 317 enrolled participants in Home visits.
+bl_mo_age,Mother age in years,3,Afini,1174,1153,21,1.79,Denominator is 1174 enrolled participants in Afini.
+bl_mo_age,Mother age in years,ALL,All Arms Combined,2461,2419,42,1.71,Denominator is 2461 enrolled participants in All Arms Combined.
+bl_mo_educ_level,Mother education level,1,Control,970,953,17,1.75,Denominator is 970 enrolled participants in Control.
+bl_mo_educ_level,Mother education level,2,Home visits,317,311,6,1.89,Denominator is 317 enrolled participants in Home visits.
+bl_mo_educ_level,Mother education level,3,Afini,1174,1152,22,1.87,Denominator is 1174 enrolled participants in Afini.
+bl_mo_educ_level,Mother education level,ALL,All Arms Combined,2461,2416,45,1.83,Denominator is 2461 enrolled participants in All Arms Combined.
+bl_f_b,Father resident in household indicator,1,Control,970,968,2,0.21,Denominator is 970 enrolled participants in Control.
+bl_f_b,Father resident in household indicator,2,Home visits,317,316,1,0.32,Denominator is 317 enrolled participants in Home visits.
+bl_f_b,Father resident in household indicator,3,Afini,1174,1170,4,0.34,Denominator is 1174 enrolled participants in Afini.
+bl_f_b,Father resident in household indicator,ALL,All Arms Combined,2461,2454,7,0.28,Denominator is 2461 enrolled participants in All Arms Combined.
+bl_fa_age,Father age in years,1,Control,970,850,120,12.37,Denominator is 970 enrolled participants in Control.
+bl_fa_age,Father age in years,2,Home visits,317,277,40,12.62,Denominator is 317 enrolled participants in Home visits.
+bl_fa_age,Father age in years,3,Afini,1174,1023,151,12.86,Denominator is 1174 enrolled participants in Afini.
+bl_fa_age,Father age in years,ALL,All Arms Combined,2461,2150,311,12.64,Denominator is 2461 enrolled participants in All Arms Combined.
+bl_fa_educ_level,Father education level,1,Control,970,839,131,13.51,Denominator is 970 enrolled participants in Control.
+bl_fa_educ_level,Father education level,2,Home visits,317,267,50,15.77,Denominator is 317 enrolled participants in Home visits.
+bl_fa_educ_level,Father education level,3,Afini,1174,1004,170,14.48,Denominator is 1174 enrolled participants in Afini.
+bl_fa_educ_level,Father education level,ALL,All Arms Combined,2461,2110,351,14.26,Denominator is 2461 enrolled participants in All Arms Combined.
+bl_child_sib_tot,Number of siblings in household,1,Control,970,970,0,0.0,Denominator is 970 enrolled participants in Control.
+bl_child_sib_tot,Number of siblings in household,2,Home visits,317,317,0,0.0,Denominator is 317 enrolled participants in Home visits.
+bl_child_sib_tot,Number of siblings in household,3,Afini,1174,1174,0,0.0,Denominator is 1174 enrolled participants in Afini.
+bl_child_sib_tot,Number of siblings in household,ALL,All Arms Combined,2461,2461,0,0.0,Denominator is 2461 enrolled participants in All Arms Combined.
+bl_hhadults,Number of adults in household,1,Control,970,968,2,0.21,Denominator is 970 enrolled participants in Control.
+bl_hhadults,Number of adults in household,2,Home visits,317,316,1,0.32,Denominator is 317 enrolled participants in Home visits.
+bl_hhadults,Number of adults in household,3,Afini,1174,1171,3,0.26,Denominator is 1174 enrolled participants in Afini.
+bl_hhadults,Number of adults in household,ALL,All Arms Combined,2461,2455,6,0.24,Denominator is 2461 enrolled participants in All Arms Combined.
+bl_qses_index,Household SES index quintiles,1,Control,970,966,4,0.41,Denominator is 970 enrolled participants in Control.
+bl_qses_index,Household SES index quintiles,2,Home visits,317,316,1,0.32,Denominator is 317 enrolled participants in Home visits.
+bl_qses_index,Household SES index quintiles,3,Afini,1174,1167,7,0.6,Denominator is 1174 enrolled participants in Afini.
+bl_qses_index,Household SES index quintiles,ALL,All Arms Combined,2461,2449,12,0.49,Denominator is 2461 enrolled participants in All Arms Combined.
+bl_mics_tot,Home stimulation activities score,1,Control,970,880,90,9.28,Denominator is 970 enrolled participants in Control.
+bl_mics_tot,Home stimulation activities score,2,Home visits,317,288,29,9.15,Denominator is 317 enrolled participants in Home visits.
+bl_mics_tot,Home stimulation activities score,3,Afini,1174,1075,99,8.43,Denominator is 1174 enrolled participants in Afini.
+bl_mics_tot,Home stimulation activities score,ALL,All Arms Combined,2461,2243,218,8.86,Denominator is 2461 enrolled participants in All Arms Combined.
