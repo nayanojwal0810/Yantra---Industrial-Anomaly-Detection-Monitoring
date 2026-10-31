@@ -2,8 +2,8 @@
   "audit_metadata": {
     "task": "task_03_metric_reliability_audit",
     "project": "Niramaya",
-    "timestamp_utc": "2026-10-31T14:10:39Z",
-    "timestamp_local": "2026-10-31 19:40:39 +0530",
+    "timestamp_utc": "2026-10-31T14:23:10Z",
+    "timestamp_local": "2026-10-31 19:53:10 +0530",
     "command": "python validation/niramaya/task_03_metric_reliability_audit/audit_hrrp_metric_reliability.py --data-file ../data/raw/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv --output-dir validation/niramaya/task_03_metric_reliability_audit/output",
     "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
     "python_executable": "C:\\Program Files\\Python313\\python.exe",
@@ -15,7 +15,9 @@
     "output_dir": "D:\\Niramaya\\validation-repo\\validation\\niramaya\\task_03_metric_reliability_audit\\output",
     "dataset_name": "FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
     "cms_catalogue_source": "https://data.cms.gov/provider-data/dataset/9n3s-kdb3",
-    "cms_direct_url": "https://data.cms.gov/provider-data/sites/default/files/resources/a171bc36c488d3e0dc33ec63abb469a6_1770163617/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv"
+    "cms_direct_url": "https://data.cms.gov/provider-data/sites/default/files/resources/a171bc36c488d3e0dc33ec63abb469a6_1770163617/FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv",
+    "cms_footnote_crosswalk_source": "https://data.cms.gov/provider-data/dataset/y9us-9xdf",
+    "percentile_method": "Nearest-rank method: index = ceil(p * n / 100) - 1 (with index = 0 for p = 0); conventional median: average of two middle elements for even sample size"
   },
   "execution_status": "COMPLETED_SUCCESSFULLY",
   "dataset_dimensions": {
@@ -167,6 +169,8 @@
       "numeric_discharges_pct": 42.78,
       "numeric_readmissions_count": 1240,
       "numeric_readmissions_pct": 40.59,
+      "both_counts_numeric_count": 1240,
+      "both_counts_numeric_pct": 40.59,
       "err_numeric_discharges_nonnumeric_count": 496,
       "err_numeric_readmissions_nonnumeric_count": 496,
       "both_counts_nonnumeric_err_numeric_count": 496,
@@ -196,6 +200,8 @@
       "numeric_discharges_pct": 12.47,
       "numeric_readmissions_count": 363,
       "numeric_readmissions_pct": 11.88,
+      "both_counts_numeric_count": 363,
+      "both_counts_numeric_pct": 11.88,
       "err_numeric_discharges_nonnumeric_count": 515,
       "err_numeric_readmissions_nonnumeric_count": 515,
       "both_counts_nonnumeric_err_numeric_count": 515,
@@ -225,6 +231,8 @@
       "numeric_discharges_pct": 50.8,
       "numeric_readmissions_count": 1545,
       "numeric_readmissions_pct": 50.57,
+      "both_counts_numeric_count": 1545,
+      "both_counts_numeric_pct": 50.57,
       "err_numeric_discharges_nonnumeric_count": 778,
       "err_numeric_readmissions_nonnumeric_count": 778,
       "both_counts_nonnumeric_err_numeric_count": 778,
@@ -254,6 +262,8 @@
       "numeric_discharges_pct": 76.07,
       "numeric_readmissions_count": 2316,
       "numeric_readmissions_pct": 75.81,
+      "both_counts_numeric_count": 2316,
+      "both_counts_numeric_pct": 75.81,
       "err_numeric_discharges_nonnumeric_count": 305,
       "err_numeric_readmissions_nonnumeric_count": 305,
       "both_counts_nonnumeric_err_numeric_count": 305,
@@ -283,6 +293,8 @@
       "numeric_discharges_pct": 11.46,
       "numeric_readmissions_count": 253,
       "numeric_readmissions_pct": 8.28,
+      "both_counts_numeric_count": 253,
+      "both_counts_numeric_pct": 8.28,
       "err_numeric_discharges_nonnumeric_count": 1194,
       "err_numeric_readmissions_nonnumeric_count": 1194,
       "both_counts_nonnumeric_err_numeric_count": 1194,
@@ -312,6 +324,8 @@
       "numeric_discharges_pct": 76.2,
       "numeric_readmissions_count": 2320,
       "numeric_readmissions_pct": 75.94,
+      "both_counts_numeric_count": 2320,
+      "both_counts_numeric_pct": 75.94,
       "err_numeric_discharges_nonnumeric_count": 395,
       "err_numeric_readmissions_nonnumeric_count": 395,
       "both_counts_nonnumeric_err_numeric_count": 395,
@@ -329,11 +343,11 @@
     "published_numeric_err_pct": 63.94,
     "supporting_counts_available_records": 8037,
     "supporting_counts_available_pct": 43.85,
-    "both_counts_masked_but_err_available": 3683
+    "both_counts_withheld_but_err_available": 3683
   },
   "err_mathematical_reconciliation": {
     "formula": "Calculated ERR = Predicted Readmission Rate / Expected Readmission Rate",
-    "screening_tolerance": "0.0001",
+    "audit_screening_tolerance": "0.0001",
     "total_eligible_records": 11720,
     "ineligible_records_count": 6610,
     "ineligible_reasons": {
@@ -343,8 +357,8 @@
     "within_tolerance_pct": 100.0,
     "beyond_tolerance_count": 0,
     "max_absolute_difference": "0.000064675598759313145524894",
-    "median_absolute_difference": "0.000024873382104670793472144",
-    "p95_absolute_difference": "0.0000481387788676608954820244",
+    "median_absolute_difference": "0.0000248724697990757485307335",
+    "p95_absolute_difference": "0.0000481366903669426643962929",
     "reconciliation_by_measure": {
       "READM-30-AMI-HRRP": {
         "eligible_records": 1736,
@@ -352,7 +366,7 @@
         "beyond_tolerance_count": 0,
         "pct_within_tolerance": 100.0,
         "max_difference": "0.0000563927520970260358037692",
-        "median_difference": "0.0000243255706709707170855430",
+        "median_difference": "0.00002431339250657108104043625",
         "p95_difference": "0.0000477184529047708354371943"
       },
       "READM-30-CABG-HRRP": {
@@ -361,7 +375,7 @@
         "beyond_tolerance_count": 0,
         "pct_within_tolerance": 100.0,
         "max_difference": "0.0000553811926059529586259304",
-        "median_difference": "0.000024254154280459376804465",
+        "median_difference": "0.0000242476675926108679711295",
         "p95_difference": "0.0000482970775653702482970776"
       },
       "READM-30-COPD-HRRP": {
@@ -634,8 +648,9 @@
       "above_one_count": 5643,
       "min": "0.4698",
       "max": "1.6297",
+      "median": "0.9973",
       "percentiles": {
-        "p10": "0.9142",
+        "p10": "0.9141",
         "p25": "0.9582",
         "p50": "0.9973",
         "p75": "1.0423",
@@ -649,16 +664,17 @@
         "count": 1736,
         "min": "0.6839",
         "max": "1.2639",
+        "median": "0.99945",
         "below_one_count": 874,
         "equal_one_count": 0,
         "above_one_count": 862,
         "percentiles": {
-          "p10": "0.9200",
+          "p10": "0.9199",
           "p25": "0.9608",
-          "p50": "0.9995",
+          "p50": "0.9994",
           "p75": "1.0422",
           "p90": "1.0841",
-          "p95": "1.1150",
+          "p95": "1.1158",
           "p99": "1.1792"
         }
       },
@@ -666,23 +682,25 @@
         "count": 878,
         "min": "0.7434",
         "max": "1.4237",
+        "median": "0.99995",
         "below_one_count": 439,
         "equal_one_count": 1,
         "above_one_count": 438,
         "percentiles": {
-          "p10": "0.8851",
+          "p10": "0.8837",
           "p25": "0.9377",
           "p50": "0.9999",
           "p75": "1.0624",
-          "p90": "1.1164",
-          "p95": "1.1633",
-          "p99": "1.2464"
+          "p90": "1.1181",
+          "p95": "1.1638",
+          "p99": "1.2466"
         }
       },
       "READM-30-COPD-HRRP": {
         "count": 2323,
         "min": "0.8681",
         "max": "1.2545",
+        "median": "0.9969",
         "below_one_count": 1223,
         "equal_one_count": 3,
         "above_one_count": 1097,
@@ -700,6 +718,7 @@
         "count": 2621,
         "min": "0.7137",
         "max": "1.3606",
+        "median": "0.9983",
         "below_one_count": 1338,
         "equal_one_count": 1,
         "above_one_count": 1282,
@@ -717,15 +736,16 @@
         "count": 1447,
         "min": "0.4698",
         "max": "1.6297",
+        "median": "0.9916",
         "below_one_count": 754,
         "equal_one_count": 0,
         "above_one_count": 693,
         "percentiles": {
-          "p10": "0.8285",
-          "p25": "0.9001",
+          "p10": "0.8276",
+          "p25": "0.9000",
           "p50": "0.9916",
-          "p75": "1.0885",
-          "p90": "1.2038",
+          "p75": "1.0890",
+          "p90": "1.2061",
           "p95": "1.2853",
           "p99": "1.4782"
         }
@@ -734,6 +754,7 @@
         "count": 2715,
         "min": "0.7967",
         "max": "1.4255",
+        "median": "0.9955",
         "below_one_count": 1442,
         "equal_one_count": 2,
         "above_one_count": 1271,
@@ -743,7 +764,7 @@
           "p50": "0.9955",
           "p75": "1.0388",
           "p90": "1.0877",
-          "p95": "1.1201",
+          "p95": "1.1203",
           "p99": "1.1744"
         }
       }
@@ -755,10 +776,11 @@
       "greater_than_100_count": 0,
       "min": "1.9080",
       "max": "28.1643",
+      "median": "15.86015",
       "percentiles": {
-        "p10": "6.5597",
-        "p25": "12.5303",
-        "p50": "15.8602",
+        "p10": "6.5563",
+        "p25": "12.5273",
+        "p50": "15.8601",
         "p75": "18.4184",
         "p90": "20.2757",
         "p95": "21.2796",
@@ -772,10 +794,11 @@
       "greater_than_100_count": 0,
       "min": "3.0876",
       "max": "26.8654",
+      "median": "15.85655",
       "percentiles": {
-        "p10": "6.2042",
-        "p25": "12.6240",
-        "p50": "15.8570",
+        "p10": "6.2039",
+        "p25": "12.6230",
+        "p50": "15.8561",
         "p75": "18.5005",
         "p90": "19.9307",
         "p95": "20.6465",
@@ -821,7 +844,7 @@
       },
       {
         "footnote_code": "5",
-        "description": "The number of cases/patients is too small to tell how well the hospital is performing",
+        "description": "Results are not available for this reporting period.",
         "frequency": 3255,
         "percentage": 17.7578,
         "by_measure": {
@@ -835,7 +858,7 @@
       },
       {
         "footnote_code": "1",
-        "description": "The number of cases/patients is too small to reliably tell how well the hospital is performing",
+        "description": "The number of cases/patients is too few to report.",
         "frequency": 3150,
         "percentage": 17.1849,
         "by_measure": {
@@ -849,7 +872,7 @@
       },
       {
         "footnote_code": "29",
-        "description": "Data is currently not available / results are not available for this reporting period",
+        "description": "Unverified footnote code",
         "frequency": 377,
         "percentage": 2.0567,
         "by_measure": {
@@ -863,7 +886,7 @@
       },
       {
         "footnote_code": "7",
-        "description": "The number of cases/patients is too small to reliably tell how well the hospital is performing (or fewer than 25 eligible discharges)",
+        "description": "No cases met the criteria for this measure.",
         "frequency": 205,
         "percentage": 1.1184,
         "by_measure": {
@@ -874,6 +897,71 @@
           "READM-30-HIP-KNEE-HRRP": 97,
           "READM-30-PN-HRRP": 8
         }
+      }
+    ],
+    "footnote_status_crosstab": [
+      {
+        "Footnote Code": "1",
+        "Footnote Description": "The number of cases/patients is too few to report.",
+        "ERR Status": "Non-numeric (N/A)",
+        "Discharges Status": "Non-numeric (N/A)",
+        "Readmissions Status": "Non-numeric (N/A)",
+        "Record Count": 3150,
+        "Percentage of Dataset": 17.1849
+      },
+      {
+        "Footnote Code": "29",
+        "Footnote Description": "Unverified footnote code",
+        "ERR Status": "Numeric",
+        "Discharges Status": "Numeric",
+        "Readmissions Status": "Numeric",
+        "Record Count": 239,
+        "Percentage of Dataset": 1.3039
+      },
+      {
+        "Footnote Code": "29",
+        "Footnote Description": "Unverified footnote code",
+        "ERR Status": "Numeric",
+        "Discharges Status": "Non-numeric (N/A)",
+        "Readmissions Status": "Non-numeric (Too Few to Report)",
+        "Record Count": 138,
+        "Percentage of Dataset": 0.7529
+      },
+      {
+        "Footnote Code": "5",
+        "Footnote Description": "Results are not available for this reporting period.",
+        "ERR Status": "Non-numeric (N/A)",
+        "Discharges Status": "Non-numeric (N/A)",
+        "Readmissions Status": "Non-numeric (N/A)",
+        "Record Count": 3255,
+        "Percentage of Dataset": 17.7578
+      },
+      {
+        "Footnote Code": "7",
+        "Footnote Description": "No cases met the criteria for this measure.",
+        "ERR Status": "Non-numeric (N/A)",
+        "Discharges Status": "Numeric",
+        "Readmissions Status": "Non-numeric (N/A)",
+        "Record Count": 205,
+        "Percentage of Dataset": 1.1184
+      },
+      {
+        "Footnote Code": "BLANK",
+        "Footnote Description": "Blank (No footnote; standard reported metric or unannotated)",
+        "ERR Status": "Numeric",
+        "Discharges Status": "Numeric",
+        "Readmissions Status": "Numeric",
+        "Record Count": 7798,
+        "Percentage of Dataset": 42.5423
+      },
+      {
+        "Footnote Code": "BLANK",
+        "Footnote Description": "Blank (No footnote; standard reported metric or unannotated)",
+        "ERR Status": "Numeric",
+        "Discharges Status": "Non-numeric (N/A)",
+        "Readmissions Status": "Non-numeric (Too Few to Report)",
+        "Record Count": 3545,
+        "Percentage of Dataset": 19.3399
       }
     ]
   },
@@ -953,12 +1041,13 @@
   ],
   "factual_caveats_and_notes": [
     "Record coverage (100% of 18,330 hospital-condition rows) differs substantially from outcome availability (63.94% numeric ERR).",
-    "Public outcome availability varies dramatically across clinical conditions: Pneumonia (88.9%) and Heart Failure (85.8%) have high coverage, while CABG (28.7%) has low coverage due to surgical volume concentration.",
-    "Suppression of readmission volume ('Too Few to Report', 3,683 rows) co-occurs with fully reported numeric ERR, Predicted Rate, and Expected Rate; volume suppression must not be treated as outcome invalidity.",
-    "Discharge count is 'N/A' in 3,683 rows where readmission count is 'Too Few to Report' but ERR is numeric, confirming that CMS risk-standardized ratios are published even when raw counts are masked for patient privacy.",
-    "Exactly 205 records report Number of Discharges = 0 with Footnote 7 ('fewer than 25 eligible discharges') and ERR = N/A.",
-    "100.0% of the 11,720 numeric ERR records mathematically reconcile with Predicted Rate / Expected Rate within the 0.0001 screening tolerance (maximum absolute discrepancy is 0.000065, reflecting standard publication rounding).",
-    "Zero numeric records exhibit negative values, zero rates, or readmissions exceeding discharges.",
-    "Numeric ERR availability is a measure of public data publication, not an indicator of official HRRP payment-reduction penalty eligibility."
+    "Public ERR availability varies widely across clinical conditions: Pneumonia (88.87%) and Heart Failure (85.79%) have high availability, whereas CABG has the lowest proportion of published numeric ERR at 28.74%.",
+    "Supporting-count availability (where both Number of Discharges and Number of Readmissions are numeric) is 8,037 records (43.85% of dataset).",
+    "Exactly 3,683 records have withheld supporting count fields (Number of Discharges = N/A and Number of Readmissions = Too Few to Report) while reporting official numeric values for ERR, Predicted Rate, and Expected Rate. Withheld supporting counts do not automatically invalidate a published numeric ERR.",
+    "Exactly 205 records report Number of Discharges = 0 with Footnote 7 ('No cases met the criteria for this measure') and ERR = N/A. This is distinct from the statutory HRRP 25-eligible-discharge payment-reduction rule.",
+    "100.0% of the 11,720 numeric ERR records mathematically reconcile with Predicted Rate / Expected Rate within the 0.0001 audit screening tolerance selected for this validation (maximum absolute discrepancy is 0.000065, consistent with publication rounding of 4-decimal published rates).",
+    "Observed numeric values range from 0.4698 to 1.6297 for ERR, 1.9080% to 28.1643% for Predicted Rate, 3.0876% to 26.8654% for Expected Rate, 0 to 3,672 for Discharges, and 11 to 847 for Readmissions. Zero negative rates, zero zero-rates, and zero instances of readmissions exceeding discharges were observed.",
+    "Footnote 29 appears on 377 rows (all with numeric ERR). It cannot be verified in the CMS Hospital Footnote Crosswalk (dataset y9us-9xdf) or Hospital Data Dictionary and is strictly documented as an unverified footnote code.",
+    "Numeric ERR availability reflects public CMS data publication, not eligibility for the official HRRP payment reduction penalty."
   ]
 }

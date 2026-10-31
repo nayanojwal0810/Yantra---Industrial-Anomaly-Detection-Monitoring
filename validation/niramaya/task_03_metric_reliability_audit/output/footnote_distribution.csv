@@ -1,6 +1,6 @@
 Footnote Code,Description,Frequency,Percentage of Dataset,READM-30-AMI-HRRP Count,READM-30-CABG-HRRP Count,READM-30-COPD-HRRP Count,READM-30-HF-HRRP Count,READM-30-HIP-KNEE-HRRP Count,READM-30-PN-HRRP Count
 BLANK,Blank (No footnote; standard reported metric or unannotated),11343,61.88%,1675,844,2252,2543,1397,2632
-5,The number of cases/patients is too small to tell how well the hospital is performing,3255,17.76%,319,1975,199,196,397,169
-1,The number of cases/patients is too small to reliably tell how well the hospital is performing,3150,17.18%,933,184,526,230,1114,163
-29,Data is currently not available / results are not available for this reporting period,377,2.06%,61,34,71,78,50,83
-7,The number of cases/patients is too small to reliably tell how well the hospital is performing (or fewer than 25 eligible discharges),205,1.12%,67,18,7,8,97,8
+5,Results are not available for this reporting period.,3255,17.76%,319,1975,199,196,397,169
+1,The number of cases/patients is too few to report.,3150,17.18%,933,184,526,230,1114,163
+29,Unverified footnote code,377,2.06%,61,34,71,78,50,83
+7,No cases met the criteria for this measure.,205,1.12%,67,18,7,8,97,8

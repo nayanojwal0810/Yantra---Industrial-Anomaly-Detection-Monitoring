@@ -1,9 +1,9 @@
 Execution Environment Record
 ============================
 Project: Niramaya
-Task: Task 03 - HRRP Metric Availability and Numerical Reliability Audit
-Execution Timestamp (UTC): 2026-10-31T14:10:39Z
-Execution Timestamp (Local): 2026-10-31 19:40:39 +0530
+Task: Task 03 - HRRP Metric Availability and Numerical Reliability Audit (Targeted Correction)
+Execution Timestamp (UTC): 2026-10-31T14:23:10Z
+Execution Timestamp (Local): 2026-10-31 19:53:10 +0530
 Python Version: 3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]
 Python Executable: C:\Program Files\Python313\python.exe
 Operating System: Windows-11-10.0.26200-SP0
@@ -13,3 +13,4 @@ Execution Command: python validation/niramaya/task_03_metric_reliability_audit/a
 Working Directory: D:\Niramaya\validation-repo
 Input Data File: D:\Niramaya\data\raw\FY_2026_Hospital_Readmissions_Reduction_Program_Hospital.csv
 Output Directory: D:\Niramaya\validation-repo\validation\niramaya\task_03_metric_reliability_audit\output
+Percentile Method: Nearest-rank method: index = ceil(p * n / 100) - 1 (with index = 0 for p = 0); conventional median: average of two middle elements for even sample size
