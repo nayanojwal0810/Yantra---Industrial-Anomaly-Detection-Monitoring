@@ -1,6 +1,6 @@
 {
-  "task_version": "V5.0",
-  "timestamp_utc": "2026-10-31T09:07:12.575158+00:00",
+  "task_version": "V5.1",
+  "timestamp_utc": "2026-10-31T09:21:30.888185+00:00",
   "project": "Niyati",
   "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",
   "dataset_metadata": {
@@ -8,8 +8,11 @@
     "raw_archive": "doi_10_5061_dryad_nzs7h4551__v20260226.zip",
     "dta_file": "digitalECD_26Feb2026.dta",
     "enrolled_participants": 2461,
+    "raw_gsed_observed": 2154,
+    "raw_gsed_missing": 307,
+    "singleton_age_band_exclusions": 5,
     "final_analysis_participants": 2149,
-    "total_exclusions": 312,
+    "total_analysis_exclusions": 312,
     "populated_clusters": 159
   },
   "sample_flow_discrepancy_resolutions": {
@@ -18,83 +21,132 @@
       "recorded_raw_gsed": 2154,
       "discrepancy_count": 29,
       "resolution_status": "RESOLVED_WITH_DIRECT_EVIDENCE",
-      "finding": "Exactly 29 participants completed the endline household survey (final_status == 1) with valid caregiver interview data, but their direct child GSED assessment was not administered or recorded. All 29 participants have missing el_gsed_dscore."
+      "finding": "Twenty-nine participants have final_status == 1 but no recorded raw GSED score. The released dataset establishes that the score is absent; it does not establish whether the assessment was not administered or was administered but not recorded."
     },
     "gap_20_published_exclusions_vs_actual_exclusions": {
       "published_footnote_exclusions": 332,
       "actual_dataset_exclusions": 312,
       "discrepancy_count": 20,
       "resolution_status": "UNRESOLVED_WITH_AVAILABLE_SOURCES",
-      "finding": "Actual exclusions in dataset and code are exactly 312 (307 missing raw GSED + 5 singleton age-band drops), yielding N=2,149 (2,461 - 312 = 2,149). If 332 were excluded, sample size would be 2,129, contradicting published Table 2 (N=2,149). The 20-case gap reflects an authorial drafting or calculation error in the manuscript footnote text."
+      "finding": "The released data and local replication code account for 312 exclusions, while the paper footnote reports 332. The cause of the difference is unknown with available sources."
     }
   },
   "outcome_missingness_by_arm": {
     "Control": {
       "enrolled": 970,
-      "analysis_sample": 864,
-      "exclusions": 106,
-      "missingness_rate_pct": 10.93
+      "observed_raw_gsed": 864,
+      "missing_raw_gsed": 106,
+      "raw_gsed_missingness_pct": 10.93,
+      "singleton_age_band_exclusions": 0,
+      "final_analysis_sample": 864,
+      "total_analysis_exclusions": 106,
+      "standardized_outcome_unavailable_pct": 10.93
     },
     "Home_visits": {
       "enrolled": 317,
-      "analysis_sample": 297,
-      "exclusions": 20,
-      "missingness_rate_pct": 6.31,
-      "diff_vs_control_percentage_points": -4.62,
-      "p_value_cr1": 0.0051,
-      "p_value_conservative_df18": 0.0118,
-      "odds_ratio_vs_control": 0.549
+      "observed_raw_gsed": 299,
+      "missing_raw_gsed": 18,
+      "raw_gsed_missingness_pct": 5.68,
+      "singleton_age_band_exclusions": 2,
+      "final_analysis_sample": 297,
+      "total_analysis_exclusions": 20,
+      "standardized_outcome_unavailable_pct": 6.31,
+      "diff_vs_control_percentage_points": -5.25,
+      "cluster_robust_se_pct": 1.65,
+      "p_value_cr1": 0.0015,
+      "p_value_conservative_df18": 0.0052,
+      "odds_ratio_vs_control": 0.491
     },
     "Afini_Digital": {
       "enrolled": 1174,
-      "analysis_sample": 988,
-      "exclusions": 186,
-      "missingness_rate_pct": 15.84,
-      "diff_vs_control_percentage_points": 4.92,
-      "p_value_cr1": 0.0038,
-      "odds_ratio_vs_control": 1.534
+      "observed_raw_gsed": 991,
+      "missing_raw_gsed": 183,
+      "raw_gsed_missingness_pct": 15.59,
+      "singleton_age_band_exclusions": 3,
+      "final_analysis_sample": 988,
+      "total_analysis_exclusions": 186,
+      "standardized_outcome_unavailable_pct": 15.84,
+      "diff_vs_control_percentage_points": 4.66,
+      "cluster_robust_se_pct": 1.69,
+      "p_value_cr1": 0.0058,
+      "odds_ratio_vs_control": 1.505
     },
     "Direct_Active_Contrast_HV_vs_Digital": {
-      "diff_percentage_points": -9.53,
+      "diff_percentage_points": -9.91,
       "cluster_robust_se_pct": 1.69,
       "p_value_cr1": 0.0,
-      "p_value_conservative_df18": 2.4e-05,
-      "odds_ratio": 0.358
+      "p_value_conservative_df18": 1.5e-05,
+      "odds_ratio": 0.326
     }
   },
-  "key_baseline_predictors_of_missingness": {
-    "mother_age": {
-      "coefficient_lpm": -0.0053,
-      "p_value": 0.0,
-      "finding": "Younger mothers have significantly higher outcome attrition (p < 0.0001)."
-    },
-    "low_birth_weight": {
-      "coefficient_lpm": 0.0617,
-      "p_value": 0.0284,
-      "finding": "Low birth weight children (<2500g) have ~6.2 percentage points higher missingness (p = 0.028)."
-    },
-    "household_adults": {
-      "coefficient_lpm": -0.0134,
-      "p_value": 0.0178,
-      "finding": "Households with more adults have lower outcome attrition (p = 0.018)."
+  "multivariable_model_miss_raw_gsed": {
+    "complete_case_sample_size": 2373,
+    "predictors_included": [
+      "hv",
+      "afini",
+      "bl_z_overall",
+      "bl_childage",
+      "child_female",
+      "bl_low_bweight",
+      "bl_mo_age",
+      "bl_child_sib_tot",
+      "bl_hhadults",
+      "bl_f_b",
+      "bl_qses_index"
+    ],
+    "predictors_excluded_due_to_missingness": [
+      "bl_fa_age (311 missing)",
+      "bl_fa_educ_level (351 missing)",
+      "bl_mics_tot (218 missing)",
+      "bl_mo_educ_level (45 missing)"
+    ],
+    "key_estimates": {
+      "hv": {
+        "lpm_coef": -0.0548,
+        "lpm_p": 0.0021,
+        "logit_aor": 0.4225,
+        "logit_p": 0.0066
+      },
+      "afini": {
+        "lpm_coef": 0.059,
+        "lpm_p": 0.0007,
+        "logit_aor": 1.7043,
+        "logit_p": 0.0009
+      },
+      "bl_mo_age": {
+        "lpm_coef": -0.0051,
+        "lpm_p": 0.0,
+        "logit_aor": 0.9493,
+        "logit_p": 0.0
+      },
+      "bl_low_bweight": {
+        "lpm_coef": 0.0585,
+        "lpm_p": 0.0386,
+        "logit_aor": 1.5957,
+        "logit_p": 0.021
+      },
+      "bl_hhadults": {
+        "lpm_coef": -0.0151,
+        "lpm_p": 0.0065,
+        "logit_aor": 0.8555,
+        "logit_p": 0.0126
+      }
     }
   },
-  "mar_mnar_feasibility_verdict": {
-    "mcar_supported": false,
-    "mcar_verdict": "VIOLATED AND REFUTED: Missingness differs significantly by treatment arm (p < 0.001) and is strongly predicted by maternal age, birth weight, and household size.",
-    "mar_imputation_feasible": true,
-    "mar_verdict": "FEASIBLE WITH LIMITATIONS: 71.5% of outcome attriters have full baseline data intact, and another 20.8% are missing only father variables or MICS. Multiple imputation for the full cohort (N=2,461) is technically feasible under MAR, but MAR is inherently unprovable and cannot account for unobserved disengagement or child mortality.",
-    "mnar_sensitivity_recommended": true,
-    "mnar_verdict": "STRONGLY RECOMMENDED: A tipping-point / delta-adjustment sensitivity analysis varying unobserved outcome offsets across arms is essential to stress-test treatment efficacy."
+  "evidence_assessments": {
+    "mcar_statement": "Observed associations between outcome missingness, treatment assignment and baseline characteristics provide strong evidence against MCAR.",
+    "mortality_statement": "Child deaths (10 cases) represent survival truncation rather than ordinary continuous missingness; the eventual analysis must define how mortality is handled in the estimand, and post-death developmental scores must not be imputed as if the child were alive.",
+    "ipw_statement": "No zero-follow-up cluster was observed in the descriptive audit, but individual-level positivity, propensity score overlap, weight distributions, and truncation sensitivity have not yet been established.",
+    "mnar_statement": "Plausible bounds for MNAR delta-adjustment require substantive justification and must not be pre-committed as an established range.",
+    "v3_diagnostics_statement": "V3 diagnostics concerned imputation of baseline covariates in the previous complete-case adjusted analysis; they do not constitute validation of a full-cohort primary-outcome imputation model."
   },
   "verification_checklist": {
-    "enrolled_participants_2461": true,
-    "final_analysis_participants_2149": true,
-    "total_exclusions_312": true,
     "raw_gsed_missing_307": true,
     "singleton_age_band_drops_5": true,
-    "survey_gap_29_resolved": true,
-    "text_gap_20_acknowledged": true,
+    "standardized_outcome_unavailable_312": true,
+    "final_analysis_participants_2149": true,
+    "enrolled_participants_2461": true,
+    "arm_counts_970_317_1174": true,
     "no_participant_ids_exported": true
   }
 }
