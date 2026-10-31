@@ -1,0 +1,5 @@
+stratum,populated_clusters,enrolled_participants,missing_outcomes_total,mean_cluster_missing_rate,std_cluster_missing_rate,median_cluster_missing_rate,iqr_cluster_missing_rate,min_cluster_missing_rate,max_cluster_missing_rate,zero_missing_clusters_count,zero_missing_clusters_pct,top_10pct_clusters_missing_count,top_10pct_clusters_missing_share_pct,top_20pct_clusters_missing_count,top_20pct_clusters_missing_share_pct
+Total Trial,159,2461,312,0.1214,0.1139,0.1053,0.1926,0.0,0.75,41,25.79,108,34.62,167,53.53
+Control,68,970,106,0.109,0.1295,0.0845,0.1525,0.0,0.75,21,30.88,40,37.74,62,58.49
+Home visits,19,317,20,0.0544,0.0549,0.0476,0.0935,0.0,0.1429,8,42.11,6,30.0,10,50.0
+Afini,72,1174,186,0.1509,0.1002,0.1559,0.1332,0.0,0.4286,12,16.67,56,30.11,88,47.31

@@ -1,0 +1,32 @@
+pattern_id,outcome_gsed_status,missing_baseline_covariates,frequency_count,frequency_pct,cumulative_count,cumulative_pct,pattern_description
+Pattern_01,Observed Outcome,None (Complete baseline),1628,66.15,1628,66.15,Fully complete cases across outcome and all 13 baseline covariates.
+Pattern_02,Missing Outcome,None (Complete baseline),223,9.06,1851,75.21,Missing primary outcome only; complete baseline profile intact.
+Pattern_03,Observed Outcome,"bl_fa_age, bl_fa_educ_level",212,8.61,2063,83.83,"Observed primary outcome; missing baseline covariate(s): bl_fa_age, bl_fa_educ_level."
+Pattern_04,Observed Outcome,bl_mics_tot,161,6.54,2224,90.37,Observed primary outcome; missing baseline covariate(s): bl_mics_tot.
+Pattern_05,Missing Outcome,"bl_fa_age, bl_fa_educ_level",43,1.75,2267,92.12,"Missing primary outcome and missing baseline covariate(s): bl_fa_age, bl_fa_educ_level."
+Pattern_06,Observed Outcome,bl_fa_educ_level,39,1.58,2306,93.7,Observed primary outcome; missing baseline covariate(s): bl_fa_educ_level.
+Pattern_07,Observed Outcome,bl_low_bweight,28,1.14,2334,94.84,Observed primary outcome; missing baseline covariate(s): bl_low_bweight.
+Pattern_08,Observed Outcome,"bl_fa_age, bl_fa_educ_level, bl_mics_tot",26,1.06,2360,95.9,"Observed primary outcome; missing baseline covariate(s): bl_fa_age, bl_fa_educ_level, bl_mics_tot."
+Pattern_09,Missing Outcome,bl_mics_tot,22,0.89,2382,96.79,Missing primary outcome and missing baseline covariate(s): bl_mics_tot.
+Pattern_10,Observed Outcome,"bl_mo_age, bl_mo_educ_level",20,0.81,2402,97.6,"Observed primary outcome; missing baseline covariate(s): bl_mo_age, bl_mo_educ_level."
+Pattern_11,Observed Outcome,"bl_mo_age, bl_mo_educ_level, bl_fa_age, bl_fa_educ_level",8,0.33,2410,97.93,"Observed primary outcome; missing baseline covariate(s): bl_mo_age, bl_mo_educ_level, bl_fa_age, bl_fa_educ_level."
+Pattern_12,Observed Outcome,bl_fa_age,7,0.28,2417,98.21,Observed primary outcome; missing baseline covariate(s): bl_fa_age.
+Pattern_13,Missing Outcome,bl_fa_educ_level,6,0.24,2423,98.46,Missing primary outcome and missing baseline covariate(s): bl_fa_educ_level.
+Pattern_14,Missing Outcome,bl_low_bweight,5,0.2,2428,98.66,Missing primary outcome and missing baseline covariate(s): bl_low_bweight.
+Pattern_15,Missing Outcome,"bl_mo_age, bl_mo_educ_level",5,0.2,2433,98.86,"Missing primary outcome and missing baseline covariate(s): bl_mo_age, bl_mo_educ_level."
+Pattern_16,Observed Outcome,"bl_low_bweight, bl_fa_age, bl_fa_educ_level",4,0.16,2437,99.02,"Observed primary outcome; missing baseline covariate(s): bl_low_bweight, bl_fa_age, bl_fa_educ_level."
+Pattern_17,Observed Outcome,bl_qses_index,4,0.16,2441,99.19,Observed primary outcome; missing baseline covariate(s): bl_qses_index.
+Pattern_18,Missing Outcome,"bl_z_overall, bl_childage, bl_low_bweight, bl_mo_age, bl_mo_educ_level, bl_fa_age, bl_fa_educ_level, bl_hhadults, bl_f_b, bl_qses_index, bl_mics_tot",3,0.12,2444,99.31,"Missing primary outcome and missing baseline covariate(s): bl_z_overall, bl_childage, bl_low_bweight, bl_mo_age, bl_mo_educ_level, bl_fa_age, bl_fa_educ_level, bl_hhadults, bl_f_b, bl_qses_index, bl_mics_tot."
+Pattern_19,Missing Outcome,"bl_fa_age, bl_fa_educ_level, bl_mics_tot",2,0.08,2446,99.39,"Missing primary outcome and missing baseline covariate(s): bl_fa_age, bl_fa_educ_level, bl_mics_tot."
+Pattern_20,Observed Outcome,"bl_mo_age, bl_mo_educ_level, bl_fa_age, bl_fa_educ_level, bl_hhadults, bl_f_b, bl_qses_index",2,0.08,2448,99.47,"Observed primary outcome; missing baseline covariate(s): bl_mo_age, bl_mo_educ_level, bl_fa_age, bl_fa_educ_level, bl_hhadults, bl_f_b, bl_qses_index."
+Pattern_21,Observed Outcome,"bl_low_bweight, bl_mics_tot",2,0.08,2450,99.55,"Observed primary outcome; missing baseline covariate(s): bl_low_bweight, bl_mics_tot."
+Pattern_22,Observed Outcome,bl_mo_educ_level,2,0.08,2452,99.63,Observed primary outcome; missing baseline covariate(s): bl_mo_educ_level.
+Pattern_23,Observed Outcome,"bl_fa_educ_level, bl_mics_tot",1,0.04,2453,99.67,"Observed primary outcome; missing baseline covariate(s): bl_fa_educ_level, bl_mics_tot."
+Pattern_24,Observed Outcome,"bl_mo_age, bl_mo_educ_level, bl_mics_tot",1,0.04,2454,99.72,"Observed primary outcome; missing baseline covariate(s): bl_mo_age, bl_mo_educ_level, bl_mics_tot."
+Pattern_25,Observed Outcome,"bl_low_bweight, bl_qses_index",1,0.04,2455,99.76,"Observed primary outcome; missing baseline covariate(s): bl_low_bweight, bl_qses_index."
+Pattern_26,Observed Outcome,"bl_low_bweight, bl_fa_age, bl_fa_educ_level, bl_f_b, bl_qses_index",1,0.04,2456,99.8,"Observed primary outcome; missing baseline covariate(s): bl_low_bweight, bl_fa_age, bl_fa_educ_level, bl_f_b, bl_qses_index."
+Pattern_27,Observed Outcome,"bl_low_bweight, bl_mo_age, bl_mo_educ_level",1,0.04,2457,99.84,"Observed primary outcome; missing baseline covariate(s): bl_low_bweight, bl_mo_age, bl_mo_educ_level."
+Pattern_28,Observed Outcome,"bl_low_bweight, bl_mo_age, bl_mo_educ_level, bl_fa_age, bl_fa_educ_level, bl_hhadults, bl_f_b, bl_qses_index",1,0.04,2458,99.88,"Observed primary outcome; missing baseline covariate(s): bl_low_bweight, bl_mo_age, bl_mo_educ_level, bl_fa_age, bl_fa_educ_level, bl_hhadults, bl_f_b, bl_qses_index."
+Pattern_29,Missing Outcome,"bl_mo_educ_level, bl_fa_educ_level",1,0.04,2459,99.92,"Missing primary outcome and missing baseline covariate(s): bl_mo_educ_level, bl_fa_educ_level."
+Pattern_30,Missing Outcome,"bl_mo_age, bl_mo_educ_level, bl_fa_age, bl_fa_educ_level",1,0.04,2460,99.96,"Missing primary outcome and missing baseline covariate(s): bl_mo_age, bl_mo_educ_level, bl_fa_age, bl_fa_educ_level."
+Pattern_31,Missing Outcome,"bl_low_bweight, bl_fa_age, bl_fa_educ_level",1,0.04,2461,100.0,"Missing primary outcome and missing baseline covariate(s): bl_low_bweight, bl_fa_age, bl_fa_educ_level."

@@ -1,0 +1,100 @@
+{
+  "task_version": "V5.0",
+  "timestamp_utc": "2026-10-31T09:07:12.575158+00:00",
+  "project": "Niyati",
+  "study_title": "Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial",
+  "dataset_metadata": {
+    "source_doi": "10.5061/dryad.nzs7h4551",
+    "raw_archive": "doi_10_5061_dryad_nzs7h4551__v20260226.zip",
+    "dta_file": "digitalECD_26Feb2026.dta",
+    "enrolled_participants": 2461,
+    "final_analysis_participants": 2149,
+    "total_exclusions": 312,
+    "populated_clusters": 159
+  },
+  "sample_flow_discrepancy_resolutions": {
+    "gap_29_endline_surveys_vs_raw_gsed": {
+      "reported_surveys_completed": 2183,
+      "recorded_raw_gsed": 2154,
+      "discrepancy_count": 29,
+      "resolution_status": "RESOLVED_WITH_DIRECT_EVIDENCE",
+      "finding": "Exactly 29 participants completed the endline household survey (final_status == 1) with valid caregiver interview data, but their direct child GSED assessment was not administered or recorded. All 29 participants have missing el_gsed_dscore."
+    },
+    "gap_20_published_exclusions_vs_actual_exclusions": {
+      "published_footnote_exclusions": 332,
+      "actual_dataset_exclusions": 312,
+      "discrepancy_count": 20,
+      "resolution_status": "UNRESOLVED_WITH_AVAILABLE_SOURCES",
+      "finding": "Actual exclusions in dataset and code are exactly 312 (307 missing raw GSED + 5 singleton age-band drops), yielding N=2,149 (2,461 - 312 = 2,149). If 332 were excluded, sample size would be 2,129, contradicting published Table 2 (N=2,149). The 20-case gap reflects an authorial drafting or calculation error in the manuscript footnote text."
+    }
+  },
+  "outcome_missingness_by_arm": {
+    "Control": {
+      "enrolled": 970,
+      "analysis_sample": 864,
+      "exclusions": 106,
+      "missingness_rate_pct": 10.93
+    },
+    "Home_visits": {
+      "enrolled": 317,
+      "analysis_sample": 297,
+      "exclusions": 20,
+      "missingness_rate_pct": 6.31,
+      "diff_vs_control_percentage_points": -4.62,
+      "p_value_cr1": 0.0051,
+      "p_value_conservative_df18": 0.0118,
+      "odds_ratio_vs_control": 0.549
+    },
+    "Afini_Digital": {
+      "enrolled": 1174,
+      "analysis_sample": 988,
+      "exclusions": 186,
+      "missingness_rate_pct": 15.84,
+      "diff_vs_control_percentage_points": 4.92,
+      "p_value_cr1": 0.0038,
+      "odds_ratio_vs_control": 1.534
+    },
+    "Direct_Active_Contrast_HV_vs_Digital": {
+      "diff_percentage_points": -9.53,
+      "cluster_robust_se_pct": 1.69,
+      "p_value_cr1": 0.0,
+      "p_value_conservative_df18": 2.4e-05,
+      "odds_ratio": 0.358
+    }
+  },
+  "key_baseline_predictors_of_missingness": {
+    "mother_age": {
+      "coefficient_lpm": -0.0053,
+      "p_value": 0.0,
+      "finding": "Younger mothers have significantly higher outcome attrition (p < 0.0001)."
+    },
+    "low_birth_weight": {
+      "coefficient_lpm": 0.0617,
+      "p_value": 0.0284,
+      "finding": "Low birth weight children (<2500g) have ~6.2 percentage points higher missingness (p = 0.028)."
+    },
+    "household_adults": {
+      "coefficient_lpm": -0.0134,
+      "p_value": 0.0178,
+      "finding": "Households with more adults have lower outcome attrition (p = 0.018)."
+    }
+  },
+  "mar_mnar_feasibility_verdict": {
+    "mcar_supported": false,
+    "mcar_verdict": "VIOLATED AND REFUTED: Missingness differs significantly by treatment arm (p < 0.001) and is strongly predicted by maternal age, birth weight, and household size.",
+    "mar_imputation_feasible": true,
+    "mar_verdict": "FEASIBLE WITH LIMITATIONS: 71.5% of outcome attriters have full baseline data intact, and another 20.8% are missing only father variables or MICS. Multiple imputation for the full cohort (N=2,461) is technically feasible under MAR, but MAR is inherently unprovable and cannot account for unobserved disengagement or child mortality.",
+    "mnar_sensitivity_recommended": true,
+    "mnar_verdict": "STRONGLY RECOMMENDED: A tipping-point / delta-adjustment sensitivity analysis varying unobserved outcome offsets across arms is essential to stress-test treatment efficacy."
+  },
+  "verification_checklist": {
+    "enrolled_participants_2461": true,
+    "final_analysis_participants_2149": true,
+    "total_exclusions_312": true,
+    "raw_gsed_missing_307": true,
+    "singleton_age_band_drops_5": true,
+    "survey_gap_29_resolved": true,
+    "text_gap_20_acknowledged": true,
+    "no_participant_ids_exported": true
+  }
+}
