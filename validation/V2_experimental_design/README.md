@@ -1,4 +1,4 @@
-# Task V2: Experimental Design & Baseline Balance Validation
+# Task V2 / V2.1: Experimental Design & Baseline Balance Validation
 
 **Project:** Niyati  
 **Study Title:** Digital support systems to improve child development in Peru: A cluster-randomized controlled open label trial  
@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary
 
-This report presents the forensic audit and validation of the experimental design, cluster assignment integrity, cluster-size distributions, province-stratified allocation, baseline covariate balance, published Table 1 reconciliation, and protocol covariate availability for Task V2.
+This report presents the forensic audit and validation of the experimental design, cluster assignment integrity, cluster-size distributions, province-stratified allocation, baseline covariate balance, published Table 1 reconciliation, and protocol covariate availability for Task V2 and the targeted corrections of Task V2.1.
 
 ### Key Audit Findings:
 1. **Cluster Count & Participant Reconciliation:**
@@ -20,10 +20,13 @@ This report presents the forensic audit and validation of the experimental desig
      - **Home visits:** 19 clusters, 317 participants
      - **Afini digital intervention:** 72 clusters, 1,174 participants
    - Five cluster IDs in the numeric range 1 to 164 (`51, 65, 66, 67, 68`) have zero enrolled participants in the released dataset. This aligns with the published paper, which notes that four Control-allocated clusters had no eligible enrolled households and one Home Visit-allocated cluster had zero enrollment. Per task specifications, treatment assignments of absent cluster IDs cannot and should not be inferred from numeric gaps alone.
-2. **Cluster Assignment Integrity:**
-   - **Zero clusters have mixed treatment assignments.** Every single populated cluster contains participants from exactly one assigned trial arm (`PERFECT_ISOLATION_VERIFIED`). No material assignment-integrity violations exist.
-   - 158 clusters map to exactly one study province. Exactly **one cluster (Cluster 104)** spans two provinces: 33 participants in Cajabamba and 1 participant in Cajamarca (both recorded in District 1).
-   - 142 clusters map to a single district, while 17 clusters have participants recorded across two districts within the same province.
+2. **Cluster Assignment Integrity & Exposure Distinction:**
+   - **ITT Assignment Integrity:** Every single populated cluster contains participants from exactly one assigned trial arm (`SINGLE_ARM_ASSIGNMENT_VERIFIED`; 0 mixed-arm clusters).
+   - **Intervention Exposure Distinction:** In contrast to randomized assignment integrity, four Control-assigned participants have positive digital platform tracking in the released dataset (`weeks_active > 0`, `program_time > 0`), as documented in the Task V1 audit (Section 7 and `outputs/intervention_tracking_by_arm.csv`). This is consistent with published study text reporting four control households accessing intervention services. No claim of zero exposure crossover is made.
+   - **Geographic Mapping & Privacy:**
+     - 158 clusters map to a single study province. Exactly **one cluster (Cluster 104)** contains participants recorded in two provinces: 33 participants in Cajabamba and 1 participant in Cajamarca (both recorded in District 1). Because Cluster 104 spans two provinces, the original province stratum for this cluster cannot be definitively established from the released participant data alone.
+     - 142 clusters map to a single district code, while 17 clusters have records spanning multiple administrative district codes within the same province. The specific reason for this dispersion cannot be established from the released data alone.
+     - Geographic completeness is confirmed: **0 missing province records** and **0 missing district records** across all 2,461 participants, and **0 clusters** with missing geographic values.
 3. **Cluster-Size Distributions:**
    - Overall cluster sizes range from 1 to 42 participants, with a mean of 15.48, median of 13.0, and standard deviation of 9.94 ($CV = 0.6419$).
    - Cluster size distributions by arm:
@@ -32,13 +35,13 @@ This report presents the forensic audit and validation of the experimental desig
      - Afini ($n=72$): Mean 16.31, Median 13.0, Range 1–42, SD 10.32 ($CV = 0.6327$)
    - Variations in enrolled cluster sizes reflect post-randomization household eligibility and recruitment within communities, not randomization failure.
 4. **Province-Stratified Allocation:**
-   - Randomization was stratified across the three study provinces: Cajamarca (88 clusters, 1,274 participants), Cajabamba (44 clusters, 806 participants), and San Marcos (27 clusters, 381 participants).
-   - Cluster allocation shares within provinces consistently mirror the planned trial-wide ~72:20:72 community ratio:
-     - Cajamarca: 42.05% Control, 11.36% Home visits, 46.59% Afini
-     - Cajabamba: 43.18% Control, 13.64% Home visits, 43.18% Afini
-     - San Marcos: 44.44% Control, 11.11% Home visits, 44.44% Afini
+   - The province-by-arm table distinguishes descriptive modal-province cluster classifications (summing to 159 clusters) from actual participant counts calculated directly from original participant-level records by recorded province (Cajamarca: 1,275; Cajabamba: 805; San Marcos: 381; summing to 2,461 participants).
+   - Modal cluster allocation shares within provinces consistently mirror the planned trial-wide ~72:20:72 community ratio:
+     - Cajamarca: 42.05% Control ($n=37$), 11.36% Home visits ($n=10$), 46.59% Afini ($n=41$)
+     - Cajabamba: 43.18% Control ($n=19$), 13.64% Home visits ($n=6$), 43.18% Afini ($n=19$)
+     - San Marcos: 44.44% Control ($n=12$), 11.11% Home visits ($n=3$), 44.44% Afini ($n=12$)
 5. **Baseline Covariate Balance:**
-   - **Cluster-Level Balance (Primary Diagnostic):** Treating each cluster as one randomized unit ($N=159$), 11 of 13 baseline variables exhibit at least one pairwise $|SMD| \ge 0.20$. However, these larger differences occur almost exclusively in comparisons involving the Home Visits arm, which has only 19 populated clusters and is subject to substantial small-sample sampling variability.
+   - **Cluster-Level Balance (Primary Diagnostic):** Treating each cluster as one randomized unit ($N=159$), 11 of 13 baseline variables exhibit at least one pairwise absolute SMD of 0.20 or higher. The largest differences occur mainly in comparisons involving the Home Visits arm, which has 19 populated clusters. The small number of Home Visit clusters makes balance estimates less stable, though small sample size does not prove or fully explain the observed differences. These differences should be considered when specifying adjusted treatment-effect models in later analysis, without choosing or implementing those models in this task.
    - **Participant-Level Balance (Secondary Diagnostic):** Weighted at the participant level ($N=2,461$), balance is high: 12 of 13 baseline variables have maximum $|SMD| < 0.20$. Only household SES index (`bl_qses_index`) shows $|SMD| \ge 0.20$ ($|SMD| = 0.211$ between Control and Afini).
    - In accordance with task guidelines, inferential p-values are not used to declare randomization success or failure.
 6. **Published Table 1 Replication:**
@@ -80,21 +83,24 @@ The study was designed as a three-arm cluster-randomized controlled trial across
 A dedicated cluster-level dataset was constructed with one record per populated cluster ($N=159$), cataloged in [cluster_assignment_integrity.csv](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_assignment_integrity.csv).
 
 ### Core Integrity Checks:
-1. **Single-Arm Treatment Isolation:**
-   - In 100% of populated clusters ($159 / 159$), every enrolled participant belongs to the exact same assigned treatment arm.
-   - There are **0 clusters with mixed arm assignments**. No cross-assignment or contamination of treatment coding occurred within clusters.
-2. **Missing Identifiers & Codes:**
+1. **Single-Arm ITT Treatment Isolation:**
+   - In 100% of populated clusters ($159 / 159$), every enrolled participant belongs to the exact same assigned treatment arm (`SINGLE_ARM_ASSIGNMENT_VERIFIED`).
+   - There are **0 clusters with mixed arm assignments**.
+2. **Intervention Exposure Cross-Reference (Task V1 Audit):**
+   - While ITT cluster assignment integrity is verified with 0 mixed-arm clusters, intervention exposure tracking reveals that four Control-assigned participants had active platform tracking records (`weeks_active > 0`, `program_time > 0`), as detailed in the Task V1 audit (Section 7 and `outputs/intervention_tracking_by_arm.csv`). This matches published study text noting four control households erroneously accessing intervention services. No claim of zero exposure crossover is made.
+3. **Missing Identifiers & Codes:**
    - Missing cluster IDs in participant dataset: **0**
    - Missing treatment assignments (`arm_itt`): **0**
    - Invalid treatment arm codes: **0** (all coded strictly 1, 2, or 3)
-3. **Geographic Mapping Integrity:**
+4. **Geographic Mapping & Missingness Checks:**
+   - **Geographic Completeness:** Participant-level missing `provincia` = **0**; participant-level missing `distrito` = **0**; populated clusters with missing geographic records = **0**.
    - **Province Consistency:**
      - 158 clusters map strictly to a single province.
-     - **Cluster 104** spans two provinces: 33 participants reside in Cajabamba and 1 participant (ID 286) resides in Cajamarca. Both are recorded in District 1.
+     - **Cluster 104** contains participants recorded in two provinces: 33 participants in Cajabamba and 1 participant in Cajamarca (both in District 1). Because Cluster 104 spans two provinces, the original province stratum for this cluster cannot be established from the released participant data alone.
    - **District Consistency:**
-     - 142 clusters map strictly to a single district.
-     - **17 clusters** contain participants recorded across two adjacent districts within the same province (e.g., Clusters 41, 47, 49, 60, 69, 80, 83, 91, 93, 100, 103, 118, 129, 137, 143, 147, 157).
-     - This occurs where community catchment boundaries span administrative district borders.
+     - 142 clusters map strictly to a single district code.
+     - **17 clusters** contain records spanning multiple administrative district codes within the same province (e.g., Clusters 41, 47, 49, 60, 69, 80, 83, 91, 93, 100, 103, 118, 129, 137, 143, 147, 157).
+     - The specific reason for this dispersion cannot be established from the released data alone.
 
 ---
 
@@ -105,13 +111,13 @@ The number of enrolled households per cluster was evaluated across the trial, by
 ### Parametric and Non-Parametric Summary:
 
 | Stratum | Populated Clusters | Total Enrolled | Min Size | Q25 (25%) | Median | Mean | Q75 (75%) | Max Size | Sample SD | Coeff. of Variation |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Overall Trial** | **159** | **2,461** | **1** | **7.0** | **13.0** | **15.48** | **22.0** | **42** | **9.94** | **0.6419** |
 | Control (Arm 1) | 68 | 970 | 1 | 6.0 | 13.0 | 14.26 | 20.25 | 42 | 10.01 | 0.7019 |
 | Home visits (Arm 2) | 19 | 317 | 3 | 10.0 | 18.0 | 16.68 | 22.0 | 28 | 7.98 | 0.4783 |
 | Afini (Arm 3) | 72 | 1,174 | 1 | 8.0 | 13.0 | 16.31 | 22.25 | 42 | 10.32 | 0.6327 |
 
-### Stratification by Province and Arm:
+### Stratification by Province and Arm (Descriptive Modal Province):
 - **Cajamarca (88 clusters):**
   - Control ($n=37$): Mean 12.89, Median 13.0, Range 1–34, SD 8.32, CV 0.6451
   - Home visits ($n=10$): Mean 15.10, Median 14.0, Range 3–28, SD 8.01, CV 0.5302
@@ -132,18 +138,28 @@ Enrolled cluster sizes exhibit natural variability (CV between 0.48 and 0.70). T
 
 ## 5. Province-Stratified Allocation (Validation C)
 
-The trial protocol specified randomization stratified by province. Cross-tabulation of populated clusters and enrolled participants across the three provinces is cataloged in [cluster_allocation_by_province.csv](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_allocation_by_province.csv).
+The trial protocol specified randomization stratified by province. The province-by-arm table distinguishes descriptive modal-province cluster allocations from actual participant counts calculated directly from original participant-level records, cataloged in [cluster_allocation_by_province.csv](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_allocation_by_province.csv).
 
-| Province Name | Populated Clusters | Enrolled Participants | Control Clusters (%) | Home Visits Clusters (%) | Afini Clusters (%) | Mean Cluster Size |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Cajamarca** | 88 | 1,274 | 37 (42.05%) | 10 (11.36%) | 41 (46.59%) | 14.48 |
-| **Cajabamba** | 44 | 806 | 19 (43.18%) | 6 (13.64%) | 19 (43.18%) | 18.32 |
-| **San Marcos** | 27 | 381 | 12 (44.44%) | 3 (11.11%) | 12 (44.44%) | 14.11 |
-| **All Provinces** | **159** | **2,461** | **68 (42.77%)** | **19 (11.95%)** | **72 (45.28%)** | **15.48** |
+| Province Name | Trial Arm | Modal-Province Clusters | Cluster Share within Province (%) | Actual Recorded Participants | Participant Share within Province (%) | Stratification Notes |
+| :--- | :--- | :---: | :---: | :---: | :---: | :--- |
+| **Cajamarca** | Control (1) | 37 | 42.05% | 477 | 37.41% | Direct participant-level count |
+| | Home visits (2) | 10 | 11.36% | 151 | 11.84% | Direct participant-level count |
+| | Afini (3) | 41 | 46.59% | 647 | 50.75% | Includes 1 participant in Cluster 104 recorded in Cajamarca |
+| | **Subtotal** | **88** | **55.35%** | **1,275** | **51.81%** | Total units & participants in Cajamarca |
+| **Cajabamba** | Control (1) | 19 | 43.18% | 346 | 42.98% | Direct participant-level count |
+| | Home visits (2) | 6 | 13.64% | 103 | 12.80% | Direct participant-level count |
+| | Afini (3) | 19 | 43.18% | 356 | 44.22% | Descriptive modal cluster; excludes 1 Cajamarca participant |
+| | **Subtotal** | **44** | **27.67%** | **805** | **32.71%** | Total units & participants in Cajabamba |
+| **San Marcos** | Control (1) | 12 | 44.44% | 147 | 38.58% | Direct participant-level count |
+| | Home visits (2) | 3 | 11.11% | 63 | 16.54% | Direct participant-level count |
+| | Afini (3) | 12 | 44.44% | 171 | 44.88% | Direct participant-level count |
+| | **Subtotal** | **27** | **16.98%** | **381** | **15.48%** | Total units & participants in San Marcos |
+| **All Combined**| **Total** | **159** | **100.00%** | **2,461** | **100.00%** | Trial-wide totals |
 
-### Stratification Verification:
+### Stratification Verification & Caveats:
 1. The observed province labels correspond to the three protocol provinces: Cajamarca, Cajabamba, and San Marcos.
-2. The proportion of clusters allocated to each arm is stable across all three provinces (~42–44% Control, ~11–14% Home visits, ~43–47% Afini), confirming consistent stratified allocation.
+2. The proportion of clusters allocated to each arm is stable across all three provinces (~42–44% Control, ~11–14% Home visits, ~43–47% Afini), mirroring the planned trial-wide ~72:20:72 community ratio.
+3. **Cluster Allocation is Descriptive Only:** Because Cluster 104 spans two provinces (33 participants in Cajabamba, 1 in Cajamarca), the original province stratum for this cluster cannot be definitively established from released participant data alone. To avoid misleading calculations, mean cluster size is not computed by dividing actual participant counts by modal-province cluster counts.
 
 ---
 
@@ -152,8 +168,9 @@ The trial protocol specified randomization stratified by province. Cross-tabulat
 Randomization was conducted at the **cluster level**. Therefore, cluster-level balance is the primary design diagnostic, while participant-level balance serves as a secondary comparison against published statistics.
 
 ### Standardized Mean Difference (SMD) Formula:
-Pairwise standardized mean differences were calculated using sample standard deviations ($ddof=1$) and pooled standard deviation:
+Pairwise standardized mean differences were calculated as pooled-SD standardized mean differences using sample standard deviations ($ddof=1$) and pooled standard deviation:
 $$s_{\text{pooled}} = \sqrt{\frac{(n_1 - 1)s_1^2 + (n_2 - 1)s_2^2}{n_1 + n_2 - 2}}, \quad SMD = \frac{\bar{x}_1 - \bar{x}_2}{s_{\text{pooled}}}$$
+If either group has insufficient observations ($n \le 1$), degrees of freedom $\le 0$, or pooled standard deviation is zero, `calc_smd()` returns `NaN` rather than substituting zero.
 
 Descriptive balance guideposts:
 - $|SMD| < 0.10$: Small difference
@@ -179,9 +196,10 @@ Descriptive balance guideposts:
 | **Child age** (`bl_childage`) | Mean months | 0.1247 | Moderate difference | 0.0298 | Small difference |
 
 ### Key Diagnostic Takeaways:
-1. **Cluster-Level Sampling Variability:** At the cluster level, 11 of 13 variables exhibit $|SMD| \ge 0.20$. Crucially, these larger values reflect the small number of randomized clusters in the Home Visits arm ($n=19$). In small cluster samples, random sampling variability naturally widens the observed cluster-level standardized differences.
-2. **Participant-Level Balance:** When evaluated at the participant level ($N=2,461$), 12 of 13 variables fall below the 0.20 threshold, with child sex, child age, low birth weight, father presence, siblings, and home stimulation showing very small differences ($|SMD| < 0.10$).
-3. Only household SES index (`bl_qses_index`) retains a modest difference ($|SMD| = 0.211$) between Control (mean 2.90) and Afini (mean 3.20).
+1. **Cluster-Level Balance:** 11 of 13 baseline variables exhibit at least one pairwise cluster-level absolute SMD of 0.20 or higher.
+2. **Influence of Home Visits Cluster Count:** The largest differences occur mainly in comparisons involving the Home Visits arm, which has only 19 populated clusters. The small number of Home Visit clusters makes balance estimates less stable. However, small sample size should not be claimed as proving or fully explaining the observed differences.
+3. **Implications for Later Analysis:** These observed baseline differences should be considered when specifying adjusted treatment-effect models in subsequent analytical tasks, without choosing or implementing those models in this task.
+4. **Participant-Level Balance:** When evaluated at the participant level ($N=2,461$), 12 of 13 variables fall below 0.20, with child sex, child age, low birth weight, father presence, siblings, and home stimulation showing small differences ($|SMD| < 0.10$). Only household SES index (`bl_qses_index`) retains $|SMD| \ge 0.20$ ($|SMD| = 0.211$ between Control and Afini).
 
 Full pairwise metrics are cataloged in [cluster_covariate_balance.csv](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_covariate_balance.csv) and [participant_baseline_balance.csv](file:///d:/Niyati/validation/V2_experimental_design/outputs/participant_baseline_balance.csv).
 
@@ -207,7 +225,7 @@ Baseline covariate completeness was evaluated across all three trial arms, catal
 | `bl_fa_age` | Father age in years | 120 (12.37%) | 40 (12.62%) | 151 (12.86%) | 311 (12.64%) | 2,150 / 2,461 |
 | `bl_fa_educ_level` | Father education level | 131 (13.51%) | 50 (15.77%) | 170 (14.48%) | 351 (14.26%) | 2,110 / 2,461 |
 
-Missingness rates are well balanced across the three study arms, with no differential non-response at baseline.
+**Missingness Interpretation:** Missingness percentages are broadly similar across arms, while acknowledging that some differences exist (for example, father education missingness is 15.77% in Home visits vs. 13.51% in Control, and low birth weight missingness is 2.84% in Home visits vs. 1.34% in Control). No formal missingness hypothesis test was performed.
 
 ---
 
@@ -274,7 +292,7 @@ The trial protocol describes using constrained randomization based on study prov
 All output files are generated in `validation/V2_experimental_design/outputs/`:
 - [`cluster_assignment_integrity.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_assignment_integrity.csv): 159-cluster dataset with treatment assignment, province, district, participant count, and integrity flags.
 - [`cluster_size_distribution.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_size_distribution.csv): Parametric and non-parametric cluster-size statistics overall, by arm, and by province x arm.
-- [`cluster_allocation_by_province.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_allocation_by_province.csv): Province-stratified allocation cross-tabulation with cluster counts, participant counts, and shares.
+- [`cluster_allocation_by_province.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_allocation_by_province.csv): Province-stratified allocation cross-tabulation distinguishing modal-province cluster counts from actual participant counts.
 - [`cluster_covariate_balance.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/cluster_covariate_balance.csv): Primary cluster-level baseline balance diagnostics with pairwise SMDs across randomized units.
 - [`participant_baseline_balance.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/participant_baseline_balance.csv): Secondary participant-weighted baseline balance diagnostics with pairwise SMDs.
 - [`published_table1_reconciliation.csv`](file:///d:/Niyati/validation/V2_experimental_design/outputs/published_table1_reconciliation.csv): Replication and comparison of all 17 published Table 1 baseline summary statistics.

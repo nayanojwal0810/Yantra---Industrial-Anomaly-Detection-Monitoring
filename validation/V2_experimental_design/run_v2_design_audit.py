@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Task V2 — Experimental Design & Baseline Balance Validation
+Task V2 / V2.1 — Experimental Design & Baseline Balance Validation
 Project: Niyati
 Study: Digital support systems to improve child development in Peru:
        A cluster-randomized controlled open label trial
@@ -11,6 +11,8 @@ This script performs forensic validation of the experimental design, cluster
 assignment integrity, cluster-size distributions, province-stratified allocation,
 cluster-level and participant-level baseline balance, published Table 1
 reconciliation, baseline missingness, and randomization-covariate availability.
+Includes Task V2.1 targeted corrections for province allocation reporting,
+intervention exposure distinction, geographic neutral wording, and undefined SMD handling.
 """
 
 from datetime import datetime, timezone
@@ -89,22 +91,30 @@ PUBLISHED_FACTS = {
 # -----------------------------------------------------------------------------
 def calc_smd(m1: float, s1: float, n1: int, m2: float, s2: float, n2: int) -> float:
     """
-    Computes Standardized Mean Difference (Cohen's d / Hedges' g pooled SD formula)
-    between Group 1 and Group 2 using sample standard deviations (ddof=1).
+    Computes the pooled-SD standardized mean difference between Group 1 and Group 2
+    using sample standard deviations (ddof=1):
+        s_pooled = sqrt(((n1 - 1)*s1^2 + (n2 - 1)*s2^2) / (n1 + n2 - 2))
+        SMD = (m1 - m2) / s_pooled
+
+    Returns np.nan when either group has insufficient observations (n1 <= 1 or n2 <= 1),
+    degrees of freedom <= 0, or when the pooled standard deviation is zero or undefined.
+    Does not substitute zero for undefined values.
     """
     if n1 <= 1 or n2 <= 1 or (n1 + n2 - 2) <= 0:
-        return 0.0
+        return np.nan
+    if np.isnan(m1) or np.isnan(m2) or np.isnan(s1) or np.isnan(s2):
+        return np.nan
     pooled_var = (((n1 - 1) * (s1 ** 2)) + ((n2 - 1) * (s2 ** 2))) / (n1 + n2 - 2)
     if pooled_var <= 0.0 or np.isnan(pooled_var):
-        return 0.0
+        return np.nan
     pooled_sd = np.sqrt(pooled_var)
     return float((m1 - m2) / pooled_sd)
 
 
 def classify_smd(abs_smd: float) -> str:
     """Assigns descriptive balance band per task instructions."""
-    if np.isnan(abs_smd):
-        return "Undefined"
+    if abs_smd is None or np.isnan(abs_smd):
+        return "Undefined / Insufficient Data"
     if abs_smd < 0.10:
         return "Small difference (<0.10)"
     elif abs_smd < 0.20:
@@ -152,13 +162,19 @@ def load_dataset() -> Tuple[pd.DataFrame, Dict[str, Any], Dict[str, Any]]:
 def audit_cluster_assignment_integrity(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """
     Constructs cluster-level dataset (one row per populated cluster) and validates
-    cluster-assignment integrity, treatment isolation, and geographic mapping.
+    cluster-assignment integrity, ITT treatment assignment isolation, and geographic mapping.
+    Includes explicit missing-value checks for geography (dropna=False) and neutral reporting.
     """
     cluster_records = []
     
-    # Sort by cluster ID
     clusters = sorted(df["cluster"].dropna().unique())
     
+    # Participant-level geographic missingness
+    pt_prov_missing = int(df["provincia"].isna().sum())
+    pt_dist_missing = int(df["distrito"].isna().sum())
+    
+    clusters_with_geo_missing = 0
+
     for c_id in clusters:
         sub = df[df["cluster"] == c_id]
         c_int = int(c_id)
@@ -168,28 +184,42 @@ def audit_cluster_assignment_integrity(df: pd.DataFrame) -> Tuple[pd.DataFrame, 
         unique_arms = sub["arm_itt"].unique().tolist()
         arm_code = int(unique_arms[0])
         arm_name = ARM_MAP.get(arm_code, f"Unknown ({arm_code})")
-        single_arm_integrity = "VERIFIED" if len(unique_arms) == 1 else "FLAGGED_MULTI_ARM"
+        single_arm_integrity = "SINGLE_ARM_ASSIGNMENT_VERIFIED" if len(unique_arms) == 1 else "FLAGGED_MULTI_ARM"
         
-        # Geographic checks
-        prov_counts = sub["provincia"].value_counts()
-        modal_prov_code = int(prov_counts.index[0])
-        modal_prov_name = PROV_MAP.get(modal_prov_code, f"Code {modal_prov_code}")
-        prov_count = len(prov_counts)
+        # Geographic checks (do not silently drop NaNs)
+        prov_counts = sub["provincia"].value_counts(dropna=False)
+        dist_counts = sub["distrito"].value_counts(dropna=False)
         
-        dist_counts = sub["distrito"].value_counts()
-        modal_dist_code = int(dist_counts.index[0])
-        dist_count = len(dist_counts)
+        c_prov_missing = int(sub["provincia"].isna().sum())
+        c_dist_missing = int(sub["distrito"].isna().sum())
+        if c_prov_missing > 0 or c_dist_missing > 0:
+            clusters_with_geo_missing += 1
+
+        modal_prov_val = prov_counts.index[0]
+        if pd.isna(modal_prov_val):
+            modal_prov_code = None
+            modal_prov_name = "Missing"
+        else:
+            modal_prov_code = int(modal_prov_val)
+            modal_prov_name = PROV_MAP.get(modal_prov_code, f"Code {modal_prov_code}")
+        prov_count = len(prov_counts.dropna())
         
-        # Notes on geographic consistency
+        modal_dist_val = dist_counts.index[0]
+        modal_dist_code = int(modal_dist_val) if not pd.isna(modal_dist_val) else None
+        dist_count = len(dist_counts.dropna())
+        
+        # Neutral notes on geographic consistency
         geo_notes = []
         if prov_count > 1:
-            details = ", ".join([f"{count} in {PROV_MAP.get(int(p), str(p))}" for p, count in prov_counts.items()])
-            geo_notes.append(f"Spans {prov_count} provinces ({details})")
+            details = ", ".join([f"{count} in {PROV_MAP.get(int(p), str(p))}" for p, count in prov_counts.dropna().items()])
+            geo_notes.append(f"Cluster spans {prov_count} provinces ({details}); specific reason cannot be established from released data alone")
         if dist_count > 1:
-            details = ", ".join([f"{count} in dist {int(d)}" for d, count in dist_counts.items()])
-            geo_notes.append(f"Spans {dist_count} districts ({details})")
+            details = ", ".join([f"{count} in district {int(d)}" for d, count in dist_counts.dropna().items()])
+            geo_notes.append(f"Cluster records span multiple administrative district codes ({details}); specific reason cannot be established from released data alone")
+        if c_prov_missing > 0 or c_dist_missing > 0:
+            geo_notes.append(f"Missing geographic records (prov_missing={c_prov_missing}, dist_missing={c_dist_missing})")
         if not geo_notes:
-            geo_notes.append("Single province and single district")
+            geo_notes.append("Single province and single district; complete geographic records")
             
         cluster_records.append({
             "cluster_id": c_int,
@@ -203,6 +233,8 @@ def audit_cluster_assignment_integrity(df: pd.DataFrame) -> Tuple[pd.DataFrame, 
             "single_arm_integrity": single_arm_integrity,
             "province_count": prov_count,
             "district_count": dist_count,
+            "missing_province_count": c_prov_missing,
+            "missing_district_count": c_dist_missing,
             "geographic_integrity_notes": "; ".join(geo_notes)
         })
 
@@ -213,7 +245,6 @@ def audit_cluster_assignment_integrity(df: pd.DataFrame) -> Tuple[pd.DataFrame, 
     obs_cluster_ids = set(cluster_df["cluster_id"])
     missing_cluster_ids = sorted(list(all_numeric_ids - obs_cluster_ids))
     
-    # Material integrity checks
     mixed_arm_clusters = cluster_df[cluster_df["treatment_arm_count"] > 1]
     clusters_multi_prov = cluster_df[cluster_df["province_count"] > 1]
     clusters_multi_dist = cluster_df[cluster_df["district_count"] > 1]
@@ -231,6 +262,13 @@ def audit_cluster_assignment_integrity(df: pd.DataFrame) -> Tuple[pd.DataFrame, 
         },
         "material_integrity_issues_found": len(mixed_arm_clusters),
         "clusters_with_mixed_arm_assignments": len(mixed_arm_clusters),
+        "single_arm_integrity_status": "SINGLE_ARM_ASSIGNMENT_VERIFIED",
+        "exposure_crossover_v1_cross_reference": (
+            "ITT assignment integrity is verified (0 mixed-arm clusters). "
+            "Regarding intervention exposure, cross-reference Task V1 audit (Section 7 and outputs/intervention_tracking_by_arm.csv): "
+            "four Control-assigned participants have positive digital platform tracking (weeks_active > 0, program_time > 0), "
+            "consistent with published text reporting four control households accessing intervention services."
+        ),
         "clusters_spanning_multiple_provinces": len(clusters_multi_prov),
         "multi_province_cluster_details": [
             {
@@ -249,7 +287,10 @@ def audit_cluster_assignment_integrity(df: pd.DataFrame) -> Tuple[pd.DataFrame, 
         ),
         "missing_cluster_id_values_in_data": int(df["cluster"].isna().sum()),
         "missing_arm_values_in_data": int(df["arm_itt"].isna().sum()),
-        "invalid_arm_codes_count": int((~df["arm_itt"].isin([1, 2, 3])).sum())
+        "invalid_arm_codes_count": int((~df["arm_itt"].isin([1, 2, 3])).sum()),
+        "participant_level_missing_province_count": pt_prov_missing,
+        "participant_level_missing_district_count": pt_dist_missing,
+        "clusters_with_missing_geography_count": clusters_with_geo_missing
     }
 
     return cluster_df, summary_checks
@@ -296,7 +337,7 @@ def audit_cluster_size_distribution(cluster_df: pd.DataFrame) -> pd.DataFrame:
         sub_s = cluster_df[cluster_df["arm_code"] == a]["enrolled_participants"]
         rows.append(get_stats(sub_s, "Treatment Arm", a, ARM_MAP[a], "All Provinces Combined"))
 
-    # 3. Separately by Province x Arm
+    # 3. Separately by Province x Arm (descriptive modal province)
     for p_name in ["Cajamarca", "Cajabamba", "San Marcos"]:
         for a in [1, 2, 3]:
             sub_s = cluster_df[(cluster_df["province_modal"] == p_name) & (cluster_df["arm_code"] == a)]["enrolled_participants"]
@@ -309,65 +350,76 @@ def audit_cluster_size_distribution(cluster_df: pd.DataFrame) -> pd.DataFrame:
 # -----------------------------------------------------------------------------
 # 4. Validation C: Province-Stratified Allocation
 # -----------------------------------------------------------------------------
-def audit_province_stratified_allocation(cluster_df: pd.DataFrame) -> pd.DataFrame:
+def audit_province_stratified_allocation(df: pd.DataFrame, cluster_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Constructs cross-tabulation of populated clusters and enrolled participants
-    by study province and treatment arm, checking protocol stratification.
+    Constructs cross-tabulation distinguishing descriptive modal-province cluster
+    allocation from actual participant counts calculated directly from participant-level
+    recorded provincia and arm_itt. Does not calculate misleading ratios.
     """
     rows = []
     
-    # Calculate totals per province
-    prov_totals = cluster_df.groupby("province_modal").agg(
-        total_prov_clusters=("cluster_id", "count"),
-        total_prov_participants=("enrolled_participants", "sum")
-    ).to_dict("index")
+    # Modal cluster counts
+    modal_cluster_totals = cluster_df.groupby("province_modal")["cluster_id"].count().to_dict()
+    total_modal_clusters = len(cluster_df)
     
-    overall_clusters = len(cluster_df)
-    overall_pts = int(cluster_df["enrolled_participants"].sum())
+    # Actual participant counts directly from participant dataset
+    pt_crosstab = df.groupby(["provincia", "arm_itt"]).size().unstack(fill_value=0)
+    pt_prov_totals = df.groupby("provincia").size().to_dict()
+    total_actual_participants = len(df)
+
+    prov_code_map = {
+        "Cajamarca": 1,
+        "Cajabamba": 2,
+        "San Marcos": 10
+    }
 
     for p_name in ["Cajamarca", "Cajabamba", "San Marcos"]:
-        p_cl_tot = prov_totals[p_name]["total_prov_clusters"]
-        p_pt_tot = prov_totals[p_name]["total_prov_participants"]
+        p_code = prov_code_map[p_name]
+        p_cl_tot = modal_cluster_totals.get(p_name, 0)
+        p_pt_tot = pt_prov_totals.get(p_code, 0)
         
         for a in [1, 2, 3]:
-            sub = cluster_df[(cluster_df["province_modal"] == p_name) & (cluster_df["arm_code"] == a)]
-            cl_count = len(sub)
-            pt_count = int(sub["enrolled_participants"].sum())
+            sub_cl = cluster_df[(cluster_df["province_modal"] == p_name) & (cluster_df["arm_code"] == a)]
+            cl_count = len(sub_cl)
             cl_share = round((cl_count / p_cl_tot) * 100, 2) if p_cl_tot > 0 else 0.0
-            pt_share = round((pt_count / p_pt_tot) * 100, 2) if p_pt_tot > 0 else 0.0
-            mean_sz = round(pt_count / cl_count, 2) if cl_count > 0 else 0.0
             
-            note = "Consistent with province-stratified cluster allocation."
+            # Participant counts calculated directly from original participant-level records
+            pt_count = int(pt_crosstab.loc[p_code, a]) if (p_code in pt_crosstab.index and a in pt_crosstab.columns) else 0
+            pt_share = round((pt_count / p_pt_tot) * 100, 2) if p_pt_tot > 0 else 0.0
+            
+            notes = "Cluster allocation reflects descriptive modal-province classification. Participant counts are direct from recorded participant-level province."
             if p_name == "Cajabamba" and a == 3:
-                note += " Includes Cluster 104 (33 participants in Cajabamba, 1 in Cajamarca)."
-                
+                notes += " Note that Cluster 104 contains 33 participants in Cajabamba and 1 in Cajamarca; the original province stratum for this cluster cannot be established from released data alone."
+            elif p_name == "Cajamarca" and a == 3:
+                notes += " Actual participant count includes 1 participant in Cluster 104 recorded in Cajamarca."
+
             rows.append({
                 "province_name": p_name,
-                "arm_code": a,
+                "arm_code": str(a),
                 "arm_name": ARM_MAP[a],
-                "populated_clusters": cl_count,
+                "modal_province_clusters": cl_count,
                 "total_clusters_in_province": p_cl_tot,
-                "cluster_share_within_province_pct": cl_share,
-                "enrolled_participants": pt_count,
+                "modal_cluster_share_within_province_pct": cl_share,
+                "actual_recorded_participants": pt_count,
                 "total_participants_in_province": p_pt_tot,
                 "participant_share_within_province_pct": pt_share,
-                "mean_cluster_size": mean_sz,
-                "stratification_notes": note
+                "stratification_notes": notes
             })
             
         # Province subtotal row
+        cl_prov_share = round((p_cl_tot / total_modal_clusters) * 100, 2)
+        pt_prov_share = round((p_pt_tot / total_actual_participants) * 100, 2)
         rows.append({
             "province_name": p_name,
             "arm_code": "SUBTOTAL",
             "arm_name": "All Arms Combined",
-            "populated_clusters": p_cl_tot,
+            "modal_province_clusters": p_cl_tot,
             "total_clusters_in_province": p_cl_tot,
-            "cluster_share_within_province_pct": 100.0,
-            "enrolled_participants": p_pt_tot,
+            "modal_cluster_share_within_province_pct": cl_prov_share,
+            "actual_recorded_participants": p_pt_tot,
             "total_participants_in_province": p_pt_tot,
-            "participant_share_within_province_pct": 100.0,
-            "mean_cluster_size": round(p_pt_tot / p_cl_tot, 2),
-            "stratification_notes": f"Total populated units across {p_name}."
+            "participant_share_within_province_pct": pt_prov_share,
+            "stratification_notes": f"Total populated units and participants recorded in {p_name}."
         })
 
     # Overall trial summary row
@@ -375,14 +427,13 @@ def audit_province_stratified_allocation(cluster_df: pd.DataFrame) -> pd.DataFra
         "province_name": "All Provinces Combined",
         "arm_code": "TOTAL",
         "arm_name": "All Arms Combined",
-        "populated_clusters": overall_clusters,
-        "total_clusters_in_province": overall_clusters,
-        "cluster_share_within_province_pct": 100.0,
-        "enrolled_participants": overall_pts,
-        "total_participants_in_province": overall_pts,
+        "modal_province_clusters": total_modal_clusters,
+        "total_clusters_in_province": total_modal_clusters,
+        "modal_cluster_share_within_province_pct": 100.0,
+        "actual_recorded_participants": total_actual_participants,
+        "total_participants_in_province": total_actual_participants,
         "participant_share_within_province_pct": 100.0,
-        "mean_cluster_size": round(overall_pts / overall_clusters, 2),
-        "stratification_notes": "Trial-wide total (159 populated clusters, 2,461 enrolled participants)."
+        "stratification_notes": "Trial-wide total (159 modal clusters, 2,461 actual recorded participants)."
     })
 
     return pd.DataFrame(rows)
@@ -508,8 +559,8 @@ def audit_cluster_level_balance(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[st
     Calculates Primary Cluster-Level Balance diagnostics.
     Each populated cluster is treated as one randomized unit.
     Computes pairwise SMDs across clusters for Control, Home visits, and Afini.
+    Safely handles undefined values without substituting zero.
     """
-    # 1. Aggregate to cluster level
     var_names = [v["name"] for v in BASELINE_VARS]
     cl_means = df.groupby("cluster")[var_names].mean()
     cl_arms = df.groupby("cluster")["arm_itt"].first().to_frame()
@@ -534,19 +585,22 @@ def audit_cluster_level_balance(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[st
         smd_1_3 = calc_smd(m1, sd1, n1, m3, sd3, n3)
         smd_2_3 = calc_smd(m2, sd2, n2, m3, sd3, n3)
 
-        abs_1_2 = abs(smd_1_2)
-        abs_1_3 = abs(smd_1_3)
-        abs_2_3 = abs(smd_2_3)
-        max_abs = max(abs_1_2, abs_1_3, abs_2_3)
+        abs_1_2 = abs(smd_1_2) if not np.isnan(smd_1_2) else np.nan
+        abs_1_3 = abs(smd_1_3) if not np.isnan(smd_1_3) else np.nan
+        abs_2_3 = abs(smd_2_3) if not np.isnan(smd_2_3) else np.nan
+        
+        valid_abs = [a for a in [abs_1_2, abs_1_3, abs_2_3] if not np.isnan(a)]
+        max_abs = max(valid_abs) if valid_abs else np.nan
 
         # Track max abs SMD for parent variable
-        if parent not in max_smd_by_base_var or max_abs > max_smd_by_base_var[parent]:
-            max_smd_by_base_var[parent] = max_abs
+        if not np.isnan(max_abs):
+            if parent not in max_smd_by_base_var or max_abs > max_smd_by_base_var[parent]:
+                max_smd_by_base_var[parent] = max_abs
 
         band = classify_smd(max_abs)
         note = "Primary randomized unit comparison."
         if n2 == 19:
-            note += " Home Visits arm has 19 clusters; higher sampling variability is expected."
+            note += " Home Visits arm has 19 clusters, which makes balance estimates less stable."
 
         rows.append({
             "variable_name": v,
@@ -554,21 +608,21 @@ def audit_cluster_level_balance(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[st
             "variable_type": item["type"],
             "metric_description": item["metric_desc"],
             "control_clusters_n": n1,
-            "control_cluster_mean": round(m1, 4),
-            "control_cluster_sd": round(sd1, 4),
+            "control_cluster_mean": round(m1, 4) if not np.isnan(m1) else np.nan,
+            "control_cluster_sd": round(sd1, 4) if not np.isnan(sd1) else np.nan,
             "hv_clusters_n": n2,
-            "hv_cluster_mean": round(m2, 4),
-            "hv_cluster_sd": round(sd2, 4),
+            "hv_cluster_mean": round(m2, 4) if not np.isnan(m2) else np.nan,
+            "hv_cluster_sd": round(sd2, 4) if not np.isnan(sd2) else np.nan,
             "afini_clusters_n": n3,
-            "afini_cluster_mean": round(m3, 4),
-            "afini_cluster_sd": round(sd3, 4),
-            "smd_control_vs_hv": round(smd_1_2, 4),
-            "smd_control_vs_afini": round(smd_1_3, 4),
-            "smd_hv_vs_afini": round(smd_2_3, 4),
-            "abs_smd_control_vs_hv": round(abs_1_2, 4),
-            "abs_smd_control_vs_afini": round(abs_1_3, 4),
-            "abs_smd_hv_vs_afini": round(abs_2_3, 4),
-            "max_abs_smd": round(max_abs, 4),
+            "afini_cluster_mean": round(m3, 4) if not np.isnan(m3) else np.nan,
+            "afini_cluster_sd": round(sd3, 4) if not np.isnan(sd3) else np.nan,
+            "smd_control_vs_hv": round(smd_1_2, 4) if not np.isnan(smd_1_2) else np.nan,
+            "smd_control_vs_afini": round(smd_1_3, 4) if not np.isnan(smd_1_3) else np.nan,
+            "smd_hv_vs_afini": round(smd_2_3, 4) if not np.isnan(smd_2_3) else np.nan,
+            "abs_smd_control_vs_hv": round(abs_1_2, 4) if not np.isnan(abs_1_2) else np.nan,
+            "abs_smd_control_vs_afini": round(abs_1_3, 4) if not np.isnan(abs_1_3) else np.nan,
+            "abs_smd_hv_vs_afini": round(abs_2_3, 4) if not np.isnan(abs_2_3) else np.nan,
+            "max_abs_smd": round(max_abs, 4) if not np.isnan(max_abs) else np.nan,
             "balance_band": band,
             "diagnostic_notes": note
         })
@@ -580,6 +634,7 @@ def audit_participant_level_balance(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dic
     """
     Calculates Secondary Participant-Level Balance diagnostics.
     Computes participant-weighted means, SDs (ddof=1), and pairwise SMDs.
+    Safely handles undefined values without substituting zero.
     """
     rows = []
     max_smd_by_base_var: Dict[str, float] = {}
@@ -600,13 +655,16 @@ def audit_participant_level_balance(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dic
         smd_1_3 = calc_smd(m1, sd1, n1, m3, sd3, n3)
         smd_2_3 = calc_smd(m2, sd2, n2, m3, sd3, n3)
 
-        abs_1_2 = abs(smd_1_2)
-        abs_1_3 = abs(smd_1_3)
-        abs_2_3 = abs(smd_2_3)
-        max_abs = max(abs_1_2, abs_1_3, abs_2_3)
+        abs_1_2 = abs(smd_1_2) if not np.isnan(smd_1_2) else np.nan
+        abs_1_3 = abs(smd_1_3) if not np.isnan(smd_1_3) else np.nan
+        abs_2_3 = abs(smd_2_3) if not np.isnan(smd_2_3) else np.nan
 
-        if parent not in max_smd_by_base_var or max_abs > max_smd_by_base_var[parent]:
-            max_smd_by_base_var[parent] = max_abs
+        valid_abs = [a for a in [abs_1_2, abs_1_3, abs_2_3] if not np.isnan(a)]
+        max_abs = max(valid_abs) if valid_abs else np.nan
+
+        if not np.isnan(max_abs):
+            if parent not in max_smd_by_base_var or max_abs > max_smd_by_base_var[parent]:
+                max_smd_by_base_var[parent] = max_abs
 
         band = classify_smd(max_abs)
 
@@ -616,21 +674,21 @@ def audit_participant_level_balance(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dic
             "variable_type": item["type"],
             "metric_description": item["metric_desc"],
             "control_participants_n": n1,
-            "control_mean_or_prop": round(m1, 4),
-            "control_sd": round(sd1, 4),
+            "control_mean_or_prop": round(m1, 4) if not np.isnan(m1) else np.nan,
+            "control_sd": round(sd1, 4) if not np.isnan(sd1) else np.nan,
             "hv_participants_n": n2,
-            "hv_mean_or_prop": round(m2, 4),
-            "hv_sd": round(sd2, 4),
+            "hv_mean_or_prop": round(m2, 4) if not np.isnan(m2) else np.nan,
+            "hv_sd": round(sd2, 4) if not np.isnan(sd2) else np.nan,
             "afini_participants_n": n3,
-            "afini_mean_or_prop": round(m3, 4),
-            "afini_sd": round(sd3, 4),
-            "smd_control_vs_hv": round(smd_1_2, 4),
-            "smd_control_vs_afini": round(smd_1_3, 4),
-            "smd_hv_vs_afini": round(smd_2_3, 4),
-            "abs_smd_control_vs_hv": round(abs_1_2, 4),
-            "abs_smd_control_vs_afini": round(abs_1_3, 4),
-            "abs_smd_hv_vs_afini": round(abs_2_3, 4),
-            "max_abs_smd": round(max_abs, 4),
+            "afini_mean_or_prop": round(m3, 4) if not np.isnan(m3) else np.nan,
+            "afini_sd": round(sd3, 4) if not np.isnan(sd3) else np.nan,
+            "smd_control_vs_hv": round(smd_1_2, 4) if not np.isnan(smd_1_2) else np.nan,
+            "smd_control_vs_afini": round(smd_1_3, 4) if not np.isnan(smd_1_3) else np.nan,
+            "smd_hv_vs_afini": round(smd_2_3, 4) if not np.isnan(smd_2_3) else np.nan,
+            "abs_smd_control_vs_hv": round(abs_1_2, 4) if not np.isnan(abs_1_2) else np.nan,
+            "abs_smd_control_vs_afini": round(abs_1_3, 4) if not np.isnan(abs_1_3) else np.nan,
+            "abs_smd_hv_vs_afini": round(abs_2_3, 4) if not np.isnan(abs_2_3) else np.nan,
+            "max_abs_smd": round(max_abs, 4) if not np.isnan(max_abs) else np.nan,
             "balance_band": band,
             "diagnostic_notes": "Secondary participant-weighted comparison using available non-missing data."
         })
@@ -994,7 +1052,7 @@ def audit_randomization_covariate_availability() -> pd.DataFrame:
 # -----------------------------------------------------------------------------
 def run_v2_design_audit() -> None:
     print("=" * 70)
-    print("STARTING TASK V2: EXPERIMENTAL DESIGN & BASELINE BALANCE VALIDATION")
+    print("STARTING TASK V2 / V2.1: EXPERIMENTAL DESIGN & BASELINE BALANCE VALIDATION")
     print(f"Timestamp: {datetime.now(timezone.utc).isoformat()}")
     print(f"Project Directory: {REPO_ROOT}")
     print(f"Raw Data Archive: {RAW_ZIP_PATH}")
@@ -1024,7 +1082,7 @@ def run_v2_design_audit() -> None:
 
     # Step 4: Validation C — Province-Stratified Allocation
     print("\n[Step 4] Executing Validation C (Province-Stratified Allocation)...")
-    prov_alloc_df = audit_province_stratified_allocation(cluster_df)
+    prov_alloc_df = audit_province_stratified_allocation(df, cluster_df)
     prov_alloc_csv_path = OUTPUT_DIR / "cluster_allocation_by_province.csv"
     prov_alloc_df.to_csv(prov_alloc_csv_path, index=False)
     print(f" -> Generated {prov_alloc_csv_path.name} ({len(prov_alloc_df)} rows).")
@@ -1062,8 +1120,13 @@ def run_v2_design_audit() -> None:
 
     # Step 8: Build Comprehensive Summary JSON
     print("\n[Step 8] Building comprehensive v2_summary.json...")
+    
+    # Calculate actual participant counts by province and arm
+    actual_pt_crosstab = df.groupby(["provincia", "arm_itt"]).size().unstack(fill_value=0)
+    prov_code_map = {"Cajamarca": 1, "Cajabamba": 2, "San Marcos": 10}
+
     v2_summary = {
-        "audit_version": "V2.0",
+        "audit_version": "V2.1",
         "audit_timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "python_version": sys.version,
         "pandas_version": pd.__version__,
@@ -1093,13 +1156,17 @@ def run_v2_design_audit() -> None:
             "total_populated_clusters": integrity_summary["total_populated_clusters_observed"],
             "material_integrity_issues_count": integrity_summary["material_integrity_issues_found"],
             "clusters_with_mixed_arm_assignments": integrity_summary["clusters_with_mixed_arm_assignments"],
-            "single_arm_integrity_status": "PERFECT_ISOLATION_VERIFIED",
+            "single_arm_integrity_status": integrity_summary["single_arm_integrity_status"],
+            "exposure_crossover_v1_cross_reference": integrity_summary["exposure_crossover_v1_cross_reference"],
             "clusters_spanning_multiple_provinces_count": integrity_summary["clusters_spanning_multiple_provinces"],
             "clusters_spanning_multiple_provinces_details": integrity_summary["multi_province_cluster_details"],
             "clusters_spanning_multiple_districts_count": integrity_summary["clusters_spanning_multiple_districts"],
             "missing_cluster_ids_in_data": integrity_summary["missing_cluster_id_values_in_data"],
             "missing_treatment_assignments_in_data": integrity_summary["missing_arm_values_in_data"],
-            "invalid_treatment_arm_codes": integrity_summary["invalid_arm_codes_count"]
+            "invalid_treatment_arm_codes": integrity_summary["invalid_arm_codes_count"],
+            "participant_level_missing_province_count": integrity_summary["participant_level_missing_province_count"],
+            "participant_level_missing_district_count": integrity_summary["participant_level_missing_district_count"],
+            "clusters_with_missing_geography_count": integrity_summary["clusters_with_missing_geography_count"]
         },
         "cluster_size_distributions": {
             "overall": {
@@ -1132,20 +1199,25 @@ def run_v2_design_audit() -> None:
         },
         "province_stratified_allocation": {
             "provinces": ["Cajamarca", "Cajabamba", "San Marcos"],
-            "cluster_allocation_by_province_and_arm": {
+            "cluster_allocation_by_modal_province_and_arm": {
                 p: {
                     ARM_MAP[a]: int(cluster_df[(cluster_df["province_modal"] == p) & (cluster_df["arm_code"] == a)]["cluster_id"].count())
                     for a in [1, 2, 3]
                 }
                 for p in ["Cajamarca", "Cajabamba", "San Marcos"]
             },
-            "participant_allocation_by_province_and_arm": {
+            "participant_allocation_by_actual_province_and_arm": {
                 p: {
-                    ARM_MAP[a]: int(cluster_df[(cluster_df["province_modal"] == p) & (cluster_df["arm_code"] == a)]["enrolled_participants"].sum())
+                    ARM_MAP[a]: int(actual_pt_crosstab.loc[prov_code_map[p], a])
                     for a in [1, 2, 3]
                 }
                 for p in ["Cajamarca", "Cajabamba", "San Marcos"]
-            }
+            },
+            "allocation_methodology_note": (
+                "Cluster counts reflect descriptive modal-province classification (summing to 159). "
+                "Participant counts are calculated directly from original participant-level recorded provincia (summing to 2,461). "
+                "For Cluster 104 (33 participants in Cajabamba, 1 in Cajamarca), the original randomization stratum cannot be definitively established from released participant data alone."
+            )
         },
         "maximum_absolute_smd_by_variable": {
             "cluster_level_primary": {
@@ -1174,7 +1246,7 @@ def run_v2_design_audit() -> None:
     print(f" -> Generated {summary_json_path.name}.")
 
     print("\n" + "=" * 70)
-    print("TASK V2 AUDIT EXECUTION COMPLETED SUCCESSFULLY!")
+    print("TASK V2 / V2.1 AUDIT EXECUTION COMPLETED SUCCESSFULLY!")
     print(f"All outputs generated in: {OUTPUT_DIR}")
     print("=" * 70)
 
